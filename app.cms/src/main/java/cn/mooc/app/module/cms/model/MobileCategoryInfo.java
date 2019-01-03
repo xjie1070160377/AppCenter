@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class MobileCategoryInfo implements Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 502930596784725821L;
 
@@ -17,7 +17,7 @@ public class MobileCategoryInfo implements Serializable {
 
 	private String description;
 
-	private String detailUrl;
+	private String detailUrl;//链接地址
 
 	private String smallImage;
 
@@ -37,10 +37,12 @@ public class MobileCategoryInfo implements Serializable {
 
 	private Integer twoColumn = 0;
 
+	private Integer nodeModelId;
+
 	private Integer typeId;
 	private Integer showTitle;
 	private String showChildNode;
-
+	private String linkType;//链接类型
 	public int getCateId() {
 		return cateId;
 	}
@@ -177,6 +179,22 @@ public class MobileCategoryInfo implements Serializable {
 		this.showChildNode = showChildNode;
 	}
 
+	public Integer getNodeModelId() {
+		return nodeModelId;
+	}
 
-	
+	public void setNodeModelId(Integer nodeModelId) {
+		this.nodeModelId = nodeModelId;
+	}
+
+	public String getLinkType() {
+		return linkType;
+	}
+
+	public void setLinkType(String linkType) {
+		this.linkType = linkType;
+	}
+
+
+
 }

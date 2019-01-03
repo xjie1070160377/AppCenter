@@ -45,7 +45,7 @@ public class MobileModelConvert {
 
 	private static String audio_rtmp_url = "rtmp://mapi.nudt.edu.cn:8002/vod/";
 
-	 private static String info_share_url = "https://mapp.nudt.edu.cn/widget/share/detail/{}";
+	private static String info_share_url = "https://mapp.nudt.edu.cn/widget/share/detail/{}";
 	//private static String info_share_url = "http://172.20.201.103/widget/share/detail/{}";
 	private static boolean useCommonCss = true;
 
@@ -285,8 +285,6 @@ public class MobileModelConvert {
 		cateInfo.setCateName(node.getName());
 		cateInfo.setNumber(node.getNumber() == null ? "" : node.getNumber());
 		cateInfo.setDescription(node.getDescription() == null ? "" : node.getDescription());
-		cateInfo.setDetailUrl(StringUtils.isNotBlank(node.getLink()) ? fullLinkPrefix(node.getLink(), urlFull)
-				: urlFull + "/node/" + node.getId() + ".htx");
 		cateInfo.setSmallImage(fullLinkPrefix(node.getSmallImageUrl(), urlFull));
 		cateInfo.setArticles(node.getRefers() == null ? 0 : node.getRefers());
 		// cateInfo.setAttentions(node.getAttentions() == null ? 0 :
@@ -307,16 +305,16 @@ public class MobileModelConvert {
 		} else {
 			cateInfo.setShowTitle(0);
 		}
+		cateInfo.setNodeModelId(node.getModel().getId());//栏目类型
+
 		Map<String, String> map = node.getClobs();
-	      if(!StringUtil.isNotNull(map.get("showChildNode"))) {
-	    	  cateInfo.setShowChildNode("0");
-	      }else {
-	    	  cateInfo.setShowChildNode(map.get("showChildNode"));
-	      }
-	      
-		for (Map.Entry<String, String> entry : map.entrySet()) {
-			System.out.println("==============================================key= " + entry.getKey() + " and value= " + entry.getValue());
+		if(!StringUtil.isNotNull(map.get("showChildNode"))) {
+			cateInfo.setShowChildNode("0");
+		}else {
+			cateInfo.setShowChildNode(map.get("showChildNode"));
 		}
+		cateInfo.setLinkType(map.get("linkType")==null?"":map.get("linkType"));
+		cateInfo.setDetailUrl(StringUtils.isNotBlank(node.getLink()) ? node.getLink(): "");
 
 		return cateInfo;
 	}
@@ -397,7 +395,7 @@ public class MobileModelConvert {
 	}
 
 	private void converComment(List<MobileCommentInfo> comments, InteractComment comment, String siteUrl,
-			String fromUser) {
+							   String fromUser) {
 		MobileCommentInfo commentInfo = convertComment(comment, siteUrl, fromUser);
 		comments.add(commentInfo);
 		List<InteractComment> list = modelConvert.commentService.findList(CommentType.Comment.toString(),
@@ -509,7 +507,7 @@ public class MobileModelConvert {
 	}
 
 	public static void converEvalUserComment(List<MobileCommentInfo> comments, InteractComment comment,
-			String siteUrl) {
+											 String siteUrl) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:dd");
 		if (comment == null)
 			return;
