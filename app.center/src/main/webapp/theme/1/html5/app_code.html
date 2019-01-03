@@ -1,0 +1,107 @@
+<%include("inc_head.html"){} %> 
+
+<title>${site.fullNameOrName}</title>
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_complete.css" />
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_topic.css" />
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_phone_app.css" />
+
+</head>
+<body class="output p-downapp">
+	<%include("inc_nav_side.html"){} %>
+	<%include("inc_nav_user.html"){} %>
+	<!-- 内容 -->
+	<div class="row-fluid">
+		<div class="app-download">
+			<div class="download-content clearfix">
+				<div class="page-left clearfix">
+					<div class="title logo celarfix">
+						<img src="${session.themeRoot}/_files/img/img_logo.png">
+					</div>
+					<div class="download">
+						<ul class="unstyled download-btn">
+							<li>
+								<a href="${ctxPath}/download_apk.htx" target="_blank" class="btn btn-large btn-success">
+									<i class="iconfont_app">&#xe633;</i>Android版
+								</a>
+							</li>
+							<li style="padding:0">
+								<a href="http://itunes.apple.com/cn/app/hong-ke/id1073056031" target="_blank" class="btn btn-large btn-info">
+									<i class="iconfont_ios">&#xe602;</i>iPhone版
+								</a>
+							</li>
+						</ul>
+						<img class="qrcode-app" src="${session.themeRoot}/_files/img/wxerm.png" alt="Download app qrcode">
+					
+					</div>
+					<ul class="share">
+						<li>
+							<a href="3">关注我们</a>
+						</li>
+						<li>
+							<a href="#">
+								<i class="iconfont_guanzhu">&#xe630;</i>
+							</a>
+						</li>
+						<li>
+							<a href="#">
+								<i class="iconfont_guanzhu">&#xe62f;</i>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="app-img">
+					<img src="${session.themeRoot}/_files/img/img_shouji.png" alt="Img phone">
+				</div>
+			</div>
+			<!-- <div class="app-info">
+				<div class="about-app">
+					<h1>关于红客</h1>
+					<b class="line"></b>
+					<p>红客 始终致力于做中文世界最好的写作与阅读平台，集结最优秀的创作者与文字爱好者，在嘈杂喧嚣的网络时代，重新沉淀并唤醒文字的力量。</p>
+					<p>本款 App 是简书团队向读者们送出的一份充满诚意的礼物。更丰富的功能正在逐步开发中，期待您的意见与建议。简洁优美的产品理念将始终在这里延续。</p>
+					<p>希望你在红客，重拾阅读的乐趣。</p>
+				</div>
+				<ul class="unstyled">
+					<li class="text-left">
+						<img class="pull-left" src="${session.themeRoot}/_files/img/img_jingxuan.png" alt="Img flollow">
+						<div>
+							<h3>精选文章</h3>
+							<p>即时阅读每日精选文章</p>
+						</div>
+					</li>
+					<li class="text-right">
+						<img class="pull-right" src="${session.themeRoot}/_files/img/img_gexing.png" alt="Img comment">
+						<div>
+							<h3>个性表达</h3>
+							<p>对作品发表自己的看法</p>
+						</div>
+					</li>
+					<li class="text-left">
+						<img class="pull-left" src="${session.themeRoot}/_files/img/img_zhuanti.png" alt="Img collection">
+						<div>
+							<h3>专题管理</h3>
+							<p>现在你就是最好的主编</p>
+						</div>
+					</li>
+					<li class="text-right">
+						<img class="pull-right" src="${session.themeRoot}/_files/img/img_fenxiang.png" alt="Img share">
+						<div>
+							<h3>便利分享</h3>
+							<p>随时转发分享精彩内容</p>
+						</div>
+					</li>
+				</ul>
+			</div> -->
+		</div>
+	</div>
+	<!-- Footer Start -->
+	<footer>
+		<div class="footer_top">
+			<p>Copyright 1999-2016 © 版权所有：国防科技大学</p>
+			<p>电话：(0731)84573000 网络服务热线：84573000 84573008 系统编制：国防科技大学训练部信息中心</p>
+		</div>
+	</footer>
+	<!-- Footer End -->
+<script data-main="${session.themeRoot}/_files/js/app" src="${session.themeRoot}/_files/js/require.js"></script>
+</body>
+</html>

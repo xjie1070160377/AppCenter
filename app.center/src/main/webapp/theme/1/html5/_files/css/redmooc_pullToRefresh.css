@@ -1,0 +1,184 @@
+body{
+	background:#fff;
+}
+.mui-bar~.mui-content .mui-fullscreen {
+	top: 44px;
+	height: auto;
+}
+.mui-pull-top-tips {
+	position: absolute;
+	top: -20px;
+	left: 50%;
+	margin-left: -25px;
+	width: 40px;
+	height: 40px;
+	border-radius: 100%;
+	z-index: 1;
+}
+.mui-bar~.mui-pull-top-tips {
+	top: 24px;
+}
+.mui-pull-top-wrapper {
+	width: 42px;
+	height: 42px;
+	display: block;
+	text-align: center;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 25px;
+	background-clip: padding-box;
+	box-shadow: 0 4px 10px #bbb;
+	overflow: hidden;
+}
+.mui-pull-top-tips.mui-transitioning {
+	-webkit-transition-duration: 200ms;
+	transition-duration: 200ms;
+}
+.mui-pull-top-tips .mui-pull-loading {
+	/*-webkit-backface-visibility: hidden;
+	-webkit-transition-duration: 400ms;
+	transition-duration: 400ms;*/
+	
+	margin: 0;
+}
+.mui-pull-top-wrapper .mui-icon,
+.mui-pull-top-wrapper .mui-spinner {
+	margin-top: 7px;
+}
+.mui-pull-top-wrapper .mui-icon.mui-reverse {
+	/*-webkit-transform: rotate(180deg) translateZ(0);*/
+}
+.mui-pull-bottom-tips {
+	text-align: center;
+	background-color: #efeff4;
+	font-size: 15px;
+	line-height: 40px;
+	color: #777;
+}
+.mui-pull-top-canvas {
+	overflow: hidden;
+	background-color: #fafafa;
+	border-radius: 40px;
+	box-shadow: 0 4px 10px #bbb;
+	width: 40px;
+	height: 40px;
+	margin: 0 auto;
+}
+.mui-pull-top-canvas canvas {
+	width: 40px;
+}
+
+.mui-scroll-wrapper{
+	background: #fff;
+}
+.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active{
+    border-bottom: 2px solid #e74c3c!important;
+	margin-bottom: -2px;
+	color: #e74c3c;
+}
+.contentBox {
+	  height: 100%;
+
+}
+.contentBox .article-list{
+    margin:0;
+    height: 100%;
+}
+.contentBox .mui-content{
+    height: 100%;
+    background-color: #fff;
+    position: relative;
+    margin-top:50px;
+}
+.mui-segmented-control .mui-control-item{
+	line-height: 40px;
+	margin-top: 8px;
+}
+.mui-segmented-control.mui-scroll-wrapper .mui-scroll{
+    height: 50px;
+    line-height:50px;
+    border-bottom: 2px solid #ccc;
+	text-align: left;
+	width: 100%;
+}
+.mui-segmented-control.mui-scroll-wrapper .mui-scroll.pc{
+	display: none;
+}
+.mui-slider-indicator.mui-segmented-control {
+	background-color: #fff;
+    padding: 0px;
+    float: left;
+    width: 100%;
+    height: 52px;
+}
+
+.mui-fullscreen .mui-segmented-control~.mui-slider-group{
+	top:52px;
+}
+
+/*pc*/
+@media only screen and (min-width: 768px ) {
+	.row-fluid .cover{
+		z-index: 9;
+	}
+	.contentBox .mui-content{
+	    margin-top:0;
+	}
+	.mui-pull-bottom-tips{
+		display:none;
+	}
+	.mui-scroll-wrapper:after{
+		display: block;
+		content: '';
+		height: 100%;
+	}
+	.mui-slider .mui-slider-group .mui-slider-item{
+		display: none;
+	}
+	.mui-slider .mui-slider-group .mui-slider-item.mui-active{
+		display: block;
+		height: auto;
+	}
+	.mui-slider .mui-slider-group .mui-slider-item.mui-active  .mui-scroll-wrapper{position: relative;}
+	.mui-slider .mui-slider-group .mui-slider-item.mui-active  .mui-scroll-wrapper .mui-scroll{position: relative;}
+	.mui-fullscreen .mui-segmented-control~.mui-slider-group{
+		position: relative;
+		top:0;
+	}
+	.mui-fullscreen{
+		position: relative;
+		height: auto;
+	}
+	#sliderSegmentedControl .t-serch{
+	    float: right;
+	    border: 1px solid #ccc;
+	    padding: 0;
+	    height: 28px;
+	    margin-top: 10px;
+	    border-radius: 13px;
+	    width: 190px;
+	}
+	#sliderSegmentedControl .t-serch input{
+		height: 26px;
+	    line-height: 26px;
+	    margin-left: 10px;
+	    color: #666;
+	    font-size: 13px;
+	    outline: none;
+	    border: none;
+	    width: 155px;
+	    padding: 0;
+	}
+	#sliderSegmentedControl .t-serch a{
+	    float: right;
+	    margin-right: 5px;
+	    margin-top: 1px;
+	}
+	#sliderSegmentedControl .t-serch a i{
+		font-weight: 700;
+	    color: #333;
+	    cursor: pointer;
+	}
+	   
+}
+    	

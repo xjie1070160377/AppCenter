@@ -1,0 +1,24 @@
+<!-- 头像 --> 
+<div class="wrap-btn">
+    <div class="article-related fl">
+		<a href="javascript:;" class="collection-menu-btn"><i class="iconfont">&#xe622;</i></a>
+		<a href="javascript:;" class="notebooks-menu-btn"><i class="iconfont">&#xe62b;</i></a>
+	</div>
+	<div class="editor-article fr">
+		<a href="javascript:;" title="收藏" class="colect"><i class="iconfont">&#xe62a;</i></a>
+		<a href="javascript:;" title="分享" class="share"><i class="iconfont">&#xe628;</i></a>
+		<div class="user fr">
+			<%var authUserInfo = AuthUserInfo();%>
+			<img title="用户中心" <%if(isNotEmpty(authUserInfo)){%>src="${ShowFileUrl(UserImage(authUserInfo.userId))}" alt="${AuthUserName()}" <%}%>  onerror="this.src='${session.themeRoot}/_files/img/default.jpg'" />
+			<i class="iconfont">&#xe609;</i>
+		</div>	
+		<ul class="user-dropdown">
+			<li><a href="${ctxPath}/my"><i class="iconfont">&#xe60c;</i> 设置</a></li>
+			<li><a href="${ctxPath}/logout"><i class="iconfont">&#xe604;</i> 退出登录</a></li>
+		</ul>
+	</div>
+</div>
+<div class="nav nav-shrink">
+	<i class="iconfont">&#xe607;</i>
+</div>
+

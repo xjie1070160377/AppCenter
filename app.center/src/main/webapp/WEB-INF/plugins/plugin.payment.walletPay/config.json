@@ -1,0 +1,19 @@
+{
+	"id": "plugin.payment.walletPay",
+	"name": "钱包支付",
+	"desc": "钱包支付插件",
+	"logo": "logo.gif",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Payment",
+	"platforms": ["WAP","PC"],
+	"pluginData": {
+		"RedirectUrl": {
+			"desc": "",
+			"val": "/walletPay"
+		}
+	},
+	"extendData": {
+		"no_recharge": true
+	}
+}

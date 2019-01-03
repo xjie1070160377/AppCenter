@@ -1,0 +1,136 @@
+<link href="${ctxPath}/static/base/css/plugins/jsTree/style.min.css" rel="stylesheet">
+<script type="text/javascript" src="${ctxPath}/static/base/js/plugins/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="${ctxPath}/static/base/js/plugins/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript" src="${ctxPath}/static/base/js/plugins/ueditor/lang/zh-cn/zh-cn.js"></script>
+<style>
+.control-label.text-center{text-align:center;}
+.info-content-box{height:auto;border:none;}
+.info-content-box #edui1{max-width:100%;}
+.edui-default .edui-editor-toolbarboxouter{background:none;}
+.edui-default .edui-editor-toolbarbox{box-shadow:none;}
+.edui-default .edui-box{padding:3px;}
+/* #edui1{z-index:2899!important;} */
+.edui-default .edui-dialog-modalmask{display:none!important;}
+#edui1_iframeholder{width:100%!important;}
+</style>
+
+
+<div class="col-sm-12">
+    <div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<button class="btn btn-info " type="button" id="btn_back"><i class="fa fa-mail-reply-all"></i> 返回</button>
+			<button onclick="submitForm();" title='保存并返回' class="btn btn-primary" type="button">保存并返回</button>
+		</div>
+        <div class="ibox-content">
+            <form id="postForm" method="post" class="form-horizontal" action="notice/noticeInfo/noticeInfo${entity.id == null ? 'Save' : 'Update'}">
+              	<input type="hidden" name="oid" value="${entity.id}" >
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="nName">栏目</label>
+                    <div class="col-sm-10">
+					  	<input type="hidden" id="nodeId" name="nodeId" value="${node.id}" />
+				  	  	<input type="text" readonly="readonly" id="nName" class="form-control" name="nName" value="${node.name}"/>
+				  	  	<div id="parentSelectDiv" style="top:0;">
+                    	<#NoticeNodeSelectorBtnTag id="nodeSelect" callback="nodeSelectCallBack" defaultValue="${node.id}"/>
+                    	</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="title">标题</label>
+                    <div class="col-sm-10"><input type="text" class="form-control" placeholder="标题" maxlength="20" id="title" name="title" value="${entity.title}"></div>
+                </div>
+                
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="description">备注</label>
+                    <div class="col-sm-10">
+				  		<textarea class="form-control" placeholder="备注" maxlength="150" name="description">${entity.description}</textarea>
+				  	</div>
+                </div>
+                
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="name">标题图</label>
+                    <div class="col-sm-10">
+                	<#SimpleFileUploadTag defaultValue="${entity.smallImage}" width="600" height="600" id="smallImage" scale="true" isImg="true" acceptedFiles="image/*" placeholder="图片地址" isPreview="true"/>
+                	</div>
+                </div>
+                
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="name">正文</label>
+                    <div class="col-sm-10">
+                    	<textarea class="form-control info-content-box" placeholder="正文" id="clobs_text" name="content">${content}</textarea>
+						  <script type="text/javascript">
+						  $(function() {
+							var initialFrameHeight = document.body.scrollHeight - 640;
+							if(initialFrameHeight < 0) {
+								initialFrameHeight = 400;
+							}
+						    var editor_clobs_text = UE.getEditor('clobs_text',{
+					        initialFrameHeight:initialFrameHeight,
+						      imageUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_image",
+						      wordImageUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_image",
+						      fileUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+						      videoUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+						      audioUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+						      catcherUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+						      imageManagerUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+						      getMovieUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file"
+						    });
+						  });
+						  </script>
+                    </div>
+                </div>
+                
+	            <div class="form-group">
+	                <div class="col-sm-12 text-right">
+	                    <button onclick="submitForm();" title='保存并返回' class="btn btn-primary" type="button">保存并返回</button>
+	                </div>
+	            </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+    	
+        //表单验证
+        $("#postForm").validate({
+            rules: {
+            	title: {
+                    required: true,
+                    minlength: 2
+                }
+            }
+        });
+        $("#btn_back").bind("click", function(){
+        	loadFrameContent('notice/noticeInfo/noticeInfoList?queryNodeId=${queryNodeId}&showDescendants=${showDescendants}');
+        });
+        
+        $('#title').focus();
+    });
+    
+    function nodeSelectCallBack(id, text){
+    	$('#nodeId').val(id);
+    	$('#nName').val(text);
+	}
+    
+    function submitForm(){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (json) {
+            if (json.resultStatus) {
+                //成功
+            	loadFrameContent('notice/noticeInfo/noticeInfoList?queryNodeId=${queryNodeId}&showDescendants=${showDescendants}');
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    	
+    }
+</script>

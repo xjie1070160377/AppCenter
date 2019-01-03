@@ -1,0 +1,20 @@
+{
+	"id": "plugin.payment.offline",
+	"name": "线下支付",
+	"desc": "线下支付插件",
+	"logo": "logo.gif",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Payment",
+	"platforms": ["PC"],
+	"pluginData": {
+		"RedirectUrl": {
+			"desc": "",
+			"val": "/pay/offlinePay"
+		}
+	},
+	"extendData": {
+		"no_recharge": true,
+		"no_third_party_payment": true
+	}
+}

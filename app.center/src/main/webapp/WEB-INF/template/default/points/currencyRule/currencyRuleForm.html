@@ -1,0 +1,334 @@
+<div class="col-sm-12 m-pointRule-form" style="margin-bottom:40px;">
+	<div class="ibox-title">
+		<h5>R币规则维护</h5>
+	</div>
+	<div class="ibox-title">
+		<button class="btn btn-info " type="button" id="btn_back"><i class="fa fa-mail-reply-all"></i> 返回</button>
+	</div>
+    <div class="ibox-content">
+        <form id="postForm" method="post" class="form-horizontal" action="points/currencyRule/${bean.id == null ? 'currencyRuleSave' : 'currencyRuleUpdate'}">
+            <div class="form-group"><label class="col-sm-2 control-label" for="ruleCode">规则代码</label>
+            	
+                <div class="col-sm-4"><input type="text" class="form-control" placeholder="规则代码"  id="ruleCode" name="ruleCode" value="${bean.ruleCode}"></div>
+            	<label class="col-sm-2 control-label" for="ruleName">规则名称</label>
+                <div class="col-sm-4"><input type="text" class="form-control" placeholder="规则名称"  id="ruleName" name="ruleName" value="${bean.ruleName}"></div>
+            </div>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group"><label class="col-sm-2 control-label" for="caption">描述</label>
+                <div class="col-sm-10"><textarea rows="5" name="caption" id="caption" style="width:100%">${bean.caption}</textarea></div>
+            </div>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group"><label class="col-sm-2 control-label" for="status">是否有效</label>
+            	<div class="col-sm-4">
+	            	<#RadioTag mapData="${ { 无效:0,生效:1 \} }" defaultValue="${isEmpty(bean.status) ? 1 : bean.status}" fieldName="status" />
+                </div>
+            	<label class="col-sm-2 control-label" for="total">获得R币</label>
+                <div class="col-sm-4"><input type="text" class="form-control" placeholder="获得R币"  id="total" name="total" value="${bean.total}"></div>
+            </div>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group"><label class="col-sm-2 control-label" for="maxTotal">每天最多累计数</label>
+                <div class="col-sm-4"><input type="text" class="form-control" placeholder="每天最大操作次数"  id="maxTotal" name="maxTotal" value="${isEmpty(bean.maxTotal)?0:bean.maxTotal}"></div>
+            	<label class="col-sm-2 control-label" for="text">指定文章规则</label>
+                <div class="col-sm-4 m-isspecial">
+                	<#RadioTag mapData="${ { 否:0,是:1 \} }" defaultValue="${isEmpty(bean.isspecial) ? 0 : bean.isspecial}" fieldName="isspecial" />
+                </div>
+            </div>
+			<div class="hr-line-dashed"></div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label" for="ruleCode">排除栏目</label>
+                <div class="col-sm-4">
+                <input type="hidden" id="nodeIds" name="nodeIds" value="${nodeIds}" />
+                <input type="text" readonly="readonly" id="node_names" class="form-control" name="node_names" value="${nodeNames}">
+                </div>
+            	<#NodeSelectorBtnTag id="btn_nodeSelector" callback="nodeSelectCallBack" defaultValue="" multiple="true" checkedId="${nodeIds}"/>
+            </div>
+			<div class="hr-line-dashed"></div>
+            <div class="jqGrid_wrapper" id="infoList-select">
+				<table id="table_list1"></table>
+				<div id="pager_list1"></div>
+			</div>
+			<div class="hr-line-dashed">
+            <div class="form-group">
+                <div class="col-sm-12 text-right">
+                	<input type="hidden" name="oid" value="${bean.id}" >
+                	<input type="hidden" name="specialIds" id="specialIds" value=""/>
+                    <button id="submit" class="btn btn-primary" type="button">提交保存</button>
+                </div>
+            </div>
+        </form>
+        
+        
+    </div>
+    
+    
+</div>
+
+
+
+<script type="text/javascript">
+    
+	function nodeSelectCallBack(id, text){
+		$('#nodeIds').val(id);
+		$('#node_names').val(text);
+	}
+	var currencyRule = (function ($) {
+		var pis = $("#details").val();
+		var Width = document.body.clientWidth * 0.6 ;
+		var Height = document.body.clientHeight * 0.7 ;
+		var infoIds = [];
+		
+		var init = function(){
+			$('#nodeSelectDiv').load('cms/selector/nodeTag?id=nodeSelector&callback=nodeSelectCallBack');
+			init_icheck();
+			init_validator();
+			initjqGrid();
+			bindEvent();
+		}
+		/* 绑定事件 */
+		var bindEvent = function(){
+			//返回按钮
+	        $("#btn_back").bind("click", function(){
+	        	loadFrameContent('/points/currencyRule/currencyRuleList');
+	        });
+	        //浏览器窗口变化时，自动宽度
+	        $(window).bind('resize', function () {
+        		var width = $('.jqGrid_wrapper').width();
+	            $('#table_list').setGridWidth(width);
+	        });
+	        //提交
+	        $("#submit").bind("click", function(){
+	        	submitForm();
+	        });
+	        //添加按钮
+			$("#addInfo").unbind("click").bind("click", function(){
+				openlayer();
+			});
+		}
+		var bindIsspecial = function(){
+			//指定文章规则
+	        $("input[name='isspecial']").on('ifChecked', function(event){
+	        	if($("input[name='isspecial']:checked").val()==1){
+	        		$("#infoList-select").show();
+	        	}else{
+	        		$("#infoList-select").hide();
+	        	}
+			});
+		}
+		/* 初始化radio */
+		var init_icheck = function(){
+		    $('.i-checks').iCheck({
+		        checkboxClass: 'icheckbox_square-green',
+		        radioClass: 'iradio_square-green',
+		    });
+		    bindIsspecial();
+		}
+		//表单验证
+		var init_validator= function(){
+			$("#postForm").validate({
+		        rules: {
+		        	ruleName: {
+		                required: true,
+		                minlength: 2,
+		                maxlength:150
+		            },
+		            ruleCode: {
+		                required: true,
+		                minlength: 2,
+		                maxlength:150
+		            },
+		            caption: {
+		                required: true,
+		                minlength: 2,
+		                maxlength:150
+		            },
+		        	points: {
+		                required: true,
+		                number: true,
+		                maxlength:11
+		            },
+		            maxPoints: {
+		                required: true,
+		                number: true,
+		                maxlength:11
+		            },
+		            maxOpnum: {
+		                required: true,
+		                number: true,
+		                maxlength:11
+		            }
+		        }
+		    });
+		}
+		//表单提交
+		var submitForm = function(){
+			function delHtmlTag(str){
+			    return str.replace(/<[^>]+>/g,"");//去掉所有的html标记
+			}
+	    	if($("#postForm").valid()==false){
+	    		return;
+	    	}
+	    	if($("input[name='isspecial']:checked").val() == 1){
+	    		var ids = $("#table_list1").getDataIDs();
+	    		$("#specialIds").val(ids);
+	    	}
+			$.post($("#postForm").attr("action"), $("#postForm").serializeArray(), function (json) {
+	            if (json.resultStatus) {
+	                //成功
+	            	layer.msg("保存成功");
+	            	loadFrameContent('points/currencyRule/currencyRuleList');
+	            } else {
+	            	//
+	            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+	            }
+	        }, "json");
+	    }
+		
+		var addRow = function(id, title){
+			var isRepeat = function(arr, str){
+				for(var i = 0; i < arr.length; i++){
+					if(arr[i] == str){
+						return true;
+					}
+				} 
+				return false;
+			}
+			infoIds =  $("#table_list1").getDataIDs();
+			if(!isRepeat(infoIds, id)){
+				$("#table_list1").addRowData(id, {infoid:id,title: title});
+				//移除
+		        $(".btn-remove").unbind("click").bind("click", function(){
+					$(this).parents(".jqgrow").remove();
+				});
+			}
+		}
+		
+		//文章列表
+		var init_infoList = function(){
+			
+			window.gridComplete = function(){
+				$(".ui-jqgrid tr.jqgrow").each(function(){
+					var html = '<button class="btn btn-primary btn-opt btn-select" type="button" title="选择">选择</button>'
+					$(this).find("td[aria-describedby='table_list_op']").html(html);
+				});
+				//添加文章
+				$(".btn-select").unbind("click").bind("click", function(){
+					var id = $(this).parents(".jqgrow").attr("id");
+					var title = $(this).parents(".jqgrow").find(".info-title").text();
+					addRow(id, title);
+				});
+				//失效了？再绑定
+				bindIsspecial();
+			}
+			
+			
+			gridComplete();
+			var inputbox = $("#m-pointRule-infoList").find(".ibox-content .row").eq(0).find(".col-sm-2").eq(1);
+			inputbox.bind("click", function(){
+				inputbox.animate({"width": "83%"}, 500);
+			});
+		};
+		
+		var openlayer = function(){
+			layer.open({
+				id  : "m-pointRule-infoList",
+				type : 1, //page层
+				area : ["1000px", "800px" ],
+				title : '文章选择',
+				shade : 0.6, //遮罩透明度
+				moveType : 1, //拖拽风格，0是默认，1是传统拖动
+				shift : -1, //0-6的动画形式，-1不开启
+				content : $("#popWin").load('cms/info/infoList'),
+				btn: ['确定', '取消'],
+				success: function(layero, index){
+					//计时器查询是否加载jqgrid完成
+					var t = setInterval(function(){
+						if($(".ui-jqgrid tr.jqgrow").length > 0){
+							clearInterval(t);
+							//失效了？再绑定
+							bindIsspecial();
+							//初始化文章列表
+							init_infoList();
+						}
+					}, 200);
+					
+				},
+			    yes: function(index, layero){
+			    	//添加表格前复选框被勾选的数据
+			    	var ids = $("#table_list").jqGrid('getGridParam','selarrrow');
+			    	for(var i = 0; i < ids.length; i++){
+			    		 var rowdata = $("#table_list").jqGrid("getRowData", ids[i]);
+			    		 var title = $($(rowdata.title)[0]).text();
+			    		 addRow(ids[i], title);
+			    	}
+			    	layer.close(index); //如果设定了yes回调，需进行手工关闭
+				}
+			});
+		};
+		var initjqGrid = function(){
+			//添加按钮
+			var html = '<div class="row"><div class="col-sm-12"><a id="addInfo" href="javascript:void(0);" title="添加文章" class="btn btn-primary btn-sm">添加文章</a></div></div>';
+			($("#infoList-select")).prepend(html);
+			$("#table_list1").jqGrid({
+				url : "points/currencyRule/currencySpecialListJson?ruleId=${bean.id}",
+				datatype : "json",
+				width: "100%",
+				height : 450,
+				autowidth : false,
+				shrinkToFit : false,
+				rowNum : 10,
+				rowList : [ 10, 20, 30 ],
+				colModel : [ {
+					label : "ID",
+					classes : 'mshow',
+					name : 'infoid',
+					index : 'infoid',
+					width : 100,
+					align : "center",
+					sorttype : "int"
+				}, {
+					label : "标题",
+					classes : 'mshow',
+					name : 'title',
+					index : 'title',
+					width : 500,
+					align : "left"
+				}, {
+					label : "操作",
+					classes : 'mshow',
+					name : 'op',
+					sortable : false,
+					width : 100,
+					align : "center",
+					formatter : oprationFmt
+				} ],
+				pager : "#pager_list1",
+				viewrecords : true,
+				multiselect : true,
+				sortname : 'id',
+				sortorder : "desc",
+				caption : "文章选择",
+				loadtext : '正在加载...',
+				hidegrid : false,
+				gridComplete : function(){
+					if($("input[name='isspecial']:checked").val() == 1){
+						$("#infoList-select").show();
+						infoIds =  $("#table_list1").getDataIDs();
+						//移除
+						$(".btn-remove").unbind("click").bind("click", function(){
+							$(this).parents(".jqgrow").remove();
+						});
+					}
+				}
+			});
+			
+			function oprationFmt(cellvalue, options, rowObject) {
+				return '<button class="btn btn-primary btn-opt btn-remove" type="button" title="移除">移除</button>';
+			}
+			
+		};
+		
+		init();
+		
+	})(jQuery); 
+
+</script>

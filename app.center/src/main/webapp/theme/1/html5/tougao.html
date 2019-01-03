@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!--[if IE 6]><html class="ie lt-ie8"><![endif]-->
+<!--[if IE 7]><html class="ie lt-ie8"><![endif]-->
+<!--[if IE 8]><html class="ie ie8"><![endif]-->
+<!--[if IE 9]><html class="ie ie9"><![endif]-->
+<!--[if !IE]><!--> <html lang="zh-CN"> <!--<![endif]-->
+ <head>
+	<meta charset="utf-8" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name='apple-touch-fullscreen' content='yes'>
+	<meta content="fullscreen=yes,preventMove=no" name="ML-Config">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="format-detection" content="telephone=no,email=no,address=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<!--[if lte IE 8]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/plugins/dropzone.css"/>
+	<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/tougao.css"/>
+
+</head>
+
+<body class="tougao p-tougao">
+	<div class="wrapper">
+		<%include("tg_header.html"){} %>
+		<div class="main">
+		<%if(isNotEmpty(contribute) && isNotEmpty(contribute.id)){%>
+			<form id="validForm" action="tg-update.htx" method="post">
+		<%}else{%>
+			<form id="validForm" action="tg-save.htx" method="post">
+		<%}%>
+				<input type="hidden" name="nextUrl" value="tg-tougao.htx" />
+				<input type="hidden" id="filedetails" name="filedetails" />
+				<input type="hidden" id="imagedetails" name="imagedetails" />
+				<input type="hidden" name="oid" value="${contribute.id}">
+				<table border="" cellspacing="" cellpadding="">
+					<tr>
+						<td class="td-label">您的姓名</td>
+						<td class="td-display"><input type="text" name="name" value="${contribute.name}" required autocomplete="off"/></td>
+					</tr>
+					<tr>
+						<td class="td-label">工作单位</td>
+						<td class="td-display"><input type="text" name="company" value="${contribute.company}" required autocomplete="off"/></td>
+					</tr>
+					<tr>
+						<td class="td-label">联系方式</td>
+						<td class="td-display"><input type="tel" name="mobileno" value="${contribute.mobileno}" required autocomplete="off"/></td>
+					</tr>
+					<tr>
+						<td class="td-label">真实姓名</td>
+						<td class="td-display"><input type="text" name="realName" value="${contribute.realName}" required autocomplete="off"/></td>
+					</tr>
+					<tr>
+						<td class="td-label">工商银行卡号</td>
+						<td class="td-display"><input type="text" name="cardNo" value="${contribute.cardNo}" required autocomplete="off"/></td>
+					</tr>
+					<tr>
+						<td class="td-label">电子邮箱</td>
+						<td class="td-display"><input type="email" name="email" value="${contribute.email}" required autocomplete="off"/></td>
+					</tr>
+					<tr>
+						<td class="td-label">标题</td>
+						<td class="td-display"><input type="text" name="title" value="" required autocomplete="off"/></td>
+					</tr>
+					<tr>
+						<td class="td-label">投稿意向</td>
+						<td class="td-display"><input type="text" name="intention" value="" required autocomplete="off"/><i class="envelope"></i></td>
+					</tr>
+				</table>
+				
+				<div class="enclosure clearfix">
+					<div class="left">
+						<div class="i-addEnclosure"></div>
+						<span>添加附件</span>
+						<input type="file" name="file" id="file" />
+					</div>
+					<div class="right dropzone-previews dropzone" id="filePreview">
+						<!--<h3 class="filename"></h3>-->
+						<div class="bottom"><i class="i-star"></i>可添加文档，视频，音频，压缩包</div>
+					</div>
+				</div>
+				
+				<div class="enclosure clearfix">
+					<div class="left">
+						<div class="i-addPic" id="dropzone"></div>
+						<span>添加图片</span>
+					</div>
+					<div class="right dropzone-previews dropzone" id="imagePreview">
+						<div class="bottom"><i class="i-star"></i>图片大小尽量在200k以内</div>
+					</div>
+				</div>
+				
+				<div class="submit-box">
+					<a class="submit btn " id="submit">提交</a>
+					<a href="javascript:" class="reset btn" id="reset">重置</a>
+				</div>
+			</form>
+			
+			
+		</div>
+	
+	</div>
+	
+	<script src="${session.themeRoot}/_files/js/plugins/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="${session.themeRoot}/_files/js/plugins/jquery.validate.js" type="text/javascript" charset="utf-8"></script>
+	<script src="${session.themeRoot}/_files/js/plugins/jquery.validation_zh_CN.js" type="text/javascript" charset="utf-8"></script>
+	<script src="${session.themeRoot}/_files/js/plugins/dropzone.js" type="text/javascript" charset="utf-8"></script>
+	<script src="${session.themeRoot}/_files/js/tougao.js" type="text/javascript" charset="utf-8"></script>
+	
+</body>

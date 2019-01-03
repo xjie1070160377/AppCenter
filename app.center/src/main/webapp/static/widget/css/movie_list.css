@@ -1,0 +1,21 @@
+.p-movieList .item { display: flex; padding: 16px 8px; border-bottom: 1px solid #ddd; }
+.p-movieList .item .u-img { display: block; width: 30%; float: left; flex: none; }
+.p-movieList .item .u-img img { width: 100%; height: auto; }
+.p-movieList .item .details { position: relative; display: block; width: 70%; float: left; padding-left: 16px; padding-right: 8px; }
+.p-movieList .item .details .u-tt { width: 100%; font-size: 16px; font-weight: 700; }
+.p-movieList .item .details .u-bott { position: absolute; bottom: 0; left: 0px; color: #777; font-size: 13px; }
+.p-movieList .item .details .u-bott .views { margin: 0 16px; float: left; display: flex; align-items: center; }
+.p-movieList .item .details .u-bott .comments { float: left; display: flex; align-items: center; }
+.p-movieList .item .details .u-bott .iconfont { margin-right: 2px; }
+.p-movieList .item .details .u-bott span { font-family: "Georgia","Verdana","Helvetica","Arial","microsoft yahei"; }
+.p-movieList .item .u-tt { width: 100%; font-size: 16px; font-weight: 700; }
+.p-movieList .item .u-desc a { color: #999; }
+.p-movieList .item.columns-1 { padding: 8px; display: block; width: 100vw; box-sizing: border-box; }
+.p-movieList .item.columns-1 .u-img { width: 100%; height: 43vw; float: none; }
+.p-movieList .item.columns-1 .u-img img { height: 100%; }
+.p-movieList .item.columns-1 .details { float: none; width: 100%; padding-left: 0; padding-top: 8px; height: 44px; }
+.p-movieList .item.columns-1 .details .u-bott { position: relative; margin-left: 0; margin-top: 8px; }
+.p-movieList .item.columns-1 .details .u-bott .views { margin: 0; margin-right: 16px; }
+.p-movieList .item.columns-1 .u-tt { padding: 8px 0; }
+
+/*# sourceMappingURL=movie_list.css.map */

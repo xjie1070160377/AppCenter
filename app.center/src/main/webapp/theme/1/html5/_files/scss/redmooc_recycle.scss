@@ -1,0 +1,63 @@
+/*variables*/
+//color
+$red1 : #e74c3c;
+$green: #49BE38;
+$green1:#d94641;
+$blue:#b05d2b;
+$sidebarbg:#2b2b2b;
+//width
+$iphone4:320px;
+$iphone6:375px;
+$iphone6s:414px;
+$mobile:768px;
+$pc_xs:1024px;
+$pc_sm:1281px;
+$pc_md:1441px;
+$pc_lg:1600px;
+//body.output {
+//      padding-left: 45px;
+//  }
+//  .nav.nav-side{width: 45px;
+//      .top, .bottom{
+//          a{  padding: 10px 10%;text-align: center;width: 80%;
+//          span{display: none;}
+//          i{margin-left: 0;}
+//          }
+//          a.active{border-right:none; }
+//      }
+//      .logo{ display: none;}
+//}
+.btn {border-radius: 4px; box-shadow: none;color: #555555;background: #f5f5f5;border-color: #d5d5d5;text-shadow: none;display: inline-block;padding: 4px 12px; margin-bottom: 0;font-size: 14px;line-height: 20px;text-align: center;vertical-align: middle;cursor: pointer;}
+
+.recycle-mode{width: 100%; color: #2f2f2f; 
+             .r-note-list{ float: left; width: 300px; min-height: 1px;
+                         .affix{ position: relative; top: 0; bottom: 0; width: 300px; border-right: 1px solid #d9d9d9; display: block;
+                                .recycle-title{padding: 5px 10px;margin: 0;border-bottom: 1px solid #d9d9d9;font-size: 20px;font-weight: normal; line-height: 40px; i{ font-size: 24px;}}
+                                .unstyled{ padding: 0; margin: 0; list-style: none; display: block; color: #2f2f2f;
+                                          li{ position: relative; padding: 12px 10px; font-size: 12px; line-height: 20px;border-bottom: 1px solid #d9d9d9; cursor: pointer; display: list-item;
+                                              h5{ width: 180px; margin: 0; font-weight: normal; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; line-height: 20px; i{ font-size: 16px;}}
+                                              span{ position: absolute;top: 12px;right: 10px;display: block;color: #b1b1b1;}
+                                          }
+                                          li.active {background-color: #f5f5f5; border-right: 3px solid $green1;}
+                                }
+                                .clear-trash { display: none; position: absolute;bottom: 0;width: 100%;padding: 17px 0;border-top: 1px solid #d9d9d9;font-size: 16px;text-align: center;color: $green1;}
+                         }
+             }
+             .r-note-content{ margin-left: 300px;
+                             .recycle-title{ width: 96%;min-height: 48px; padding: 20px 0 20px 4%;background: #eeeeee;border-bottom: 1px solid #eeeeee;
+                                             h3{ position: relative;display: inline-block; padding: 0; font-size: 24px; line-height: 40px;}
+                                             .close{position: relative;display: inline-block; right: 25%;margin-top: 10px;float: right;color: inherit;
+                                                    cursor: pointer; font-size: 20px; font-weight: bold;line-height: 20px;
+                                             }
+                             }
+                             .recycle-content{ width: 92%; padding: 30px 4% 30px 4%;display: block;
+                                              p{margin: 0 0 25px 0;font-size: 16px;font-weight: normal;line-height: 1.7;}
+                             }
+                             .recycle-toolbar { width: 96%; padding: 8px 0 8px 4%;border-top: 1px solid #d9d9d9; margin: 0 auto;  position: fixed; bottom: 0;
+                                              .recycle-footer {  background-color: #FFFFFF; text-align: center;  overflow: hidden;}
+                                               button{ float: left; padding: 9px 32px 7px; margin: 0 10px 0 0;font-size: 16px;border-radius: 4px;box-shadow: none; text-shadow: none; border: none;}
+                                              .btn-success {color: #FFFFFF;border-color: #49be38; background: #49be38;}
+                                              .btn-mainRed {color: #FFFFFF;border-color: #e78170;background: #e78170;}
+                             }
+             }
+}

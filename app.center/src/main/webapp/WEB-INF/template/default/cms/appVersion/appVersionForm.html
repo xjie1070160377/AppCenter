@@ -1,0 +1,187 @@
+<link href="${ctxPath}/static/base/css/form.css" rel="stylesheet">
+
+<script type="text/javascript">
+	window.UEDITOR_HOME_URL = "${ctxPath}/static/base/js/plugins/ueditor/";
+
+</script>
+<script type="text/javascript" src="${ctxPath}/static/base/js/plugins/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="${ctxPath}/static/base/js/plugins/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript" src="${ctxPath}/static/base/js/plugins/ueditor/lang/zh-cn/zh-cn.js"></script>
+<style>
+	* html{overflow-y: scroll;}
+	input[name='node_name'],input[name='specialNames']{padding-right:50px;}
+	.form-control{font-weight:400;}
+	.nav-tabs>li{margin:0;position:relative;bottom:-2px;}
+	/* .nav-tabs li a:link,.nav-tabs li a:focus{border:none;outline:none;} */
+	#nodeSelectDiv,#specialSelectDiv{position: absolute; top: 7px; right: 7px;height:34px;}
+	#nodeSelectDiv > button,#specialSelectDiv > button{height:34px;}
+	.nav-tabs{border-bottom:none;}
+	a, a:hover, a:focus,a:link{outline:none;}
+	.in-tb td{background:#fff;font-weight:700;}
+	#sourceUrl_x,#sourceother{margin:10px 0;}
+	#datepicker{margin-bottom:0;}
+	.forwardLink{position:absolute;right:15px;top:10px;}
+	#imagesUploadDiv .fileinput-button,#fileUploadDiv .fileinput-button{margin-left: 20px; margin-top: 20px;}
+	#imagesUploadDiv .img_prev_div{padding-left:5px;}
+	#imagesUploadDiv .text-left {padding-left:0;}
+	#images_div > .col-lg-12.form-group{margin-left:0;}
+	.control-label.text-center{text-align:center;}
+	.info-content-box{height:auto;border:none;}
+	.info-content-box #edui1{max-width:100%;width:100%!important;}
+	.edui-default .edui-editor-toolbarboxouter{background:none;}
+	.edui-default .edui-editor-toolbarbox{box-shadow:none;}
+	#edui1{z-index:2899!important;}
+	#edui1_iframeholder{width:100%!important;}
+	@-moz-document url-prefix(){
+		.edui-default .edui-editor-toolbarbox{ position:relative!important;left:0!important;top:0!important;}
+	}
+	.layui-layer-content{height: calc(100% - 100px)!important;}
+</style>
+
+<div class="col-sm-12">
+    <div class="ibox float-e-margins">
+        
+        <div class="ibox-content">
+            <form id="postForm" method="post" class="form-horizontal" action="cms/appVersion/appVersion${entity.id == null ? 'Save' : 'Update'}">
+                
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="name">版本号</label>
+                    <div class="col-sm-10"><input type="text" class="form-control" placeholder="版本号，如：1.0" maxlength="20" id="version" name="version" value="${entity.version}"></div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="name">发布日期</label>
+                    <div class="col-sm-10">
+                    <input type="text" class="form-control" style="text-align: left" name="publishDate" placeholder="发布日期" value='${entity.publishDate !, dateFormat="yyyy-MM-dd"}'/>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="name">强制发布</label>
+                    <div class="col-sm-10">
+                    	<#RadioTag mapData="${ { 否:0,是:1 \} }" defaultValue="${entity.isforce}" fieldName="isforce" />
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="name">下载地址</label>
+                    <div class="col-sm-10">
+                    <#SimpleFileUploadTag defaultValue="${entity.url}"  id="url" isImg="false" placeholder="文件地址" isHiddenUrl="false" isPreview="false"/>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="name">补丁号</label>
+                    <div class="col-sm-10"><input type="text" class="form-control" placeholder="补丁号，如：1.0" maxlength="20" id="version" name="patch_version" value="${entity.patch_version}"></div>
+                </div>
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="name">补丁地址</label>
+                    <div class="col-sm-10">
+                    <#SimpleFileUploadTag defaultValue="${entity.patch_url}"  id="patch_url" isImg="false" placeholder="文件地址" isHiddenUrl="false" isPreview="false"/>
+                    </div>
+                </div>
+                
+                <div class="hr-line-dashed"></div>
+                
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="name">版本说明</label>
+                    <div class="col-sm-10">
+						<textarea class="form-control info-content-box" placeholder="版本变化说明" id="content" name="content">${entity.content}</textarea>
+						  <script type="text/javascript">
+						  $(function() {
+							var initialFrameHeight = document.body.scrollHeight - 640;
+							if(initialFrameHeight < 0) {
+								initialFrameHeight = 400;
+							}
+
+						    var editor_clobs_text = UE.getEditor('content',{
+					    	  toolbars: [
+			    	              ['fullscreen', 'source', 'undo', 'redo',
+			    	              'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc']
+					    	  ],
+					          initialFrameHeight:initialFrameHeight,
+						      imageUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_image",
+						      wordImageUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_image",
+						      fileUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+						      videoUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+						      audioUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+						      catcherUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+						      imageManagerUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+						      getMovieUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file"
+						    });
+						  });
+						  </script>
+					</div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                
+                <input type="hidden" name="site.id" value="${siteId}" >
+                <input type="hidden" name="id" value="${entity.id}" >
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+    	
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        
+        
+        
+        //表单验证
+        $("#postForm").validate({
+            rules: {
+            	name: {
+                    required: true,
+                    minlength: 2
+                }
+            }
+        });
+        
+    });
+        
+    
+    function submitForm(){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (json) {
+            //var data = $.parseJSON(json);
+            if (json.resultStatus) {
+                //成功
+                reloadGrid();
+                closeAllPopWin();
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    	
+    }
+    
+    /* //ueditor全屏问题
+    $("#edui3_body").bind("click", function(){
+    	var $edui1 = $("#edui1");
+    	if($edui1.length > 0){
+    		if($edui1.data("fullscreen") == "true"){
+    			$edui1.css("max-width","100%");
+    			$edui1.data("fullscreen", "false");
+    		}else{
+    			var bodyWidth = document.body.clientWidth;
+        		$edui1.css({"max-width": bodyWidth + "px", "z-index":"9999"});
+        		$edui1.data("fullscreen", "true");
+    		}
+    	}
+    }); */
+</script>

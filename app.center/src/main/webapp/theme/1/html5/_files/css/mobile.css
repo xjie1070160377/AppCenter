@@ -1,0 +1,49 @@
+/* CSS Document */
+
+/** iPhone **/
+@media only screen and (min-width: 320px) and (max-width: 767px) {
+  body{
+  background:url(../images/2.png);
+  background-size:100%;
+  background-repeat:no-repeat;
+  }
+  .os-tab{display:none;}
+  /*移动端*/
+#mobileTitle{font-family:"微软雅黑";font-size:24px;color:#216b5c;font-weight:bold;text-align:center;line-height:30px;height:30px;margin-bottom:30px;margin-top:60px;}
+#mobileDownload{border:2px solid #216b5c;border-radius:5px;color:#216b5c;text-align:center;width:70%;margin:0 auto;padding-top:10px;padding-bottom:10px;}
+#mobileDownload b{display:block;font-size:20px;line-height:30px;}
+#mobileDownload span{display:block;font-size:12px;line-height:20px;}
+#mobileEwm{width:140px;height:140px;margin:0 auto;border:2px solid #ffffff;}
+}
+
+/** iPad **/
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  body{
+  background:url(../images/p3.png);
+  background-size:100%;
+  background-repeat:no-repeat;
+  }
+  .os-tab{display:none;}
+  /*移动端*/
+#mobileTitle{font-family:"微软雅黑";font-size:24px;color:#216b5c;font-weight:bold;text-align:center;line-height:30px;height:30px;margin-bottom:30px;margin-top:60px;}
+#mobileDownload{border:2px solid #216b5c;border-radius:5px;color:#216b5c;text-align:center;width:70%;margin:0 auto;padding-top:10px;padding-bottom:10px;}
+#mobileDownload b{display:block;font-size:20px;line-height:30px;}
+#mobileDownload span{display:block;font-size:12px;line-height:20px;}
+#mobileEwm{width:140px;height:140px;margin:0 auto;border:2px solid #ffffff;}
+}
+
+/** pc **/
+@media only screen and (min-width: 1025px) {
+  body{
+  background:url(../images/p8.jpg);
+  background-size:100%;
+  background-repeat:no-repeat;
+  }
+  #mobile{display:none;}
+  /*移动端*/
+#mobileTitle{font-family:"微软雅黑";font-size:24px;color:#ffffff;font-weight:bold;text-align:center;line-height:30px;height:30px;margin-bottom:30px;margin-top:60px;}
+#mobileDownload{border:2px solid #ffffff;border-radius:5px;color:#ffffff;text-align:center;width:70%;margin:0 auto;padding-top:10px;padding-bottom:10px;}
+#mobileDownload b{display:block;font-size:20px;line-height:30px;}
+#mobileDownload span{display:block;font-size:12px;line-height:20px;}
+#mobileEwm{width:70px;height:70px;margin:0 auto;border:2px solid #ffffff;}
+}

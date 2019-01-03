@@ -1,0 +1,360 @@
+<% layout("/share/mlayout.html"){%>
+<style>
+	.hr-line-dashed{margin:15px 0;}
+	.dropzone{min-height:300px;padding:10px;}
+	.dropzone .dz-default.dz-message{ background-image: url(${ctxPath}/static/base/css/plugins/images/spritemap_cn.png);}
+	.dropzone .dz-preview, .dropzone-previews .dz-preview {margin: 10px;}
+	#listView .types, #listView .images{display: flex;flex-direction: row;justify-content: flex-start;align-items: center;flex-wrap: wrap;}
+	#listView .types .folder, #listView .images .image{width: 150px;text-align: center;border: 1px solid transparent;}
+	#listView .images .image{display: flex;justify-content: center;flex-direction: column; align-items: center;margin:10px 0;}
+	#listView .images .image img{max-width: 130px;max-height: 130px; margin-top: 10px;}
+	#listView .types .folder img{width:90px;}
+	#listView .types .folder:hover, #listView .images .image:hover {background: rgba(0,30,150,0.03);border: 1px solid #b7d4f9;}
+	#listView .images .image.selected{background: rgba(0,30,150,0.03);border: 1px solid #b7d4f9;}
+    #backword{color:#777;height:28px;line-height:28px;padding:0 10px;margin-right:10px;font-size:17px;}
+    #backword:hover{color: #1ab394;}
+    #backword[disabled='disabled']{color: #ccc;}
+    #backword[disabled='disabled'] :hover{color: #ccc;}
+    #listView .images #nodata{width:100%;}
+    #nodata .box{text-align:center;}
+    #nodata .no_pic{width:300px;margin:0 auto;}
+    #nodata .no_pic .icon {width: 300px; height: 300px;fill: currentColor;overflow: hidden;}
+    #nodata .text span{font-size:18px; position: relative;top: 5px; color: #888;}
+    #nodata  .btn{font-size: 14px;padding: 3px 10px;margin-left:10px;}
+    .f-toe{max-width: 100%;}
+    .right_btn2 .layout{display: inline-block;width: 35px;}
+    .right_btn2 .layout .fa{font-size: 20px;color: #a4acb8;position: relative;top: 3px;}
+    .right_btn2 .layout .fa:hover{color:#1ab394}
+    .uploadBox .box{transition: all .5s;width: 84px;height: 110px;background-image: url(/static/base/images/bg_upload_box.png); background-repeat: no-repeat;cursor: pointer;}
+    #listView .images .uploadBox:hover{background:none;border: 1px solid transparent;}
+    #listView .images .uploadBox .box:hover{background-image: url(/static/base/images/bg_upload_box_hover.png);}
+    .icheckbox_square-green{margin-left:15px;}
+</style>
+<script src="${ctxPath}/static/base/fonts/iconfont/iconfont.js"></script>
+<script src="${ctxPath}/static/base/js/plugins/vue/vue.min.js"></script>
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>图片列表</h5>
+				</div>
+				<div class="ibox-content">
+                        
+                    <div class="ls_search">
+					    <div class="form-group">
+					        <div class="navigator col">
+					        	<a id="backword" disabled="disabled"><i class="fa fa-arrow-left"></i></a>
+					        </div>
+					        
+					        <span class="col">
+					        	<label class="" style="padding:0 5px;padding-top:5px;">图片分类</label>
+					        </span> 
+					        <span class="col">
+						        <select name="typeId" id="typeId" class="input-sm form-control input-s-sm inline">
+						        	<option value="0">所有分类</option>
+									<%for(var type in typeList){%>
+									<option value="${type.id}">${type.name}</option>
+									<%}%>
+								</select>
+					        </span> 
+					        <span class="col">
+					        	<label class="" style="padding:0 5px;padding-top:5px;">图片标题</label>
+					        	<input type="hidden" name="columnFiled" id="columnFiled" value="LIKE_title" />
+					        </span> 
+					        <span class="col">
+					        	<input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-key" />
+					        </span> 
+					        <span class="col">
+						        <button type="button" class="search" onclick="queryGrid();">
+						        	<span class="col">搜索</span>
+						        </button>
+					        </span>
+					        
+					    </div>
+					    
+					
+					    <div class="right_btn2" style="width: 300px;">
+					        <a href="javascript:void(0);" onclick="dels();" class="btn-danger">批量删除图片</a>
+					        
+					        <input type="checkbox" id="selectAll" class="rad i-checks" />全选
+					        
+					        <div class="layout">
+					        	<div class="layout-grid">
+					        		<i class="fa fa-th-large" title="切换到列表模式"></i>
+					        	</div>
+					        </div>
+					    </div>
+					</div>
+                        
+					<!-- 缩略图 -->
+					<div id="listView" class="grid-wrap">
+						<dl class="types" v-if="typeId == 0">
+							<dd v-for="type in rows" class="folder" :data-id="type.id" v-on:click="getmore(type.id)">
+								<img src="${ctxPath}/static/base/images/icon_folder.png" alt="" />
+								<p class="f-toe">{{type.name}}</p>
+							</dd>
+						</dl>
+						<dl class="images" v-if="typeId != 0">
+							<dd v-for="image in rows" class="image" :data-id="image.id" v-on:click="selectImg(image.id, $event)">
+								<img :src="image.url"/>
+								<p class="f-toe">{{image.title}}</p>
+							</dd>
+							<dd v-if="rows.length == 0" id="nodata">
+								<form id="postForm" method="post" class="form-horizontal" action="cms/cmsImage/batchSave">
+					                <input type="hidden" name="imgStr" id="imgStr" value="" />
+					                <input type="hidden" name="typeId" id="typeId" :value="typeId" />
+				                	
+				                	<div class="box">
+				                		<div class="no_pic">
+				                			<svg class="icon" aria-hidden="true">
+											  <use xlink:href="#icon-wutupian"></use>
+											</svg>
+				                		</div>
+				                		<div class="text">
+				                		<span>暂无图片，快来上传吧</span>
+				                		<a class="btn btn-primary imgselectfile-btn" >上传图片</a>
+				                		</div>
+				                		
+				                	</div>
+				                	
+				                	<div id="dropzone" class="dropzone f-dn"></div>
+					            </form>
+							</dd>
+							<dd v-if="rows.length != 0" class="uploadBox image">
+								<form id="postForm" method="post" class="form-horizontal" action="cms/cmsImage/batchSave">
+					                <input type="hidden" name="imgStr" id="imgStr" value="" />
+					                <input type="hidden" name="typeId" id="typeId" :value="typeId" />
+				                	
+				                	<div class="box imgselectfile-btn"></div>
+				                	
+				                	<div id="dropzone" class="dropzone f-dn"></div>
+					            </form>
+							</dd>
+						</dl>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+                     
+        <script src="${ctxPath}/static/base/js/plugins/bigic/jquey-bigic.js"></script>                    
+		<script type="text/javascript">
+			function dels() {
+				var ids = [];
+				$(".image.selected").each(function(){
+					var id = $(this).attr("data-id");
+					if(id){
+						ids.push(id);
+						deleteByGrid = true;
+					}
+				});
+				
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量删除的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量删除图片吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/cmsImage/cmsImageDels", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							layer.msg('批量删除成功.');
+							vm.getmore(vm.typeId);
+						} else {//失败
+							layer.alert("批量删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+
+			function view(url){
+				window.open(url);
+			}
+
+			function queryGrid() {
+				vm.getmore($("#typeId").val());
+			}
+			
+			var fetching = false;
+			var noData = false;
+	    	var vm = new Vue({
+	  			el: '#listView',
+				data: {
+					rows:[],
+					typeId: 0,
+				},
+				created: function(){
+					//参数中的this指向vm
+					//console.log(this.typeId);
+					this.getmore(this.typeId); 
+				},
+				updated:function(){
+					initDropZone();
+				},
+				methods:{
+					//加载内容
+					getmore: function(typeId){
+						console.log(typeId);
+						
+						this.typeId = typeId;
+						if(fetching){
+							return;
+						}
+						fetching = true;
+						var postData = {
+							page:1,
+							rows:9999
+						};		
+						var url = "cms/cmsImageType/cmsImageTypeListJson";
+						if(typeId != 0){
+							url = "cms/cmsImage/cmsImageListJson";
+							postData.typeId = typeId;
+							$("#backword").removeAttr("disabled");
+						}else{
+							$("#backword").attr("disabled","disabled");
+						}
+						console.log(url);
+						$.post(url, postData, function(data){
+							$("#typeId").val(vm.typeId);
+							
+							fetching = false;
+							console.log("data", data);
+							vm.rows = data.rows;
+						}, "json");
+						
+					},
+					selectImg: function(id, event){
+						console.log(event);
+						var elem;
+						if(event.target.tagName == "DD"){
+							elem = $(event.target);
+						}else {
+							elem = $(event.target).parent();
+						}
+						elem.toggleClass("selected");
+					}
+				}
+			});
+		  	
+		  	$("#backword").on("click", function(){
+		  		if($(this).attr("disabled") == "disabled"){
+		  			return;
+		  		} 
+		  		vm.getmore(0);
+		  	});
+		  	
+		  //切换显示布局
+		  	$(".layout > div").on("click", function(){
+		  		loadFrameContent('cms/cmsImage/cmsImageList?layout=1');
+		  	});
+		  	
+		  	
+		</script>
+		<script type="text/javascript">
+	    	/**
+	    	**图片上传
+	    	**/
+	    	var imgObj = [];
+	    	function initDropZone(){
+	    		function addImgDiv(url, fileSize, fileName){
+	    			var img = {
+	    				url:url,
+	    				fileSize:fileSize,
+	    				fileName:fileName
+	    			}
+	    			imgObj.push(img);
+	    			$("#imgStr").val(JSON.stringify(imgObj));
+	    		}
+	    		if($("#dropzone").length == 0){
+	    			return;
+	    		}
+	    		dropzone = new Dropzone("#dropzone", { // 需要有个容器来加载控件
+	    			url : "sys/upload", // Set the url
+	    			thumbnailWidth : 80,
+	    			thumbnailHeight : 80,
+	    			parallelUploads : 20,
+	    			dictRemoveLinks: "x",
+	    	        dictCancelUpload: "x",
+	    			addRemoveLinks:true,
+	    			uploadMultiple:false,
+	    			dictRemoveFile:'移除图片',
+	    			dictMaxFilesExceeded:'超出允许上传数量,不允许上传',
+	    			dictInvalidInputType:"只允许上传图片文件",
+	    			acceptedFiles:".png,.jpg,.gif,.jpeg,.bmp",
+	    			dictInvalidFileType:"您上传的文件类型不是图片",
+	    			maxFiles:20,
+	    			maxFilesize: 1, //MB
+	    			autoQueue : true, // 自动上传
+	    			clickable : ".imgselectfile-btn" 
+	    		});
+	    		dropzone.on("addedfile",function(){
+	    			dropzone.options.params = {scale:false,stretch:false,watermark:false};
+	    		});
+	    		dropzone.on("success", function(a, b) {
+	    			console.log("success,url=", b);
+	    			addImgDiv(b.fileUrl, b.fileSize, b.fileName);
+	    		});
+	    		dropzone.on("queuecomplete", function() {
+	    			console.log("queuecomplete");
+	    			submitForm();
+	    		});
+	    		dropzone.on("error", function(a, b) {
+	    			layer.alert("上传失败："+ json.resultMsg, {icon: 2});
+	    		});
+	    		inited = true;
+	    	}
+	        
+	        //表单验证
+	        $("#postForm").validate({
+	            rules: {
+	            	url: {
+	                    required: true,
+	                    minlength: 2
+	                }
+	            }
+	        });
+			    
+		    function submitForm(){
+		    	if($("#postForm").valid()==false){
+		    		return;
+		    	}
+		    	var postData = $("#postForm").serializeArray();
+				$.post($("#postForm").attr("action"), postData, function (json) {
+					
+					//重置待上传图片列表
+					imgObj = [];
+					console.log("保存成功，imgObj=",imgObj);
+		            if (json.resultStatus) {
+		               vm.getmore(vm.typeId);
+		            } else {
+		            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+		            }
+		        }, "json");
+		    	
+		    }
+		    
+		    $('.i-checks').iCheck({
+	            checkboxClass: 'icheckbox_square-green',
+	            radioClass: 'iradio_square-green',
+	        });
+		    
+		    $('#selectAll').on('ifChecked', function(event){    
+		        $(".images .image").not(".uploadBox").addClass("selected"); 
+		    });  
+		    $('#selectAll').on('ifUnchecked', function(event){    
+		    	$(".images .image").removeClass("selected"); 
+		    }); 
+		    
+		    
+		</script>
+	
+<%}%>

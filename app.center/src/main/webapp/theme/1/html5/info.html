@@ -1,0 +1,396 @@
+﻿<%include("inc_head.html"){} %> 
+
+	<title>${title!} -- ${node.name} -- ${site.fullNameOrName}</title>
+	
+	
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_xuanshiting.css" />
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_info.css" />	
+<link href="${session.themeRoot}/_files/js/plugins/jplayer/blue.monday/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/plugins/jquery.sinaEmotion.css" />
+</head>	
+
+<body class="output">
+<!-- 侧边栏 -->
+
+	<%include("inc_nav_side.html"){} %>
+	<%include("inc_top_bar.html"){} %>
+<%var authUserInfo = AuthUserInfo();%>
+<!-- 内容 -->
+<div class="container clearfix">
+	<div class="article">
+		 <div class="main body">
+	            <div class="author-info">
+	          	    <div class="p-photo">
+	          	    	
+	          	  	    <img title="<%if(info.author != null){%>${info.author}<%}else{var author = UserName(info.creatorId);%>${author}<%}%>" src="${ShowFileUrl(UserImage(info.creatorId))}" alt="" onerror="this.src='${session.themeRoot}/_files/img/default.jpg'" />
+	          	    </div>
+	          	    <p style="margin-bottom:10px;">
+		          	     <span class="label">作者</span>
+		          	     <span class="author"><%if(info.author != null){%>${info.author}<%}else{var author = UserName(info.creatorId);%>${author}<%}%></span>
+	          	    </p>
+	          	    <p>
+	          	  	    <span >发布时间：</span><span class="publishDate" style="margin-right:15px;">${info.publishDate,"yyyy-MM-dd"}</span>
+	          	        <span>阅读数：</span><span class="views">${info.views}</span>
+	          	    </p>
+	          	    
+	            </div>
+
+	            <h1 class="title">${title}</h1>
+	            <div class="meta-top">
+<!-- 	          		<span>关键字 </span> -->
+	          		<span>类型 ${node.name}</span>
+	          		<span>【选择字体：<a class="max">大</a> <a class="in">中</a> <a class="min">小</a>】</span>
+	            </div>	          
+	            <!-- 视频 -->
+	            <%if(isNotEmpty(info.video)){%>
+				<div id="jp_container_1" class="jp-video jp-video-360p" role="application" aria-label="media player">
+					<div class="jp-type-single">
+						<div id="jquery_jplayer_1" class="jp-jplayer"></div>
+						<div class="jp-gui">
+							<div class="jp-video-play">
+								<button class="jp-video-play-icon" role="button" tabindex="0">play</button>
+							</div>
+							<div class="jp-interface">
+								<div class="jp-progress">
+									<div class="jp-seek-bar">
+										<div class="jp-play-bar"></div>
+									</div>
+								</div>
+								<div class="jp-current-time" role="timer" aria-label="time">&nbsp;</div>
+								<div class="jp-duration" role="timer" aria-label="duration">&nbsp;</div>
+								<div class="jp-controls-holder">
+									<div class="jp-controls">
+										<button class="jp-play" role="button" tabindex="0">play</button>
+										<button class="jp-stop" role="button" tabindex="0">stop</button>
+									</div>
+									<div class="jp-volume-controls">
+										<button class="jp-mute" role="button" tabindex="0">mute</button>
+										<button class="jp-volume-max" role="button" tabindex="0">max volume</button>
+										<div class="jp-volume-bar">
+											<div class="jp-volume-bar-value"></div>
+										</div>
+									</div>
+									<div class="jp-toggles">
+										<button class="jp-repeat" role="button" tabindex="0">repeat</button>
+										<button class="jp-full-screen" role="button" tabindex="0">full screen</button>
+									</div>
+								</div>
+								<div class="jp-details">
+									<div class="jp-title" aria-label="title">&nbsp;</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<%}%>
+				
+	            <div class="text" >${text}</div>
+
+                
+         
+		        <div class="comment">
+		        		<%var commentPageList = CommentPage({fid:info.id,pageSize:10});%>
+			            <div class="comment-head clearfix">
+			            	<h2>评论<span>(共${commentPageList.totalElements}条评论)</span></h2>
+<!-- 			            	<a href="#content"><i class="iconfont">&#xe60c;</i>添加新评论</a> -->
+			            </div>     
+			            <ul id="comment_div" class="clearfix">
+			            	
+			            	<%for(comment in commentPageList){%>
+			            	<li>
+			            		<a href="javascript:;">
+			            			<span><img src="${ShowFileUrl(UserImage(comment.userId))}" onerror="this.src='${session.themeRoot}/_files/img/default.jpg'" alt="" /></span>
+			            			<h3>${comment.userName}</h3>
+			            			<em><%var time = DateUtil({date:comment.createTime});%>${time}</em>
+			            		</a>
+			            		<p>${comment.content}</p>
+			            		<div class="com_div_foot">
+			            			<%if(commentAllow == 1){%>
+			            			<%if(isNotEmpty(authUserInfo) && authUserInfo.userId == comment.userId){%>
+			            			<a href="javascript:deleteComment(${comment.commentId});" style="margin-left:10px;">删除</a>
+			            			 <%}%>
+			            			<a  onclick="addComment(this,${comment.commentId});">回复</a> 
+			            			 <%}%>
+			            		</div>
+			            		<%for(child in CommentPage({sourceId:comment.commentId, ftype:'Comment'})){%>
+				            		<div class="child-comment-list">
+				            			<p>
+				            				<a href="javascript:;">${child.userName}：</a>${child.content}
+				            			</p>
+				            			<div class="ccl-foot">
+				            				<span><%var childtime = DateUtil({date:comment.createTime});%>${childtime}</span>
+				            				<%if(isNotEmpty(authUserInfo) && authUserInfo.userId == child.userId){%>
+					            			<a href="javascript:deleteComment(${child.commentId});">删除</a>
+					            			 <%}%>
+				            			</div>
+				            		</div> 	
+			            		<%}%>
+			            		
+			            	</li>
+			            	<%}%>
+			            	
+			            </ul>
+			            <input type="hidden" id="commentPageNo" value="1"/>
+			            <input type="hidden" id="commentPageSize" value="10"/>
+			            <input type="button" value="加载更多" onclick="javascript:loadMoreComment(this,'commentPageNo','commentPageSize');"/>
+			            <p class="a-show"> </p>
+			            <%if(commentAllow == 1){%>
+			            <form id="comment" action="${ctxPath}/info/comment_submit" method="post">
+		            		<input type="hidden" name="siteId" value="${site.id}" /> 
+		                	<input type="hidden" name="ftype" value="Info" /> 
+		                	<input type="hidden" name="fid" value="${info.id}" /> 
+		                	<input type="hidden" name="status_0" value="评论成功！" />
+		                	<input type="hidden" name="status_1" value="评论成功，请等待管理员审核！" /> 
+		                	<input type="hidden" name="infoTitle" value="${title}" />
+		                	<input type="hidden" name="nextUrl" value="${ctxPath}/${info.url}"/>
+		                	<input type="hidden" name="successUrl" value="theme/1/html5/sys_operation_success.html" />
+		                	<input type="hidden" name="errorUrl" value="theme/1/html5/sys_operation_error.html" />
+			                <p>
+			                    <textarea id="content" name="content" maxlength="${commentLength}" placeholder="写下您的评论..." style="height:100px"></textarea>
+			                </p>
+			                <p class="">
+			                    <input id="commit" type="submit" value="提交" />
+			                    <span class="face" title="表情">
+			                    	<i class="iconfont">&#xe649;</i>
+			                    </span>
+			                    <span class="hotkey">Ctrl+Enter 发表</span>
+			                </p>
+			            </form>
+			            <%}%>
+			            
+			            <div id="pinglDiv" class="pingl" style="display:none;">
+                            <%if(commentAllow == 1){%>
+				            <form action="${ctxPath}/info/comment_submit" method="post">
+			            		<input type="hidden" name="siteId" value="${site.id}" /> 
+			                	<input type="hidden" name="ftype" value="Comment" /> 
+			                	<input type="hidden" name="fid" value="${info.id}" /> 
+			                	<input type="hidden" id="replaySourceId" name="sourceId" value="" /> 
+			                	<input type="hidden" name="status_0" value="评论成功！" />
+			                	<input type="hidden" name="status_1" value="评论成功，请等待管理员审核！" /> 
+			                	<input type="hidden" name="infoTitle" value="${title}" />
+			                	<input type="hidden" name="nextUrl" value="${ctxPath}/${info.url}"/>
+			                	<input type="hidden" name="successUrl" value="theme/1/html5/sys_operation_success.html" />
+			                	<input type="hidden" name="errorUrl" value="theme/1/html5/sys_operation_error.html" />
+				                <p>
+				                    <textarea id="content1" name="content" maxlength="${commentLength}" placeholder="写下您的评论..." style="height:100px"></textarea>
+				                </p>
+				                <p>
+				                    <input id="commit1"  type="submit" value="提交" />
+				                    <span class="face" title="表情">
+				                    	<i class="iconfont">&#xe649;</i>
+				                    </span>
+				                    <span class="hotkey">Ctrl+Enter 发表</span>
+				                </p>
+				            </form>
+				            <%}%>
+                        </div>
+		                        
+		        </div>
+        
+        <div class="f-list">
+            <ul>
+            	<%var prevInfo = InfoPrev(info.id);%>
+                <%if(prevInfo != null){%>
+                	<li><label>上一篇：</label><a href="${ctxPath}/${prevInfo.url}">${prevInfo.title!}</a></li>
+                <%}else{%>
+                	<li><span class="spanleft">上一条：没有了</span></li>
+                <%}%>
+                <%var nextInfo = InfoNext(info.id);%>
+                
+                <%if(nextInfo != null){%>
+                <li><label>下一篇：</label><a href="${ctxPath}/${nextInfo.url}">${nextInfo.title!}</a></li>
+                <%}else{%>
+                <li><span class="clr">下一条：没有了</span></li>
+                <%}%>      
+            </ul>
+        </div> 
+      </div>
+    </div>
+		
+
+		
+﻿	<!-- Footer Start -->
+			<%include("inc_foot.html"){} %>
+    <!-- Footer End -->	
+</div>
+</div> 
+
+    <script src="${session.themeRoot}/_files/js/require.js"></script>
+	<script src="${session.themeRoot}/_files/js/app.js"></script>
+	<script>
+		require(['${session.themeRoot}/_files/js/info.js']);
+		require(['jquery','${session.themeRoot}/_files/js/plugins/jplayer/jquery.jplayer.min.js', "jquery.sinaEmotion"],function($, jplayer, sinaEmotion){
+			$(document).ready(function(){
+				var checkBrower = function(){
+		           var userAgentInfo = navigator.userAgent;  
+		           var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");  
+		           for (var v = 0; v < Agents.length; v++) {  
+		               if (userAgentInfo.indexOf(Agents[v]) > 0) { return "mobile"; }  
+		           }  
+		           return "pc";  
+				}
+				
+				
+				/*
+				**初始化播放器
+				*/
+				
+				if($("#jquery_jplayer_1").length > 0){
+					if(checkBrower() == "pc"){//pc
+						$("#jquery_jplayer_1").jPlayer({
+							ready: function () {
+								$(this).jPlayer("setMedia", {
+									m4v: "${info.video}",
+								});
+							},
+							swfPath: "${session.themeRoot}/_files/jplayer/jplayer",
+							supplied: "webmv, ogv, m4v, m4a, oga, avc",
+							size: {
+								width: "640px",
+								height: "360px",
+								cssClass: "jp-video-360p"
+							},
+							useStateClassSkin: true,
+							autoBlur: false,
+							smoothPlayBar: true,
+							keyEnabled: true,
+							remainingDuration: true,
+							toggleDuration: true
+						});
+					}else{//mobile
+						var video = '<video src="${info.video}" style="width:100%;height:auto" controls="controls">您的浏览器不支持 video。</video>';
+						$("#jp_container_1").after(video).remove();
+					}
+					
+				}
+				
+				/*
+				**绑定提交按键
+				*/
+				(function bindCommit(){
+					$("textarea[name='content']").keydown(function(e){
+				        var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+				        if(e.ctrlKey && e.keyCode==13){
+				        	if($(this).val() != ""){
+				        		 $(this).parents("form").submit();
+				        	}else{
+				        		alert("内容不能为空");
+				        		return false;
+				        	}
+				        }
+					});
+					$("input[type='submit']").bind("click", function(){
+						var $form = $(this).parents("form");
+						if($form.find("textarea[name='content']").val() != ""){
+							$form.submit();
+						}else{
+							alert("内容不能为空");
+			        		return false;
+						}
+					});
+				})();
+				
+				/*
+				**表情
+				*/
+				$('.face').bind({
+					click: function(event){
+						if(! $('#sinaEmotion').is(':visible')){
+							$(this).sinaEmotion();
+							event.stopPropagation();
+						}
+					}
+				});
+				$("#comment_div p").parseEmotion();
+				
+			});
+		});
+		
+		function deleteComment(id){
+			if(confirm('是否删除该评论')){
+				$.post("${ctxPath}/info/comment_delete", {
+					id : id
+				}, function(json) {
+					if (json == true) {//成功
+						alert('删除成功.');
+						location.href = "${ctxPath}/${info.url}";
+					} else {//失败
+						alert("删除失败.");
+					}
+				}, 'json');
+			}
+		}
+		function addComment(obj, commentId){
+			var parentLi = $(obj).parents("li");
+			var pingl = parentLi.children(".pingl");
+			if(pingl.length == 0){
+				$("#replaySourceId").val(commentId);
+				var pinglDiv = $("#pinglDiv");
+				pinglDiv.show();
+				parentLi.append(pinglDiv);
+			}else if(pingl.length == 1){
+				pingl.toggle();
+			}
+			//alert(commentId)
+		}
+		
+		function loadMoreComment(btn,commentPageNoId,commentPageSizeId){
+			var commentPageNo = Number($("#"+commentPageNoId).val())+1;
+			var commentPageSize = $("#"+commentPageSizeId).val();
+			$.post("${ctxPath}/info/comment_page_Json", {
+				fid:${info.id},pageSize:commentPageSize,page:commentPageNo
+			}, function(json) {
+				if(json.rows.length == 0){
+					btn.value="没有更多了";
+					return;
+				}
+				$("#"+commentPageNoId).val(json.page);
+				var comment_div = $("#comment_div");
+				var html = "";
+				for(var i = 0,len=json.rows.length; i<len; i++){
+					var comment = json.rows[i];
+					if(comment.ftype == "Info"){
+						if(html != ""){
+							html += '</li>';
+						}
+						html += "<li>";
+						html += '<a href="javascript:;">';
+						html += '<span><img src="'+comment.creatorPhoto+'" onerror="this.src=\'${session.themeRoot}/_files/img/default.jpg\'" alt="" /></span>';
+						html += '<h3>'+comment.creator+'</h3>';
+						html += '<em>'+comment.creationDate+'</em>';
+						html += '</a>';
+						html += '<p>'+comment.text+'</p>';
+						html += '<div class="com_div_foot">';
+						if('${commentAllow}' == '1'){
+							if('${authUserInfo != null}' && '${authUserInfo.userId}' == comment.creatorId){
+								html += '<a href="javascript:deleteComment('+comment.commentId+');" style="margin-left:10px;">删除</a>';
+							}
+							html += '<a  onclick="addComment(this,'+comment.commentId+');">回复</a> ';
+						}
+						html += '</div>';
+					}else if(comment.ftype == "Comment"){
+						html += '<div class="child-comment-list">';
+						html += '<p>';
+						html += '<a href="javascript:;">'+comment.creator+'：</a>'+comment.text;
+						html += '</p>';
+						html += '<div class="ccl-foot">';
+						html += '<span>'+comment.creationDate+'</span>';
+						if('${authUserInfo != null}' && '${authUserInfo.userId}' == comment.creatorId){
+							html += '<a href="javascript:deleteComment('+comment.commentId+');" style="margin-left:10px;">删除</a>';
+						}
+						html += '</div>';
+						html += '</div> 	';
+						html += '';
+					}
+				}
+				if(html != ""){
+					html += '</li>';
+				}
+				
+				comment_div.append(html)
+			}, 'json');
+		}
+		
+	</script>
+</body>
+</html>

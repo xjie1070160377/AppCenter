@@ -1,0 +1,245 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>投稿管理列表</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+                        <input type="hidden" id="queryStatus" value="${queryStatus}"/>
+                        <select class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled">
+                            <option value="LIKE_contribute.name">姓名</option>
+                            <option value="LIKE_contribute.company">工作单位</option>
+                            <option value="LIKE_contribute.realName">真实姓名</option>
+                            <option value="LIKE_title">投稿标题</option>
+                        </select>
+                        
+                        </div>
+                        <div class="col-sm-2">
+                        <div class="input-group">
+                        <input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control"> 
+                        <span class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();"> 搜索</button> 
+                        </span>
+                        </div>
+                        </div>
+                        <div class="col-sm-5">
+                        
+                        </div>
+                        <div class="col-sm-3 text-right">
+                            
+                            <a href="javascript:void(0);" title='退稿' onclick="reject();" class="btn btn-primary btn-sm">退稿</a>
+                            
+                        </div>
+                    </div>
+					<div class="row">
+                        <div class="col-sm-12">
+	                        <ul class="nav nav-tabs">
+	                            <li ${empty(queryStatus)? 'class="active"' : ''} data-status=""><a data-toggle="tab" href="#tab-1">全部</a></li>
+	                            <li ${queryStatus == '0' ? 'class="active"' : ''} data-status="0"><a data-toggle="tab" href="#tab-2">提交待审</a></li>
+	                            <li ${queryStatus == '2' ? 'class="active"' : ''} data-status="2"><a data-toggle="tab" href="#tab-3">审核中</a></li>
+	                            <li ${queryStatus == '1' ? 'class="active"' : ''} data-status="1"><a data-toggle="tab" href="#tab-4">审核通过</a></li>
+	                            <li ${queryStatus == '-1' ? 'class="active"' : ''} data-status="-1"><a data-toggle="tab" href="#tab-4">退稿</a></li>
+	                        </ul>
+                        </div>
+					</div>
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$("#table_list").jqGrid({
+					url : "cms/contribute/contributeListJson",
+					datatype : "json",
+	                mtype:"POST",
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 10,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "ID",
+						classes : 'mshow',
+						name : 'id',
+						index : 'id',
+						width : 60,
+						align : "center",
+						sorttype : "int"
+					}, {
+						label : "姓名",
+						name : 'name',
+						index : 'contribute.name',
+						width : 90,
+						align : "left"
+					}, {
+						label : "单位",
+						classes : 'mshow',
+						name : 'company',
+						index : 'contribute.company',
+						width : 90,
+						align : "left"
+					}, {
+						label : "真实姓名",
+						classes : 'mshow',
+						name : 'realName',
+						index : 'contribute.realName',
+						width : 80,
+						align : "left"
+					}, {
+						label : "标题",
+						classes : 'mshow',
+						name : 'title',
+						index : 'title',
+						width : 150,
+						align : "left"
+					}, {
+						label : "投稿时间",
+						classes : 'mshow',
+						name : 'submitTime',
+						index : 'submitTime',
+						width : 80,
+						align : "left"
+					}, {
+						label : "状态",
+						classes : 'mshow',
+						name : 'status',
+						index : 'status',
+						width : 80,
+						align : "left",
+						formatter : statusFmt
+					}, {
+						label : "操作",
+						classes : 'mshow',
+						name : 'status',
+						sortable : false,
+						width : 100,
+						align : "center",
+						formatter : oprationFmt
+					} ],
+					pager : "#pager_list",
+					viewrecords : true,
+					multiselect : true,
+					sortname : 'id',
+					sortorder : "desc",
+					caption : "投稿管理列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+				
+				$('.nav-tabs li').click(function() {
+            		var idStr = this.id;
+            		var status = $(this).attr('data-status');
+            		$('#queryStatus').val(status);  
+    				queryGrid(); 
+            	})
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+
+			function statusFmt(cellvalue, options, rowObject) {
+				switch(cellvalue){
+				case 0 : return "提交";break;
+				case 1 : return "审核通过";break;
+				case 2 : return "审核中";break;
+				case -1 : return "退稿";break;
+				}
+			}
+			
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += " <button class='btn btn-primary' type='button' onclick='view(" + rowObject.id + ");'><i class='fa fa-edit'></i>&nbsp;查看</button>";
+				if(cellvalue!='-1'){
+					html += " <button class='btn btn-primary' type='button' onclick='reject(" + rowObject.id + ");'><i class='fa fa-remove'></i>&nbsp;退稿</button>";
+				}
+				return html;
+			}
+
+			function view(id) {
+				loadFrameContent('cms/contribute/view?id=' + id);
+			}
+
+
+			function reject() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				if(!ids || ids.length == 0){
+					layer.msg("请选择要删除的记录！");
+					return;
+				}
+				layer.confirm('确定退稿选中记录吗?', {
+					btn : [ '确定', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/contribute/reject", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('退稿成功.');
+						} else {//失败
+							layer.alert("退稿失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function rejectid(id) {
+				layer.confirm('确定退稿选中记录吗?', {
+					btn : [ '确定', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/contribute/reject", {
+						ids : id
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('退稿成功.');
+						} else {//失败
+							layer.alert("退稿失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function reloadGrid() {
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list");
+		  		var columnFiled = $("#columnFiled").val();
+	            var keyWord = $("#keyWord").val();
+	            var queryStatus = $("#queryStatus").val();
+				
+	          //增加提交参数
+	            var postData = { columnFiled : columnFiled, keyWord : keyWord, queryStatus:queryStatus};
+	            $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  		
+		  		
+		  	}
+		</script>
+	
+<%}%>

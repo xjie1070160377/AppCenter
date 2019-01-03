@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<context:property-placeholder location="classpath*:app-*.properties" ignore-unresolvable="true" />
+	
+	<!-- <mvc:annotation-driven /> -->
+	<mvc:annotation-driven>
+        <mvc:message-converters>
+            <ref bean="stringHttpMessageConverter" />
+            <ref bean="mappingJacksonHttpMessageConverter" />
+        </mvc:message-converters>
+        <mvc:argument-resolvers>
+        	<bean class="cn.mooc.app.core.web.servlet.RequestParamArgumentResolver"/>
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
+	
+	<!-- 对静态资源访问使用默认servlet -->
+	<mvc:default-servlet-handler/>
+	
+	<!-- 设置 / 路径默认访问的视图 -->
+	<mvc:view-controller path="/" view-name="index" />
+	
+	<context:component-scan base-package="cn.mooc.app.**.mcenter" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
+	<!-- 拦截器 -->  
+   <mvc:interceptors>
+    	<bean class="cn.mooc.app.core.interceptor.GlobalInterceptor" />
+    	<bean class="cn.mooc.app.core.web.interceptors.ModuleInterceptor">
+    		<property name="mWeb" value="true"></property>
+    	</bean>
+    	<mvc:interceptor>    
+        	<mvc:mapping path="/exceptions/**" /> 
+        	<bean class="cn.mooc.app.core.interceptor.ErrorInterceptor"></bean>    
+    	</mvc:interceptor>
+
+	</mvc:interceptors>
+	
+    
+    <!--JSP通用视图解析器-->
+    <bean id="jspViewResolver" class="cn.mooc.app.core.web.view.MJspResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/template/"/>  
+        <property name="suffix" value=".jsp"/>
+        <!-- <property name="cache" value="false"/> -->
+        <!-- <property name="viewClass" value="org.springframework.web.servlet.view.InternalResourceView"/> -->
+        <!-- <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/> -->
+        <property name="viewClass" value="cn.mooc.app.core.web.view.MultiView"/>
+        <property name="order" value="1"/>        
+    </bean>
+    
+
+
+	<!-- 配置多种视图解析引擎 -->
+    <bean id="beetlConfig" class="org.beetl.ext.spring.BeetlGroupUtilConfiguration" init-method="init">
+    	<property name="configFileResource" value="classpath:/beetl.properties"/>
+    	<property name="configProperties">
+			<map>
+				<entry key="RESOURCE.root" value="/WEB-INF/template/" />
+			</map>
+		</property> 
+		<property name="sharedVars">
+			<map>
+				<entry key="DEV_TEAM" value="MoocTeam" />
+			</map>
+		</property>   	
+		<property name="resourceLoader" ref="compositeResourceLoader"></property>
+    </bean>
+    
+    	
+	<bean id="compositeResourceLoader" class="cn.mooc.app.core.web.view.WebCompositeResourceLoader" init-method="init">
+		<property name="noCache" value="true"></property>
+		<property name="resourceLoaders">
+			<list>				
+				<ref bean="mWebResourceLoader"/>
+				<ref bean="classpathResourceLoader"/>								
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="mWebResourceLoader" class="cn.mooc.app.core.web.view.MWebResourceLoader">
+		<property name="autoCheck" value="true"></property>
+	</bean>
+	<bean id="classpathResourceLoader" class="cn.mooc.app.core.web.view.WebClasspathResourceLoader">
+		<constructor-arg name="root" value="/views/"></constructor-arg>
+	</bean>
+	
+	<bean id="beetlViewResolver" class="org.beetl.ext.spring.BeetlSpringViewResolver">
+		<property name="config" ref="beetlConfig"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+        <property name="suffix" value=".html"/>
+        <property name="order" value="2"/>
+	</bean>
+	<bean id="viewShareVars" class="cn.mooc.app.core.web.view.ViewShareVars" init-method="init">
+		<property name="templateConfig" ref="beetlConfig"></property>
+		<property name="location" value="classpath:app-vars.properties"/>
+		<property name="fileEncoding" value="utf-8" />
+	</bean>
+
+	<bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
+		<!-- <constructor-arg name="defaultCharset" value="utf-8"></constructor-arg> -->
+		<property name="supportedMediaTypes">
+			<list>
+				<value>*/*</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>*/*</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="stringHttpMessageConverter" />
+				<ref bean="mappingJacksonHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+	
+	 <!-- 文件上传所用到的分解器-->  
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">     
+        <property name="defaultEncoding" value="utf-8" />  
+        <property name="maxUploadSize" value="10485760000" />  
+        <property name="maxInMemorySize" value="40960" />     
+    </bean>
+	
+</beans>

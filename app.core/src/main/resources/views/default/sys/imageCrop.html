@@ -1,0 +1,321 @@
+
+<link href="${ctxPath}/static/base/js/plugins/imgareaselect/css/imgareaselect-default.css" rel="stylesheet">
+<script src="${ctxPath}/static/base/js/plugins/imgareaselect/jquery.imgareaselect.pack.js"></script>
+<%
+
+var oprWidth = 600;
+var oprHeight = oprWidth/orgWidth*orgHeight;
+
+//var previewWidth = 200;
+//var previewHeight = previewWidth/orgWidth*orgHeight;
+
+var previewWidth = cropWidth;
+var previewHeight = cropHeight;
+
+%>
+
+ <div class="container demo">
+  <div style="float: left; width: 50%;">
+ 	<div style="text-align: center;margin-top: 5px;margin-bottom: 5px;">点击图片，并拖动裁剪框大小设置裁剪区域（原：${orgWidth}x${orgHeight}）</div>
+    <div class="frame" style="margin: 0 0.3em; width: ${oprWidth}px; height: ${oprHeight}px;" >
+      <img id="photo" src="${ShowFileUrl(fileUrl)}?${date(),dateFormat='yyyyMMddHHmmss'}" width="${oprWidth}" height="${oprHeight}">
+    </div>
+  </div>
+ 
+  <div style="float: right; ">
+    <div style="text-align: center;">预览 </div>
+  
+    <div class="frame" style="margin: 0 1em; width: ${previewWidth}px; height: ${previewHeight}px;">
+      <div id="preview" style="width: ${previewWidth}px; height: ${previewHeight}px; overflow: hidden;">
+        <img src="${ShowFileUrl(fileUrl)}?${date(),dateFormat='yyyyMMddHHmmss'}" style="width: ${previewWidth}px; height: ${previewHeight}px; margin-left: 0px; margin-top: 0px;">
+      </div>
+      <div style="width: 400px;margin-top: 5px; ">
+      	x：<span id="xMsg">0</span> y：<span id="yMsg">0</span>   w：<span id="wMsg">0</span> h：<span id="hMsg">0</span> 
+      </div>
+      <div style="width: 400px;margin-top: 5px; ">
+      	x：<span id="xOnSrc">0</span> y：<span id="yOnSrc">0</span>   w：<span id="wOnSrc">0</span> h：<span id="hOnSrc">0</span>   
+      </div>
+      <div style="width: 400px;margin-top: 5px; ">
+      	裁后宽：<input type="text" value="${cropWidth}" disabled="disabled" id="widthOnSrc" size="8">
+      </div>
+      <div style="width: 400px;margin-top: 5px; ">
+      	裁后高：<input type="text" value="${cropHeight}" disabled="disabled" id="heightOnSrc" size="8">      	
+      </div>
+      
+      <div style="width: 400px;margin-top: 5px; ">
+        <input type="text" value="${cropWidth}"  id="widthRatio" size="5" style="width:40px;">
+        ：
+      	<input type="text" value="${cropHeight}" id="heightRatio" size="5" style="width:40px;">
+      	<input type="button" onclick="fixRatio();" value="固定比率"/>
+      </div>
+
+    </div>
+
+
+  </div>
+</div>
+
+<form id="cropForm">
+<% for(var entry in pMap){%>
+<input type="hidden" name="${entry.key}" value="${entry.value[0]}"/>
+<%}%>
+</form>
+
+<script type="text/javascript">
+var oprMaxWidth = ${oprWidth};
+var oprMaxHeight = ${oprHeight};
+var previewMaxWidth = ${previewWidth};
+var previewMaxHeight = ${previewHeight};
+
+var cropWidth = ${cropWidth};
+var cropHeight = ${cropHeight};
+
+var orgWidth = ${orgWidth};
+var orgHeight = ${orgHeight};
+var selectorObj;
+
+function preview(img, selection) {
+    if (!selection.width || !selection.height)
+        return;
+    
+    var scaleX = previewMaxWidth / selection.width;
+    var scaleY = previewMaxHeight / selection.height;
+
+    $('#preview img').css({
+        width: Math.round(scaleX * oprMaxWidth),
+        height: Math.round(scaleY * oprMaxHeight),
+        marginLeft: -Math.round(scaleX * selection.x1),
+        marginTop: -Math.round(scaleY * selection.y1)
+    });
+
+    //在缩小图上的位置和尺寸
+    $('#xMsg').text(selection.x1);
+    $('#yMsg').text(selection.y1);
+    $('#wMsg').text(selection.width);
+    $('#hMsg').text(selection.height); 
+    
+    //$('#x1').val(selection.x1);
+    //$('#y1').val(selection.y1);
+    //$('#x2').val(selection.x2);
+    //$('#y2').val(selection.y2);
+    
+    //在原始图上的宽度和高度
+    var xOnSrc = Math.round(selection.x1*(orgWidth/oprMaxWidth));
+    var yOnSrc = Math.round(selection.y1*(orgHeight/oprMaxHeight));
+    $('#xOnSrc').text(xOnSrc);
+    $('#yOnSrc').text(yOnSrc);
+    
+    var wOnSrc = Math.round(selection.width*(orgWidth/oprMaxWidth));
+    var hOnSrc = Math.round(selection.height*(orgHeight/oprMaxHeight));
+    $('#wOnSrc').text(wOnSrc);
+    $('#hOnSrc').text(hOnSrc);
+
+
+
+}
+
+$(function () {
+	initSelectorObj();
+	
+	if(selectorObj){
+		//lockChanged();
+		resetSelector();
+	}
+
+	
+});
+
+function initSelectorObj(){
+	selectorObj = $('#photo').imgAreaSelect({ 
+    	//aspectRatio: '1:1', 
+    	handles: true,
+    	instance: true,
+    	keys: true,
+    	fadeSpeed: 200,
+    	onSelectChange: preview 
+    });
+	
+}
+
+function fixRatio(){
+	resetSelector();
+	
+    var options = selectorObj.getOptions();
+    
+    options.onSelectChange = preview;
+    options.handles = true;
+    options.instance = true;
+    options.aspectRatio = $('#widthRatio').val()+":"+$('#heightRatio').val();
+	
+    if(selectorObj){
+    	
+    	selectorObj.setOptions(options);    	
+    	selectorObj.update();
+    }
+    
+}
+
+function lockSelector(){
+    var options = {};
+    options.onSelectChange = preview;
+    options.handles = true;
+    options.instance = true;
+    
+    var width = $('#wMsg').text();
+    var height = $('#hMsg').text();
+    
+    if($("#lockSelector").prop("checked")) {
+    	options.minWidth=width;
+		options.maxWidth=width;
+		
+		options.minHeight=height;
+		options.maxHeight=height;
+    } else {
+    	options.minWidth=null;
+		options.maxWidth=null;
+		
+		options.minHeight=null;
+		options.maxHeight=null;
+		
+    }
+    
+    if(!selectorObj){
+    	selectorObj = $("#photo").imgAreaSelect(options);
+    }else{
+    	selectorObj.setOptions(options);    	
+    	selectorObj.update();
+    	
+    }
+	
+}
+
+function lockChanged(){
+	
+    var options = {};
+    options.onSelectChange = preview;
+    options.handles = true;
+    options.instance = true;
+    
+    var width = $('#wMsg').text();
+    var height = $('#hMsg').text();
+    
+    if($("#lockWidth").prop("checked")) {
+		options.minWidth=width;
+		options.maxWidth=width;
+    } else {
+		options.minWidth=null;
+		options.maxWidth=null;
+		//options.imageWidth=selection.width;
+		
+    }
+
+    
+    if($("#lockHeight").prop("checked")) {
+		options.minHeight=height;
+		options.maxHeight=height;
+    } else {
+		options.minHeight=null;
+		options.maxHeight=null;
+		//options.imageHeight=selection.height;
+		
+    }
+    
+    if(!selectorObj){
+    	selectorObj = $("#photo").imgAreaSelect(options);
+    	//selectorObj.setSelection(50, 50, 150, 200, true);
+    }else{
+    	selectorObj.setOptions(options);    	
+    	selectorObj.update();
+    	
+    }
+    
+    //_selection = selectorObj.getSelection();
+    //alert(_selection.x1 +""+_selection.y1);
+}
+
+function startCrop(cropOptions, callback){
+	var index = cropOptions.index;
+	var pId = cropOptions.pId; 
+	
+	var fileUrl = "${fileUrl}";
+	var topStart = $('#xOnSrc').text();
+    var leftStart = $('#yOnSrc').text();
+    var cutWidth = $('#wOnSrc').text();
+    var cutHeight = $('#hOnSrc').text();
+    var toWidth = $('#widthOnSrc').val();
+    var toHeight = $('#heightOnSrc').val();
+
+	//var postData = {};
+	var postData = $("#cropForm").serializeArray();
+	postData.push({name:"topStart", value: topStart});
+	postData.push({name:"leftStart", value: leftStart});
+	postData.push({name:"cutWidth", value: cutWidth});
+	postData.push({name:"cutHeight", value: cutHeight});
+	postData.push({name:"toWidth", value: toWidth});
+	postData.push({name:"toHeight", value: toHeight});
+	
+	//postData.fileUrl = fileUrl;
+	
+	$.post("sys/cropImage", postData, function (data) {
+        //var data = $.parseJSON(json);
+        if (data.resultStatus) {
+            //成功
+            showSelector(false);
+            //$("#photo").attr("src", data.fileUrl+"?rnd="+Math.random());
+            //$("#preview > img").attr("src", data.fileUrl);
+            cropOptions.fileUrl = data.fileUrl;
+            callback(cropOptions);
+            layer.close(index);
+        } else {
+        	//
+        	layer.alert("失败了："+ data.resultMsg, {icon: 2});
+        }
+    }, "json");
+	
+	
+}
+
+function showSelector(status){
+	var opt = selectorObj.getOptions();
+	if(status){
+		opt.show = true;		
+	}else{
+		opt.hide = true;
+	}
+
+	selectorObj.setOptions(opt);    	
+	selectorObj.update();
+	
+}
+
+function resetSelector(){
+	if(selectorObj){
+		//lockChanged();
+		selectorObj.setSelection(0, 0, cropWidth, cropHeight, true);
+		selectorObj.setOptions({ show: true, movable: true, handles: true });
+		selectorObj.update();
+		
+		selection = selectorObj.getSelection();
+		$('#xMsg').text(selection.x1);
+		$('#yMsg').text(selection.y1);
+		$('#wMsg').text(selection.width);
+		$('#hMsg').text(selection.height); 
+		
+	    var xOnSrc = Math.round(selection.x1*(orgWidth/oprMaxWidth));
+	    var yOnSrc = Math.round(selection.y1*(orgHeight/oprMaxHeight));
+		$('#xOnSrc').text(xOnSrc);
+		$('#yOnSrc').text(yOnSrc);
+		
+	    var wOnSrc = Math.round(selection.width*(orgWidth/oprMaxWidth));
+	    var hOnSrc = Math.round(selection.height*(orgHeight/oprMaxHeight));
+		$('#wOnSrc').text(wOnSrc);
+		$('#hOnSrc').text(hOnSrc);
+		
+	}
+	
+
+    
+}
+
+
+</script>

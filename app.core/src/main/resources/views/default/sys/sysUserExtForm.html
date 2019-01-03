@@ -1,0 +1,96 @@
+
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        
+                        <div class="ibox-content">
+                            <form id="postForm" method="post" class="form-horizontal" action="sys/sysUserExtSave">
+                            
+				                <div class="form-group"><label class="col-sm-2 control-label" for="description">用户昵称</label>
+				                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="请取个昵称" name="nickName" value="${entity.nickName}"></div>
+				               		<label class="col-sm-2 control-label" for="type">真实姓名</label>
+				                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="真实的用户姓名" name="realName" value="${entity.realName}"></div>
+				                </div>
+				                <div class="hr-line-dashed"></div>
+                                
+				                <div class="form-group"><label class="col-sm-2 control-label" for="description">电话</label>
+				                    <div class="col-sm-4"><input type="text" class="form-control" placeholder=""  id="phone" name="phone" value="${entity.phone}"></div>
+				               		<label class="col-sm-2 control-label" for="type">邮箱</label>
+				                    <div class="col-sm-4"><input type="text" class="form-control" placeholder=""  id="email" name="email" value="${entity.email}"></div>
+				                </div>
+				                
+				                <div class="hr-line-dashed"></div>
+				                <div class="form-group"><label class="col-sm-2 control-label" for="description">银行卡</label>
+				                    <div class="col-sm-4"><input type="text" class="form-control" placeholder=""  id="bankCard" name="bankCard" value="${entity.bankCard}"></div>
+				               	 </div>
+				                
+				                <div class="hr-line-dashed"></div>
+				                
+                                
+                                <div class="form-group"><label class="col-sm-3 control-label">性别</label>
+
+                                    <div class="col-sm-8">
+									<#RadioTag mapData="${ { 保密:0,男:1,女:2 \} }" defaultValue="${entity.gender}" fieldName="gender" />
+									</div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                
+                                <div class="form-group"><label class="col-sm-3 control-label">头像</label>
+
+                                    <div class="col-sm-8">
+									<#SimpleFileUploadTag defaultValue="${entity.avatarUrl}" width="100" height="100" id="avatarUrl" isImg="false" placeholder="头像地址" isHiddenUrl="true" isPreview="true"/>
+									</div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                
+                                <input type="hidden" name="userId" value="${entity.userId}" >
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+    
+        <script type="text/javascript">
+        
+            $(document).ready(function () {
+            	
+                $('.i-checks').iCheck({
+                    checkboxClass: 'icheckbox_square-green',
+                    radioClass: 'iradio_square-green',
+                });
+                
+                $("#postForm").bind("submit", function() { submitForm(); return false; });
+                
+                //表单验证
+                $("#postForm").validate({
+                    rules: {
+                    	nickName: {
+                            required: true,
+                            minlength: 1
+                        }
+                    }
+                });
+                
+            });
+                
+            
+            function submitForm(){
+            	if($("#postForm").valid()==false){
+            		return;
+            	}
+            	var postData = $("#postForm").serializeArray();
+    			$.post($("#postForm").attr("action"), postData, function (json) {
+                    //var data = $.parseJSON(json);
+                    if (json.resultStatus) {
+                        //成功
+                        reloadGrid();
+                        closeAllPopWin();
+                    } else {
+                    	//
+                    	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+                    }
+                }, "json");
+            	
+            }
+        </script>
+        

@@ -1,0 +1,140 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>R币获取兑换日志控制器列表</h5>
+				</div>
+				<div class="ibox-content">
+                            <div class="row">
+                                <div class="col-sm-2 m-b-xs">
+                                <select class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled">
+                                    <option value="LIKE_caption">描述</option>
+                                    <option value="userName">用户</option>
+                                </select>
+                                
+                                </div>
+                                <div class="col-sm-2">
+                                <div class="input-group">
+                                <input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control"> 
+                                <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="queryGrid();"> 搜索</button> 
+                                </span>
+                                </div>
+                                </div>
+                                <div class="col-sm-5">
+                                
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    
+                                    
+                                </div>
+                            </div>
+
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$("#table_list").jqGrid({
+					url : "points/currencyLog/currencyLogListJson",
+					datatype : "json",
+	                mtype:"POST",
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 10,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "ID",
+						name : 'id',
+						index : 'id',
+						width : 60,
+						align : "center",
+						sorttype : "int"
+					}, {
+						label : "用户名称",
+						name : 'userName',
+						index : 'userName',
+						sortable:false,
+						width : 90,
+						align : "left"
+					}, {
+						label : "操作时间",
+						name : 'createtime',
+						index : 'createtime',
+						width : 90,
+						align : "left"
+					}, {
+						label : "获取/消费R币",
+						name : 'quantity',
+						index : 'quantity',
+						width : 90,
+						align : "left"
+					}, {
+						label : "剩余R币",
+						name : 'remain',
+						index : 'remain',
+						width : 90,
+						align : "left"
+					}, {
+						label : "描述",
+						name : 'caption',
+						index : 'caption',
+						width : 90,
+						align : "left"
+					}],
+					pager : "#pager_list",
+					viewrecords : true,
+					multiselect : true,
+					sortname : 'id',
+					sortorder : "desc",
+					caption : "R币获取兑换日志列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+
+
+			function reloadGrid() {
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list");
+		  		var columnFiled = $("#columnFiled").val();
+	            var keyWord = $("#keyWord").val();
+				
+	          //增加提交参数
+	            var postData = { columnFiled : columnFiled, keyWord : keyWord};
+	            $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  		
+		  		
+		  	}
+		</script>
+	
+<%}%>

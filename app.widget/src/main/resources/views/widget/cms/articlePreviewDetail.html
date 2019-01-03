@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+		<meta http-equiv="x-ua-compatible" content="ie=7" />
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/common.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/movie_detail.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/jquery.sinaEmotion.css" />
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/articleShareDetail.css?v=11301039"/>
+		<title>${articleInfo.title} 详情</title>
+	</head>
+	<body class="p-moviedetail p-articleShareDetail">
+		
+
+		<div class="title">${articleInfo.title}</div>
+		<!-- <div class="time">
+			<span><i class="iconfont">&#xe608;</i>${articleInfo.dates}</span>
+			<span><i class="iconfont">&#xe612;</i>${articleInfo.browsers}</span>
+		</div> -->
+		
+		<div class="author">作者：${articleInfo.author}</div>
+		
+        <div class="content">
+        	<% if(isNotEmpty(articleInfo.video)){ %>
+        	
+        	<section style="position: static; box-sizing: border-box;">
+			    <section class="" style="position: static; box-sizing: border-box;">
+			        <section class="" style="box-sizing: border-box;">
+			            <p style="box-sizing: border-box; text-align: center;">
+						<video width="300" height="160" poster="${articleInfo.image}" src="${articleInfo.video}" controls="controls">
+						您的浏览器不支持 video 标签。
+						</video>
+			            </p>
+			        </section>
+			    </section>
+			</section>
+        	
+        	<% } %>
+ 
+			<% if(isNotEmpty(articleInfo.audio)){ %>
+			
+			<section style="position: static; box-sizing: border-box;">
+			    <section class="" style="position: static; box-sizing: border-box;">
+			        <section class="" style="box-sizing: border-box;">
+			            <p style="box-sizing: border-box; text-align: center;">
+			                <audio controls="true" class="edui-faked-music" style="float:none;" width="400" height="95" src="${articleInfo.video}">
+			                    你的浏览器不支持audio标签。
+			                </audio>
+			            </p>
+			        </section>
+			    </section>
+			</section>
+			
+			<% } %>
+
+        	${articleInfo.content}
+        	
+        </div>
+        
+
+	</body>
+</html>

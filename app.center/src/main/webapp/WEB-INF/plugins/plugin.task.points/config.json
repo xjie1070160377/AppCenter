@@ -1,0 +1,13 @@
+{
+	"id": "plugin.task.points",
+	"name": "积分插件",
+	"desc": "积分插件",
+	"logo": "logo.png",
+	"version": "1.0.0",
+	"status": "Disable",
+	"pluginType": "Task",
+	"platforms": ["PC",
+	"WAP"],
+	"pluginData": {
+	}
+}

@@ -1,0 +1,101 @@
+heml,body{height: 100%;}
+html{color:#000;-webkit-tap-highlight-color:rgba(0,0,0,0);tap-highlight-color:rgba(0,0,0,0);font-family: "microsoft yahei";}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,table,th,td,img,textarea{margin:0;padding:0;}
+html,body{height:100%;}
+input, textarea, select, radio, checkbox { border: none; outline: 0; resize: none; vertical-align: middle; }
+ol, ul, li { list-style: none; }
+img { border: none;width: 100%;height: 100%;}
+a {text-decoration: none;color: #3c3c3c;}
+p{font-family: "microsoft yahei";color: #3c3c3c;} 
+span,strong,div,input{font-family: "microsoft yahei";}
+.fl { float: left;}
+.fr { float: right;}
+.czjz{position: relative;top: 50%; transform: translateY(-50%);-webkit-transform: translateY(-50%);} 
+.clearfix:before,
+.clearfix:after{content: " ";display: table;clear: both}
+.btn{display: inline-block;padding: 8px 36px;font-size: 16px;color: #fff;background: #ddd;border-radius: 5px;}
+input:-webkit-autofill { -webkit-box-shadow: 0 0 0px 1000px white inset;}
+
+.wrapper{width: 100%;max-width: 1400px;margin: 30px auto;box-shadow: 0 0 15px 1px #ccc;position:relative;}
+.header{height: 55px;background-color:rgba(0,0,0,0.2);position:absolute;top:0;width:100%;z-index:11;}
+.header .logo{height: 41px;width: 100px;padding-top: 7px;margin-left:100px;position: absolute;left: 0;}
+.header ul{display: block;height: 45px;padding-top: 7px;padding-left: 200px;}
+.header ul li{float: left;height: 100%;}
+.header ul li.fr{float: right;}
+.header ul li a{color: #fff;line-height: 50px;padding: 0 30px;}
+.header ul li a.active{color: #E8C430;font-weight: 700;}
+.main{width: 100%;text-align: center;position: relative;}
+.main img{width: 100%;}
+.main .tougao{width: 200px;height: 200px;border-radius: 50%;background: #e7992c;position: absolute;left: 45%;bottom: 100px;display: inline-block;}
+.main .tougao .circle{width: 150px;height: 150px;border-radius: 50%;background: #e38c2b;position: relative;left: 25px;top: 25px;vertical-align: middle;   transition: all 0.5s;-moz-transition: all 0.5s; /* Firefox 4 */-webkit-transition: all 0.5s; /* Safari 鍜� Chrome */-o-transition: all 0.5s; /* Opera */}
+.main .tougao .circle:hover{width: 100%;height: 100%;left: 0;top: 0;transition: all 0.5s;-moz-transition: all 0.5s; /* Firefox 4 */-webkit-transition: all 0.5s; /* Safari 鍜� Chrome */-o-transition: all 0.5s; /* Opera */}
+.main .tougao .circle p{color: #fff;position: absolute;left: 0;top:0;line-height: 100%;height: 100%;width: 100%;padding-top: 50%;margin-top: -10px;}
+
+
+.header-red{width: 100%;height: 93px;background: url(../img/bg01.jpg) no-repeat;}
+.header-red .box{padding-top: 10px;padding-left: 200px;padding-right:110px;overflow: hidden;position: relative;}
+.header-red .logo{height: 40px;width: 100px;;}
+
+.tougao .main{background: #7A171C;padding: 30px 0;padding-top:100px;}
+.tougao .main form{width: 80%;margin: 0 10%;}
+.tougao .main table{border:0;margin:0;border-collapse:collapse;border-spacing:0;width: 100%;border-color: #ddd;}
+.tougao .main table td{color: #fff;line-height: 46x;}
+.tougao .main table td input{width: 80%;font-size: 18px;line-height: 46px;height:46px;outline: none;border:none;background: none;color: #fff;padding-left: 10px;}
+.tougao .main table td input[name="intent"]	{display: inline-block;}
+.tougao .main table .td-label{width: 15%;max-width: 150px;font-size: 18px;}
+.tougao .main table .td-display{width: 85%;position: relative;text-align: left;}
+.tougao .main table .td-display .envelope{position: absolute;width: 71px;height: 48px;background: url(../img/icons1.png) no-repeat;right: -1px;top: -1px;}
+.tougao .main .enclosure{min-height: 150px;position: relative;margin-top: 30px;margin-bottom:50px;padding-left: 150px;}
+.tougao .main .left{width: 100px;height:100%;padding: 15px 15px 0 15px;position: absolute;left: 0;top:0;}
+.tougao .main .right{width: 100%;height:100%;border: 1px solid #ddd;position: relative;}
+.tougao .main .left span{color: #fff;}
+.tougao .main .i-addEnclosure{width: 100px;height: 100px;background: url(../img/icons1.png) -2px -62px no-repeat;}
+.tougao .main .right .bottom{position: absolute;bottom: -36px;left: 0;line-height: 30px;font-size: 14px;color: #ccc;}
+.tougao .main .right .filename{color: #fff;;}
+.tougao .main .i-star{width: 26px;height: 26px;display: block;background: url(../img/icons1.png) -2px -247px no-repeat;float: left;margin-right: 5px;}
+.tougao .main .i-addPic{width: 100px;height: 80px;background: url(../img/icons1.png) -2px -168px no-repeat;}
+.tougao .main #file{display: none;}
+.tougao .main .submit-box{padding: 20px 0;}
+.tougao .main .submit-box a.btn{background: #9b493b;margin:0 50px;cursor: pointer;padding:2px 25px;font-size:18px;}
+label.error {margin-left: 103px;position: absolute;right: 0;color: #fc0000; line-height: 46px;padding-right: 5px;}
+input[name='intent']~label.error{padding-right: 80px;}
+
+
+.setting .wrapper, .main{height: 100%;overflow: hidden;position: relative;}
+.setting .submit-box{margin-top:70px;}
+.setting #form_tougao .title{width: 150px;height: auto;margin-bottom:20px;}
+.setting  .bottom{position: absolute;bottom: 0;left: 0;}
+.setting  .bottom img{width: 100%;margin-bottom: -5px;}
+
+//login
+
+.login-container{}	
+.login-container .logo{height: 60px;}
+.login-container .logo img{height: 100%;width: auto;}
+
+.login-container .title{border-bottom: 1px solid #ddd;text-align: center;margin: 15px 0 45px 0;}
+.login-container .title span{position: relative;bottom: -12px;color: #9E292F;font-size: 18px;padding: 10px;background:#fff ;}
+.login-container .form-control{position: relative;padding-left:60px;margin-bottom: 25px;line-height: 45px;height:45px;background: #fff;border: 2px solid #79171c;  border-radius: 5px;}
+.login-container .form-control label{color: #888; position: absolute;left: 0; top: 0;border-right: 2px solid #79171c;padding: 0 8px;line-height: 35px;  margin: 5px 0;}
+
+.login-container .form-control input{display: block;width: 100%;height: 100%; background: none; line-height: 45px;height:45px;}
+.login-container form button{width: 100%;height: 45px; font-size: 16px ;font-family: "microsoft yahei";line-height: 40px;border-radius: 10px;background-color: #79171c;color: #fff;border-color: #79171c;}
+.login-container form button:hover{ background-color: #9E292F;border-color:#79171c ;}
+.login-container .account{float: right;color: #79171c;font-size: 14px;margin-top:10px;}
+.login-container .icon-close{position:absolute;display:block;top:15px;right:15px;cursor:pointer;width:20px;height:20px;background:url(../img/close.png) no-repeat;background-size:100%;}
+      
+.p-tougaoindex  .n-tougaoindex a {color:#cc9b2a;}
+.p-tougao .n-tougao a {color:#cc9b2a;}
+.p-tougaosetting  .n-tougaosetting a{color:#cc9b2a;}
+.p-tougaoxuzhi  .n-tougaoxuzhi a{color:#79171c;}
+.p-tougaorecord .n-tougaorecord a{color:#cc9b2a;}    
+    
+  
+
+
+
+
+
+@media screen and (max-width: 1400px) {
+	 .wrapper{margin: 0 auto;}
+}

@@ -1,0 +1,30 @@
+@charset "utf-8";
+
+.info-bottom .show,
+.info-bottom .replyed, 
+.info-bottom .top{
+	font-size:12px;
+	padding:1px 3px;
+	border-radius:5px;
+	border:1px solid #5cb85c;
+	background:#f7fff7;
+	color:#0aca0a;
+}
+
+.info-bottom .hidden,
+.info-bottom .unReplyed, 
+.info-bottom .unTop{
+	font-size:12px;
+	padding:1px 3px;
+	border-radius:5px;
+	border:1px solid #f0ad4e;
+	color:#e68700;
+	background:#fffbef;
+}
+
+.row-fluid .contentBox .article-list>li.read .title a{color:#aaa;}
+.row-fluid .contentBox .article-list>li .title{font-weight:400;}
+
+.p-guestbook-form .item{line-height:2;color:#777;}
+.p-guestbook-form .item label{width:5em;}
+.p-guestbook-form .item.title{font-size: 18px;font-weight: 700;color: #555;}

@@ -1,0 +1,48 @@
+{
+	"id": "plugin.payment.alipay",
+	"name": "支付宝",
+	"desc": "支付宝即时到账支付插件",
+	"logo": "logo.gif",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Payment",
+	"platforms": ["PC"],	
+	"pluginData": {
+		"Partner":  {
+			"desc": "",
+			"val": "2088221443412814"
+		},
+		"Key":  {
+			"desc": "",
+			"val": "ilhowojhnqagdzdr62rfp3tzy6bmpj9w"
+		},
+		"AlipayAccount":  {
+			"desc": "",
+			"val": "moochn@163.com"
+		},
+		"AppId":  {
+			"desc": "",
+			"val": "2017011004957764"
+		},
+		"AppPrivateKey":  {
+			"desc": "",
+			"val": "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCunh1uVGUKZCSfZJa634ywSolf2rXlCSuWeJ0kPhUUl+XbKWsBdgY9yEU65/lBBnczrMZw6AJJ1py5sB2EG4TE2sM5sKKk6lX9cT0bg9XrYSweDhO9BmfvUVu5tK/20s0xfdznv/W1ccDMsfNTsNaxWQTJTrdC1MhLjMqw6Csjfgr02otIUgBwi+9akorYAIiKYoFEiz1s4PVLYnwfDJKPGA0iDKeGYLtw3xXbw06uC10jl/lN+VB7x9cEmC3zKVndk/rtj5J3es1PidALTTpVTVy4zxuxmnX9bxyg1TDwgTRVTXRWEhDBDRZh3vyyHLbiuCF3U0Xzk224oHzX7H1HAgMBAAECggEAcmpMIoTOB/cCQCaq1RuxlbnhNZubX82Yb+nsHVlIesvk4qvK35Q0FrtpEWX6Xm8cIBHvnP+IsFUdMFaDoJJfdpVZIi3pBGI/oedXAPZrbuWnALJ8oHjYFWmbzpzkR7hslyc/XeLb3t4AVJ+tLoNKyb3ocvdPAU1nSImiLjSSP5g7JEchucofcFs7sBtyH2dTM/NQfX2d5xlXIkGyZ1mvT+9mwz9i9GQzanO11YR1VWgQgXxBEuomFV4ugdMxjwF+7J1D+fEg5UdvVQnd3vtKkuFan+m+7282zrAAVaUSi44VudAKhYO5hxtxcVHnbQK4+dF3VDy052FAAaU7ekC3wQKBgQDlAZOnvhNB6AW9Frl7b5iIAjsmp1AGKqIZguiLjL9Ac8/e1nysKr6rqj6LdOdm5F7Ih0bx24992NylkAuwTr5c6SWW2W1hqRX7aSsrmPUuKVzoxIfvqJESZHs2Ciik69Nu/b9p9oR2qcaZWp3lE1xhcJFWOKr/tboxlul2pXXTMQKBgQDDM1NxnBU4igK1ZhWLZAKLjx0cA2lKSKD+70frJvVM/myEpmdAYcEulMgx7OVzYj7FCGgMlzl4BicbeBd7R8HudKmfBOCb3GbFi3YNyCWy+WXZr6WMxZ9wdom4RQQ6XYytPwG0QXIpJpc3VWDHgO5MGFIRWqcHD4/1nQcazaEJ9wKBgCJzSUYrxvPcNrjKaV7TW+viAgn/k39J/Ja/5cHQi5jjkzrfo2O3DnX+p2gNTx5gbo3WI+sQb5asAA18DPYZ8nNBs6Ds1pKhgCgRGyh02zV1jX+KyTRZdHGC4jIv9wtQWr9QtvH23tiHE9RQGH60meoiqAqDfd339amuHTL3EzGRAoGBAJdAyCG6Tf83gY3KAlu2LPqy9F1mj0mOKaIhC1s9HsqAQtoujscmeCh+BPoalFjqAbVvJCDNdSx5qAfy8E8IdU8uetjLULe0+rWLsPhQ5FVgRvl8zwzbfQYJ9AEjCXmoT39W2R0xsSIN0xJ/R7SPRRcVqVHlKpOgDW7GNGEigOxVAoGBAIrfrpTitbXccN5aBTKX2TZUj/oXs4Facb0WdEeyaezIGTeq41dw4EVhMTZIQycmOTBqi9KTrPRNxOJczcM4nvc+HqBGgDgXb9OvLBkt3bMMp3HQ50Opp+2EcTCif0ilpv16Jt2OsNGeMlnr7U0hjAIL/9NRioswxi3eY8q7XeBu"
+		},
+		"AppPulicKey":  {
+			"desc": "",
+			"val": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmvKYQmOC4MwcNDnsqxnci+pUhS6HpW6ZrcNvL9HrTgvrZZHg3LXVr00Y9iTD5X0vNpBoL2BnjAqzy8QsyMFd9hMGMZpJE5R5TaK6+FWKq1XmaPz44MQnTODdAhnnodQM6uY7Qm9N0npioMEum2RHXu4Pzc/GKt8PLuL7bY0XxLqSFx8Xe/z+PiJOqL6K5L6bd7k11ZLpY3xjqNoCxubywLyubL6otBjsGwdaVHc4/JFvpT5XRczwcpNrehRUeKX8qezRhAONkxkfyGRcV4ARarOAxT9+e9+WhyMhtevL9uhdp4rhp3KZyFf8RxM2XL1cMGi5IWc72LoPXyqR2XjYEwIDAQAB"
+		},
+		"GateWay":  {
+			"desc": "",
+			"val": "https://mapi.alipay.com/gateway.do?"
+		},
+		"VeryfyUrl":  {
+			"desc": "",
+			"val": "https://mapi.alipay.com/gateway.do?service=notify_verify&"
+		},
+		"OrderQueryUrl":  {
+			"desc": "",
+			"val": "https://openapi.alipay.com/gateway.do"
+		}
+	}
+}

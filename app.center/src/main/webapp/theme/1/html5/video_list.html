@@ -1,0 +1,58 @@
+<%include("inc_head.html"){} %> 
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_xuanshiting.css" />
+<title>${site.name}-${node.name}</title>
+</head>
+<body class="output">
+	<!-- 侧边栏 -->
+	<%include("inc_nav_side.html"){} %>
+	<%include("inc_nav_user.html"){} %>
+	
+	<!-- 内容 -->
+	<div class="row-fluid clearfix">
+		<%include("inc_left_cover.html"){} %>
+		<div class="contentBox">
+			<div class="page-title clearfix">
+				<%include("inc_nav_node.html"){} %>	
+			</div>
+			<ul class="sort-nav"></ul>
+			
+			<ul class="xst-list thumbnails clearfix">
+				<%var infoPageList = InfoPage({nodeId:node.id,isIncludeChildren:true,pageSize:20});%>
+				<% for(info in infoPageList){ %>
+				<li>
+					<a href="${ctxPath}/${info.url}" target="_blank" class="wrap-img">
+						<img src="${info.smallImage}" onerror="this.src='${session.themeRoot}/_files/img/noPic2.png'" width="148" height="110">
+						<img class="play" src="${session.themeRoot}/_files/img/play.png"/>
+					</a>
+					<div>
+						<h4><a href="${ctxPath}/${info.url}" title="${info.title}" target="_blank"><%var title = Substring(info.title, 20, "...");%>${title}</a></h4>
+						<p>
+							<span><%var time = DateUtil({date:info.publishDate});%>${time}</span>
+							<span>评论 ${info.comments}</span>
+							<a href="${ctxPath}/${info.url}">立即播放</a>
+						</p>
+					</div>
+				</li>
+				<%}%>
+				<div class="clearfix"></div>
+				<%include("inc_page.html",{pagedList:infoPageList}){}; %>	
+			</ul>
+			<!-- <button class="loadMore">加载更多</button> -->
+			
+			<!-- Footer Start -->
+			<div class="footer">
+			    Copyright 1999-<script type="text/javascript">document.write(new Date().getFullYear());</script>   <span style="font-size:16px;">©</span> 版权所有：国防科技大学<br />
+				电话：(0731)84573000  网络服务热线：84573000 84573008  系统编制：国防科大信息中心
+			</div>
+			<script type="text/javascript">
+				document.write(unescape("%3Cscript src='${ctxPath}/visit_log.htx%3FsiteId%3D${site.id}%26url%3D")+document.location.href+unescape("%26referrer%3D")+document.referrer+unescape("' type='text/javascript'%3E%3C/script%3E"));
+			</script>
+			<!-- Footer End -->
+		</div>
+	
+	</div>
+
+
+</body>
+</html>
+

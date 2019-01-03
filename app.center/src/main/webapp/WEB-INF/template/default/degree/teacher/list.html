@@ -1,0 +1,279 @@
+<% layout("/share/mlayout.html"){%>
+<link href="${ctxPath}/static/base/css/plugins/jsTree/style.min.css" rel="stylesheet">
+<script src="${ctxPath}/static/base/js/plugins/jsTree/jstree.min.js"></script>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-2 visible-lg-block">
+			<div>
+				<label class="checkbox-inline i-checks  jstree-top">
+					<input type="hidden" id="queryParentId" value="${queryParentId}"/>
+					<input type="checkbox" id="showDescendants" value="1" ${showDescendants != null && showDescendants ? 'checked' : ''} >显示下级机构
+				</label>
+			</div>
+       		<div id="orgTree"></div>
+		</div>
+		<div class="col-lg-10">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>导师列表</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+                        <select class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled">
+                            <option value="LIKE_name">名称</option>
+                            <option value="LIKE_number">编码</option>
+                        </select>
+                        
+                        </div>
+                        <div class="col-sm-2">
+                        <div class="input-group">
+                        <input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control"> 
+                        <span class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();"> 搜索</button> 
+                        </span>
+                        </div>
+                        </div>
+                        <div class="col-sm-5">
+                        
+                        </div>
+                    </div>
+                    <div class="row">
+                    	<div class="col-sm-12">
+                    		<a href="javascript:void(0);" title='新增' onclick="add();" class="btn btn-primary btn-sm">新增</a>
+                    		<a href="javascript:void(0);" title='编辑' onclick="editRow();" class="btn btn-primary btn-sm">编辑</a>
+                    	</div>
+                    </div>
+            		<form id="postForm">
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+                            
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		var orgTree = $("#orgTree").jstree({
+                  "core" : {
+          			'data' : {
+          				"url" : "degree/teacher/orgTreeJson?queryParentId=${queryParentId}",
+          				"dataType" : "json"
+          			}}, 
+                  "themes": { "theme": "default", "dots": false, "icons": true },
+                  "plugins": ["themes", "ui"]
+              }).
+              bind("select_node.jstree",  function(e,data){
+              	$('#queryParentId').val(data.node.id);
+              	queryGrid();
+              });
+
+          	$("#table_list").jqGrid({
+          	url : "degree/teacher/teacherListJson",
+			postData : { queryParentId: '${queryParentId}', showDescendants: '${showDescendants}'},
+			datatype : "json",
+			mtype : "POST",
+			height : "auto",
+			autowidth : true,
+			shrinkToFit : true,
+			colModel : [ {
+				label : "ID",
+				classes : 'mshow',
+				name : 'id',
+				index : 'id',
+				width : 30,
+				align : "center",
+				sorttype : "int"
+			}, {
+				label : "名称",
+				classes : 'mshow',
+				name : 'name',
+				index : 'name',
+				width : 90
+			}, {
+				label : "出生日期",
+				name : 'csrq',
+				index : 'csrq',
+				width : 90
+			}, {
+				label : "性别",
+				name : 'sex',
+				index : 'sex',
+				width : 90,
+				align : "center"
+			}, {
+				label : "导师类型",
+				name : 'dslx',
+				index : 'dslx',
+				width : 90,
+				align : "center"
+			}, {
+				label : "政治面貌",
+				name : 'zzmm',
+				index : 'zzmm',
+				width : 40,
+				align : "right"
+			}, {
+				label : "技术职务",
+				name : 'jszw',
+				index : 'jszw',
+				width : 60,
+				align : "center"
+			}, {
+				label : "学科名称",
+				name : 'xkmc',
+				index : 'xkmc',
+				width : 60,
+				align : "right"
+			},{
+				label : "操作",
+				classes : 'mshow',
+				name : 'op',
+				sortable : false,
+				width : 100,
+				align : "center",
+				formatter : oprationFmt
+			} ],
+			pager : "#pager_list",
+			viewrecords : true,
+			multiselect : true,
+			sortname : 'id',
+			sortorder : "desc",
+			caption : "导师管理列表",
+			loadtext : '正在加载...',
+			hidegrid : false
+		});
+
+		//浏览器窗口变化时，自动宽度
+           $(window).bind('resize', function () {
+               var width = $('.jqGrid_wrapper').width();
+               $('#table_list').setGridWidth(width);
+           });
+		
+           $('.i-checks').iCheck({
+               checkboxClass: 'icheckbox_square-green',
+               radioClass: 'iradio_square-green',
+           }); 
+	});
+	
+	$('#showDescendants').on('ifChanged', function(event){  
+		queryGrid(); 
+	});   
+
+
+	function oprationFmt(cellvalue, options, rowObject) {
+		var html = "";
+		html += "<button class='btn btn-primary btn-opt' type='button' title='编辑' onclick='edit("+ rowObject.id + ");'><i class='fa fa-edit'></i>&nbsp;编辑</button>";
+		html += " <button class='btn btn-primary btn-opt' type='button' title='删除' onclick='del(" + rowObject.id + ");'><i class='fa fa-remove'></i>&nbsp;删除</button>";
+		return html;
+	}
+
+	function add() {
+           var queryParentId = $('#queryParentId').val();
+           var showDescendants = false;
+           if($('#showDescendants').is(':checked')) { 
+           	showDescendants = true;
+           }
+		//loadFrameContent('cms/node/nodeAdd?queryParentId=' + queryParentId + '&showDescendants=' + showDescendants);
+	}
+
+	function edit(id) {
+           var queryParentId = $('#queryParentId').val();
+           var showDescendants = false;
+           if($('#showDescendants').is(':checked')) { 
+           	showDescendants = true;
+           }
+		loadFrameContent('degree/teacher/edit?status=basic&queryParentId=' +queryParentId + '&tid=' + id + '&showDescendants=' + showDescendants);
+	}
+	
+	function editRow() {
+		var id = getGridId();
+		edit(id);
+	}
+	
+	
+	function getGridId() {
+		var id = $('#table_list').jqGrid('getGridParam','selrow');
+		if(id == null) {
+			layer.alert("请选择数据！", {icon: 2});
+			return false;
+		}
+		return id;
+	}
+
+	function del(id) {
+		layer.confirm('确定删除该栏目吗?', {
+			btn : [ '删除', '取消' ]
+		//按钮
+		}, function() {
+			$.post("cms/node/nodeDel", {
+				id : id
+			}, function(json) {
+				if (json.resultStatus == true) {//成功
+					reload();
+					layer.msg('删除成功.');
+				} else {//失败
+					layer.alert("删除失败.请先清除下属数据.", {icon: 2});
+				}
+			}, 'json');
+		});
+	}
+	
+	function dels() {
+		var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+		
+		if (ids.length == 0){
+               layer.alert("没有选择要批量删除的数据.", {icon: 2});
+               return;
+           }
+		
+		layer.confirm('确定批量删除栏目吗?', {
+			btn : [ '删除', '取消' ]
+		//按钮
+		}, function() {
+			$.post("cms/node/nodeDels", {
+				ids : ids.join(',')
+			}, function(json) {
+				if (json.resultStatus == true) {//成功
+					reload();
+					layer.msg('批量删除成功.');
+				} else {//失败
+					layer.alert("批量删除失败.请先清除下属数据.", {icon: 2});
+				}
+			}, 'json');
+		});
+	}
+
+	function reload() {
+		$("#table_list").trigger('reloadGrid');
+		var tree = jQuery.jstree.reference("#orgTree");
+		tree.refresh();
+	}
+	
+  	function queryGrid(){
+  		var grid = $("#table_list");
+  		var columnFiled = $("#columnFiled").val();
+           var keyWord = $("#keyWord").val();
+           var queryParentId = $('#queryParentId').val();
+           var showDescendants = false;
+           if($('#showDescendants').is(':checked')) { 
+           	showDescendants = true;
+           }
+		
+         //增加提交参数
+           var postData = { columnFiled : columnFiled, keyWord : keyWord, queryParentId: queryParentId, showDescendants: showDescendants};
+           $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+		//刷新grid
+  		grid.trigger('reloadGrid');
+  	}
+</script>
+	
+<%}%>

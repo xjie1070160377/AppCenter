@@ -1,0 +1,282 @@
+<%var style = {%>
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/base.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/jQueryUI/jquery-ui-1.10.4.custom.min.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/style.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/three-quarters.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/redmooc_topic.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/redmooc_page.css" />
+<style>
+	.f-toe{text-overflow: ellipsis;overflow: hidden;}
+	i.state0, i.state1,i.state-1{width:6px;height:6px;display:inline-block;margin-right:3px;background-color:#ccc;border-radius:100%;}
+	i.state0{background-color:#f8ac59;}
+	i.state1{background-color:#1ab394;}
+	.ui-jqgrid tr.ui-row-ltr td.f-toe{white-space: nowrap;}
+	.ui-jqgrid tr.jqgrow td {padding: 11px 6px;}
+	.row-fluid{padding:20px 10px 10px 10px;}
+	body.output{background:#fff;}
+	.ibox-title{border:none;border-bottom:1px solid #ccc;margin:0 20px;}
+	.ibox-content{border:none;}
+	.ibox {padding:10px;margin:20px;background: #fff;box-shadow:0 0 8px #ccc;}
+	.jqGrid_wrapper{margin-top:16px;}
+	.ui-jqgrid .ui-jqgrid-hbox{padding:0;}
+	.ui-jqgrid .ui-jqgrid-htable, .ui-jqgrid .ui-jqgrid-btable{width:100%!important;}
+	.row-fluid .contentBox{width:100%;margin:0;max-width:100%;padding:0 20px;}
+	.page-title {border-bottom: 2px solid #d9d9d9;height: 52px;}
+	.ui-widget-content a.btn{color:#fff;padding:6px 12px;font-size:11px;}
+	.ui-jqgrid-title{color:#000;}
+	@media screen and (max-width:768px){
+		.ui-jqgrid tr.jqgrow td{display:none;}
+		.ui-jqgrid .ui-jqgrid-htable th{display:none;}
+		.ui-jqgrid tr.jqgrow td.mshow{display:table-cell;}
+		.jqgfirstrow{display:none;}
+		#table_list_username, #table_list_title,#table_list_state,#table_list_op{
+			display:table-cell;width:20%!important;
+		}
+		#table_list_title, td.mshow[aria-describedby="table_list_title"]{
+			width:40%!important;
+		}
+		.ibox{margin: 0;box-shadow: none;border: none;margin-top:8px;}
+		.ibox-title{margin:0;border:none;padding-left:0;}
+		.ibox-content{padding:0}
+		.row-fluid .contentBox .page-title{border-top: 2px solid #eee;}
+		.row-fluid{padding:0;}
+		.row-fluid .contentBox .page-title li.active{height:50px;}
+		.ui-jqgrid tr.jqgrow td{padding:0;}
+		.ui-widget-content a.btn{margin-left:0!important;margin-top:6px;margin-bottom:6px;padding:3px 10px;}
+		.ui-widget-content a.btn:first-child{margin-bottom:0px;}
+		.row-fluid .contentBox .page-title li {padding: 15px 3%;}
+		.page-title{border:none;margin:0!important;}
+		.page-title ul{display:none;}
+		.t-search{width:100%;position:relative;}
+		.t-search input[type='text']{border-radius: 5px!important;}
+		.t-search .icon-search{display:block;position:absolute;right:10px;top:5px;z-index:99;font-weight: 700;c0lor:#777;font-size:18px;}
+		.t-search button{display:none;}
+		.btn-primary {background-color: #861817;border-color: #861817;}
+		.btn-primary.active,.btn-primary.active:focus,.btn-primary.active:hover,.btn-primary:active,.btn-primary:active:focus,.btn-primary:active:hover,.btn-primary:focus,.btn-primary:hover,.open .dropdown-toggle.btn-primary{background-color:#861817;border-color:#861817;color:#FFF}
+		
+	}
+	.app .row-fluid {width:100%;overflow-x:hidden;}
+	.app .wrap-btn,.app .nav-shrink{display:none;}
+	.app .row-fluid .contentBox{padding:0;}
+	.app .row-fluid .contentBox .page-title{margin-top:0;padding: 10px 10px 0 10px;border-top:none;height: 60px;display:none;}
+</style>
+<%};%>
+
+<%include("shared/inc_head.html", {title:gb.name+"管理", style:style}){} %> 
+
+
+<body class="output p-guestbook-management <%if(isNotEmpty(session.token)){ %> app <%}%>">
+	
+	<%include("shared/inc_nav_side.html"){} %>
+	<%include("shared/inc_nav_user.html"){} %>
+	
+
+<div class="row-fluid wrapper wrapper-content  animated fadeInRight row-fluid clearfix">
+	<div class="contentBox">
+		<div class="page-title clearfix">
+			<ul class="clearfix collections-nav navigation">
+				<li class=""><a href="/widget/guestbook.htx?token=${session.token!}">红客信箱</a></li>
+				<li class=""><a href="/widget/guestbook/my">我的信件</a></li>
+				<li class="active"><a href="/widget/guestbook/manage">我的信箱</a></li>
+			</ul>
+		</div>	
+	</div>
+
+	
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2">
+	                        <div class="input-group t-search">
+	                        	<input type="hidden" class="" id="_id" name="_id" value="${gb._id}"/>
+	                            <input type="hidden" class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled" value="LIKE_title"/>
+		                        <input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control"> 
+		                        <span class="input-group-btn">
+		                            <button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();"> 搜索</button> 
+		                      		<i class="iconfont icon-search f-dn" onclick="queryGrid();"></i>
+		                        </span>
+	                        </div>
+                        </div>
+                        <div class="col-sm-5">
+                        	
+                        </div>
+                        <div class="col-sm-3 text-right">
+                        </div>
+                    </div>
+
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<script type="text/javascript" src="${session.guestbook}/_js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="${session.guestbook}/_js/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" src="${session.guestbook}/_js/grid.locale-cn.js"></script>
+<script src="${session.guestbook}/_js/app.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$("#table_list").jqGrid({
+					url : "/widget/guestbook/message/listJson",
+					datatype : "json",
+	                mtype:"POST",
+					height : 540,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 10,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "ID",
+						name : '_id',
+						index : '_id',
+						width : 50,
+						align : "center",
+						sorttype : "int"
+					}, {
+						label : "发表时间",
+						name : 'createTime',
+						index : 'createTime',
+						width : 40,
+						align : "center"
+					}, {
+						label : "用户姓名",
+						classes : 'mshow',
+						name : 'username',
+						index : 'username',
+						width : 25,
+						align : "center"
+					}, {
+						label : "标题",
+						classes : 'mshow f-toe',
+						name : 'title',
+						index : 'title',
+						width : 75,
+						align : "center"
+					}, {
+						label : "内容",
+						classes: "f-toe",
+						name : 'text',
+						index : 'text',
+						width : 95,
+						align : "center"
+					}, {
+						label : "所属信箱",
+						name : 'guestbook',
+						index : 'guestbook',
+						width : 30,
+						align : "center"
+					},{
+						label : "信件分类",
+						name : 'guestbookType',
+						index : 'guestbookType',
+						width : 25,
+						align : "center"
+					},{
+						label : "回复状态",
+						name : 'isReply',
+						index : 'isReply',
+						width : 30,
+						align : "center",
+						formatter: replyFmt
+					},{
+						label : "状态",
+						classes : 'mshow',
+						name : 'state',
+						index : 'state',
+						width : 30,
+						align : "center",
+						formatter: stateFmt
+					}, {
+						label : "操作",
+						classes : 'mshow',
+						name : 'op',
+						sortable : false,
+						width : 40,
+						align : "center",
+						formatter : oprationFmt
+					} ],
+					pager : "#pager_list",
+					viewrecords : true,
+					multiselect : true,
+					sortname : 'createTime',
+					sortorder : "desc",
+					caption : "${gb.name} - 信件列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += "<a class='btn btn-primary' href='/widget/guestbook/message/form?_id="+rowObject._id+ "'><i class='iconfont'>&#xe659;</i>&nbsp;审核</a>";
+				html += "<a class='btn btn-primary' style='margin-left:8px' onclick='del(\""+ rowObject._id + "\");'><i class='iconfont'>&#xe657;</i>&nbsp;移除</button>";
+				return html;
+			}
+			function stateFmt(cellvalue, options, rowObject){
+				var html = '<i class="state0"></i>未审核';
+				if(rowObject.state=='已审核'){
+					html = '<i class="state1"></i>已审核';
+				}else if(rowObject.state=='禁用'){
+					html = '<i class="state-1"></i>禁用';
+				}
+				return html;
+			}
+			
+			function replyFmt(cellvalue, options, rowObject){
+				var html = '<i class="state0"></i>未回复';
+				if(rowObject.isReply=='1'){
+					html = '<i class="state1"></i>已回复';
+				}
+				return html;
+			}
+			
+			
+			function del(id) {
+				$.post("/widget/guestbook/message/remove", {_id:id}, function(data){
+					console.log(data);
+					if(data.resultStatus){
+						reloadGrid()
+					}else{
+						console.log(data.resultMsg);
+					}
+				}, "json");
+			}
+			
+			function reloadGrid() {
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list");
+		  		var columnFiled = $("#columnFiled").val();
+	            var keyWord = $("#keyWord").val();
+				
+	          //增加提交参数
+	            var postData = { columnFiled : columnFiled, keyWord : keyWord};
+	            $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  		
+		  	}
+		</script>
+	
+

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<!--[if IE 6]><html class="ie lt-ie8"><![endif]-->
+<!--[if IE 7]><html class="ie lt-ie8"><![endif]-->
+<!--[if IE 8]><html class="ie ie8"><![endif]-->
+<!--[if IE 9]><html class="ie ie9"><![endif]-->
+<!--[if !IE]><!-->
+<html lang="zh-CN">
+<!--<![endif]-->
+<head>
+<meta charset="utf-8" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name='apple-touch-fullscreen' content='yes'>
+<meta content="fullscreen=yes,preventMove=no" name="ML-Config">
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no,email=no,address=no" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<!--[if lte IE 8]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/tougao.css" />
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_page.css" />
+<style type="text/css">
+.tougao .main {
+	background: #395b9b;
+	width: auto;
+	padding: 0 10%;
+	min-height: 800px;
+	padding-top: 80px;
+}
+
+.main th,.main td {
+	line-height: 46px;
+	color: #fff;
+	border: none;
+}
+
+.main th {
+	width: 60px;
+	color: #eaa62c;
+}
+
+.tougao .main table {
+	margin-top: 30px;
+}
+
+.main thead {
+	border-bottom: 1px solid #ddd;
+}
+
+.modal {
+	position: fixed;
+	top: 10%;
+	left: 50%;
+	z-index: 1050;
+	width: 460px;
+	margin-left: -280px;
+	background-color: white;
+	border: 1px solid #999;
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	-webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+	-webkit-background-clip: padding-box;
+	-moz-background-clip: padding-box;
+	background-clip: padding-box;
+	outline: none;
+}
+
+.modal {
+	background-color: white;
+	border: 1px solid #d9d9d9;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 20px;
+}
+
+#modal_all {
+	display: none;
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	background-color: black;
+	z-index: 1001;
+	-moz-opacity: 0.7;
+	opacity: .70;
+	filter: alpha(opacity = 70);
+}
+
+#modal_show {
+	display: none;
+	top: 25%;
+	left: 22%;
+	width: 53%;
+	height: 49%;
+	padding: 8px;
+	z-index: 1002;
+	overflow: auto;
+}
+
+.fade {
+	opacity: 0;
+	-webkit-transition: opacity 0.15s linear;
+	-moz-transition: opacity 0.15s linear;
+	-o-transition: opacity 0.15s linear;
+	transition: opacity 0.15s linear;
+}
+
+.fade {
+	-webkit-transition: opacity 0.3s linear, top 0.3s ease-out;
+	-moz-transition: opacity 0.3s linear, top 0.3s ease-out;
+	-o-transition: opacity 0.3s linear, top 0.3s ease-out;
+	transition: opacity 0.3s linear, top 0.3s ease-out;
+	top: -25%;
+}
+
+.in {
+	top: 20%;
+	opacity: 1;
+}
+
+.setting-modal {
+	width: 476px;
+	margin-left: -203px;
+}
+
+.setting-modal .modal-header {
+	border-bottom: none;
+	padding: 10px;
+}
+
+.setting-modal .modal-header .close {
+	margin-top: -4px;
+	float: right;
+	font-size: 20px;
+	font-weight: bold;
+	line-height: 20px;
+	color: black;
+	text-shadow: 0 1px 0 white;
+	opacity: 0.2;
+	filter: alpha(opacity = 20);
+}
+
+.setting-modal .modal-header button.close {
+	padding: 0;
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+	-webkit-appearance: none;
+}
+
+hide {
+	display: none;
+}
+
+.sms-bind-modal .modal-body {
+	text-align: left;
+	overflow-y: visible;
+	padding-top: 0;
+	padding: 30px;
+	position: relative;
+	max-height: 100%;
+}
+
+.sms-bind-modal .modal-body .replay_content {
+	font-size: 12px;
+	color: #666;
+	border-radius: 5px;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.sms-bind-modal .modal-body .replay_content:hover {
+	white-space: normal;
+}
+
+.sms-bind-modal .modal-body h4 {
+	font-size: 17.5px;
+	color: #333;
+}
+
+.sms-bind-modal .modal-body .sms-binding {
+	margin: 20px 0 5px;
+}
+
+.sms-bind-modal .modal-body .sms-binding ul li {
+	position: relative;
+	padding: 20px 0 20px 45px;
+	margin-left: 30px;
+	border-left: 1px solid #d9d9d9;
+}
+
+.sms-bind-modal .modal-body .sms-binding ul li .active {
+	margin-left: 15px;
+	color: red;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.sms-bind-modal .modal-body .sms-binding ul li .active:hover {
+	white-space: normal;
+}
+
+.sms-bind-modal .modal-body .sms-binding ul li .left_tab {
+	margin-right: 10px;
+	text-align: center;
+	background: #fff;
+	padding: 5px;
+	left: -40px;
+	position: absolute;
+	color: #333;
+}
+
+.sms-bind-modal .modal-body .sms-binding ul li .left_tab #start_time {
+	margin-left: 12px;
+}
+
+.sms-bind-modal .modal-body .sms-binding ul li .right_tab {
+	margin-left: 15px;
+	color: #333;
+	margin-top: 5px;
+}
+
+.sms-bind-modal .modal-body .sms-binding .opinion {
+	display: none;
+}
+
+.sms-bind-modal .modal-body .sms-binding ul li .right_tab a {
+	color: #4094c7;
+}
+
+.sms-bind-modal .modal-body .sms-binding .yj p {
+	margin: 5px 5px 5px 17px;
+}
+
+.sms-bind-modal .modal-body .sms-binding .yj .yjnr {
+	padding: 10px;
+	margin-top: 5px;
+	background: #f9f9f9;
+	border: 1px solid #c5c5c5;
+	border-radius: 5px;
+}
+
+.main .ladda-button {
+	background: #049cdb;
+}
+
+.ladda-button {
+	position: relative;
+	background: #666;
+	border: 0;
+	padding: 5px 15px;
+	cursor: pointer;
+	color: #fff;
+	border-radius: 2px;
+	border: 1px solid transparent;
+	-webkit-appearance: none;
+	-webkit-font-smoothing: antialiased;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) all
+		!important;
+	-moz-transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) all
+		!important;
+	-ms-transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) all
+		!important;
+	-o-transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) all
+		!important;
+	transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) all !important;
+}
+.no_content{
+	padding-top:10px;
+	color:wheat;
+}
+</style>
+</head>
+
+<body class="tougao  p-tougaorecord">
+	<div class="wrapper">
+		<div id="modal_all"></div>
+		<%include("tg_header.html"){} %>
+		<div class="main">
+			<table border="" cellspacing="" cellpadding="">
+				<thead>
+					<tr>
+						<th>序号</th>
+						<th>标题</th>
+						<th>作者</th>
+						<th>时间</th>
+						<th>图片</th>
+						<th>投递状态</th>
+						<th>投递账号</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<%if (isNotEmpty(pagedList) && isNotEmpty(pagedList.content) && pagedList.content.~size>0){%>
+				<tbody>
+					<% var ind=1; 
+						for(rec in pagedList.content){ %>
+					<tr>
+						<td>${ind}</td>
+						<td>${rec.title}</td>
+						<td>${rec.contribute.name}</td>
+						<td>${rec.dateStr}</td>
+						<td>${rec.images.~size}</td>
+						<td><%if(rec.status==0){%>等待审核<%}else if(rec.status==2){%>正在进行审核<%}else if(rec.status==1){%>已发布<%}else if(rec.status==-1){%>退稿<%}%></td>
+						<td><%if(isNotEmpty(rec.contribute) && isNotEmpty(rec.contribute.user)){%>
+							${rec.contribute.user.userName}<%}%>&nbsp;</td>
+						<td>
+						<%if(isNotEmpty(rec.fid) && isNotEmpty(rec.replay)){%>
+							<button data="${rec.id}" status="${rec.status}"
+								class="ladda-button submit-button" id="bindPhoneNumber">查看</button>
+							<%}%>
+						</td>
+					</tr>
+					<%ind=ind+1;}%>
+				</tbody>
+				<%}%>
+			</table>
+			<%include("inc_page.html",{pagedList:pagedList}){}; %>	
+		</div>
+	</div>
+
+	<div class="modal setting-modal sms-bind-modal hide fade in"
+		id="madal_show" tabindex="-1" aria-hidden="false"
+		style="display:none;">
+
+		<div class="modal-header">
+			<button type="button" class="close">
+				<span aria-hidden="true">×</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<h4>审核流程</h4>
+			<div class="sms-binding">
+				<ul>
+					<li id="comment"><i class="up_arrow"></i>
+						<div class="left_tab">
+							<div id="start_time"></div>
+						</div>
+						<div class="right_tab">开始处理</div></li>
+				</ul>
+				<ul class="opinion">
+					<li id="comment">
+						<div class="left_tab"></div>
+						<div class="right_tab">
+							<div id="replay" class="replay_content"></div>
+						</div>
+					</li>
+				</ul>
+				<ul id="tg_ul">
+					<li>
+						<div class="left_tab"></div>
+						<div class="right_tab">
+							<div class="replay_content">退稿(审核结束)</div>
+						</div>
+					</li>
+				</ul>
+				<ul id="comment_ul">
+				</ul>
+			</div>
+		</div>
+	</div>
+	<script src="${session.themeRoot}/_files/js/plugins/jquery-1.10.2.min.js"
+		type="text/javascript" charset="utf-8"></script>
+	<script src="${session.themeRoot}/_files/js/plugins/jquery.validate.js"
+		type="text/javascript" charset="utf-8"></script>
+	<script src="${session.themeRoot}/_files/js/plugins/jquery.validation_zh_CN.js"
+		type="text/javascript" charset="utf-8"></script>
+	<script src="${session.themeRoot}/_files/js/tougao.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script type="text/javascript">
+		$(function(){
+			var sameId = $('*[id=bindPhoneNumber]')
+			$(sameId).click(function(){
+				
+				var id = $(this).attr("data");
+				var status = $(this).attr("status");
+				$.ajax({
+					
+					url:'logs.htx?id='+id,
+					success:function(res){
+						var data = eval('('+res+')');
+						var html = $("#comment_ul");
+						var str = '';
+						for(var i=0;i<data.logs.length;i++){
+							
+							str+= '<li class="comment active"><div class="left_tab"><span>'+data.logs[i].dateStr+'</span></br> <span>'+data.logs[i].timeStr+'</span></div>';
+							str += '<div class="right_tab">'+data.logs[i].from;
+							if(data.logs[i].to == '退稿'){
+								str += '('+data.logs[i].to+')';
+							}else if(i == data.logs.length-1){
+								str += '(等待'+data.logs[i].to+')';
+							}
+							str += '&nbsp;</div>';
+							if(data.logs[i].opinion != null){
+								str += '<div class="active" style="display:block;">退稿原因：'+(!data.logs[i].opinion?'':data.logs[i].opinion)+'</div>'
+							}
+							str += '</li>';
+						}
+						html.html(str);
+						
+						var restore = '<div style="color:#049cdb;float:left;">初审意见：</div>';
+						
+						if(data.content != 0){
+							restore = '<div style="color:#049cdb;display:block;float:left;">初审意见：</div>';
+						}else{
+							restore = '<div style="color:#049cdb;display:none;float:left;">初审意见：</div>';
+						}
+						if(data.content){
+							$(".opinion").show();
+						}else{ 
+							$(".opinion").hide();
+						}
+						
+						$("#start_time").html(data.time);
+						if(status == '-1' && data.logs.length==0){
+							$("#tg_ul").show();
+						}else{
+							$("#tg_ul").hide();
+						}
+
+						$("#replay").html(restore + data.content);
+					}
+				});
+				
+				$(".sms-bind-modal").show();
+				
+				document.getElementById("modal_all").style.display ="block";
+	            document.getElementById("modal_show").style.display ="block";
+				
+			});
+		
+			$(".sms-bind-modal .close").click(function(){
+				$(".sms-bind-modal").hide();
+				document.getElementById("modal_all").style.display ='none';
+	            document.getElementById("modal_show").style.display ='none';
+			})
+			
+			$("#modal_all").click(function(){
+				$(".sms-bind-modal").hide();
+				document.getElementById("modal_all").style.display ='none';
+	            document.getElementById("modal_show").style.display ='none';
+			})
+				
+		});
+	</script>
+
+</body>

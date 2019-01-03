@@ -1,0 +1,161 @@
+<%
+ layout("/share/mlayout.html"){%>
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+
+   <div class="row">
+       <div class="col-lg-12">
+           <div class="ibox float-e-margins">
+               <div class="ibox-content text-center p-md">
+
+                   <h2><span class="text-navy">欢迎您进入后台管理中心</span></h2>
+				
+               </div>
+               
+           </div>
+       </div>
+   </div>
+   <div class="row" style="padding-bottom: 20px;">
+     <div class="col-lg-6">
+	   	 <div class="form-group input-daterange" id="datepicker">
+	     	<label class="col-sm-2 control-label" for="name">开始日期</label>
+	         <div class="col-sm-4">
+	         	<input type="text" class="form-control" style="text-align: left" name="startDate" id="startDate" placeholder="开始日期" value='${startDate !, dateFormat="yyyy-MM-dd"}'/>
+	         </div>
+	     	<label class="col-sm-2 control-label" for="seq">结束日期</label>
+	         <div class="col-sm-4">
+	         	<input type="text" class="form-control" style="text-align: left" name="endDate" id="endDate" placeholder="结束日期" value='${endDate !, dateFormat="yyyy-MM-dd"}'/>
+	         </div>
+	     </div>
+	 </div>
+	     <div class="col-sm-2">
+         	<div class="input-group">
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryData();"> 搜索</button> 
+                </span>
+            </div>
+         </div>
+    
+   </div>
+	<div class="row">
+        <div class="col-lg-12" id="oprCharts" >
+        </div>
+    </div>
+	
+</div>
+ 
+ <script>
+ $(document).ready(function () {
+ 	$('#datepicker').datepicker({
+ 		language: 'zh-CN',
+ 		format : 'yyyy-mm-dd',
+         keyboardNavigation: false,
+         autoclose: true
+     });
+
+ });
+ 
+ $("#oprCharts").height($(window).height()-300);
+//基于准备好的dom，初始化echarts实例
+ var myChart = echarts.init(document.getElementById('oprCharts'));
+ myChart.showLoading();
+ queryData();
+ function queryData(){
+	 var startDate = $("#startDate").val();
+	 var endDate = $("#endDate").val();
+	 $.post('interact/snsOpLog/getChartsData', {
+		 startDate:startDate,endDate:endDate
+	}, function(result) {
+		 myChart.hideLoading();
+	    myChart.setOption({
+		    title: {
+		        text: '用户操作日志'
+		    },
+		    tooltip: {
+		        trigger: 'axis'
+		    },
+		    legend: {
+		        data:result.legend
+		    },
+		    grid: {
+		        left: '3%',
+		        right: '4%',
+		        bottom: '3%',
+		        containLabel: true
+		    },
+		    toolbox: {
+		        feature: {
+		            saveAsImage: {}
+		        }
+		    },
+		    xAxis: {
+		        type: 'category',
+		        boundaryGap: false,
+		        data: result.category
+		    },
+		    yAxis: {
+		        type: 'value'
+		    },
+		    series: [
+		        {
+		            name:result.loginChart.name,//用户登录
+		            type:'line',
+		            //stack: '总量',
+		            data:result.loginChart.data
+		        },
+		        {
+		            name:result.diggChart.name,//点赞
+		            type:'line',
+		            //stack: '总量',
+		            data:result.diggChart.data
+		        },
+		        {
+		            name:result.commChart.name,//评论
+		            type:'line',
+		            //stack: '总量',
+		            data:result.commChart.data
+		        },
+		        {
+		            name:result.collectChart.name,//收藏
+		            type:'line',
+		            //stack: '总量',
+		            data:result.collectChart.data
+		        }
+		        /**,
+		        {
+		            name:result.attUserChart.name,//关注用户
+		            type:'line',
+		            //stack: '总量',
+		            data:result.attUserChart.data
+		        },
+		        {
+		            name:result.attNodeChart.name,//关注栏目
+		            type:'line',
+		            //stack: '总量',
+		            data:result.attNodeChart.data
+		        },
+		        {
+		            name:result.attSpecChart.name,//关注专题
+		            type:'line',
+		            //stack: '总量',
+		            data:result.attSpecChart.data
+		        },
+		        {
+		            name:result.commDelChart.name,//删除评论
+		            type:'line',
+		            //stack: '总量',
+		            data:result.commDelChart.data
+		        }
+		        **/
+		    ]
+		});
+	}, 'json');
+ 
+ };
+ 
+
+
+</script>		
+ <%}%>

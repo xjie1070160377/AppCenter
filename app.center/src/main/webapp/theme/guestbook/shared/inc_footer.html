@@ -1,0 +1,21 @@
+
+<div class="menu-bottom mobile f-dn">
+	<ul>
+		<li>
+			<a class="n-mail-list" href="/widget/guestbook.htx?token=${session.token!}"><i class="iconfont">&#xe728;</i>信箱列表</a>
+		</li>
+		<li>
+			<a class="n-sent" href="/widget/guestbook/my"><i class="iconfont">&#xe660;</i>发件箱</a>
+		</li>
+		<li>
+			<%if(isNotEmpty(guestbookId) || isNotEmpty(gb)){%>
+			<a href="/widget/guestbook/manage" class="n-receive"><i class="iconfont">&#xe65d;</i>收件箱</a>
+			<%}else{%>
+			<a href="/widget/guestbook/add" class="n-receive"><i class="iconfont">&#xe65d;</i>收件箱</a>
+			<%}%>
+		</li>
+		<li>
+			<a class="n-mail-new" href="/widget/guestbook/addMsg?guestbookId="><i class="iconfont">&#xe7fa;</i>写信</a>
+		</li>
+	</ul>
+</div>

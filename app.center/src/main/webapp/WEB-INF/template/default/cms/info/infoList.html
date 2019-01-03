@@ -1,0 +1,564 @@
+<% layout("/share/mlayout.html"){%>
+<link href="${ctxPath}/static/base/css/plugins/jsTree/style.min.css" rel="stylesheet">
+<script src="${ctxPath}/static/base/js/plugins/jsTree/jstree.min.js"></script>
+<script src="${ctxPath}/static/base/js/HashMap.js"></script>
+<script src="${ctxPath}/static/base/js/plugins/qrcode/qrcode.js"></script>
+<script src="${ctxPath}/static/base/js/plugins/qrcode/jquery.qrcode.js"></script>
+<style>
+.pace-done #page-wrapper, .pace-done .footer {
+    -webkit-transition: all 0s;
+    -moz-transition: all 0s;
+    -o-transition: all 0s;
+    transition: all 0s;
+}
+.qrcode-wrap{position:fixed;display:none;}
+
+
+</style>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-2 visible-lg-block">
+			<div>
+				<label class="checkbox-inline i-checks jstree-top">
+					<input type="hidden" id="queryNodeId" value="${queryNodeId}"/>
+					<input type="hidden" id="queryStatus" value="${queryStatus}"/>
+					<input type="checkbox" id="showDescendants" value="1" ${showDescendants != null && showDescendants ? 'checked' : ''} />包含子栏目文档
+				</label>
+			</div>
+       		<div id="nodeTree"></div>
+		</div>
+		<div class="col-lg-10">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>文档列表</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+                        <select class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled">
+                            <option value="LIKE_detail.title" ${columnFiled == 'LIKE_detail.title' ? 'selected="selected"' : ""}>文档标题</option>
+                            <option value="NONE_author" ${columnFiled! == 'NONE_author' ? 'selected="selected"' : ""}>文档作者</option>
+                        </select>
+                        </div>
+                        <div class="col-sm-2">
+                        <div class="input-group">
+                        <input type="text" id="keyWord" value="${keyWord}" name="keyWord" placeholder="关键字" class="input-sm form-control" onkeydown="javascript:if(event.keyCode==13){queryGrid();}"> 
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();"> 搜索</button> 
+                        </span>
+                        </div>
+                        </div>
+                        <div class="col-sm-3">
+                        </div>
+                        <div class="col-sm-5 text-right">
+                        	<a href="javascript:void(0);" onclick="batchInfoPass();" title='批量发布' class="btn btn-primary btn-sm">批量发布</a>
+                        	<a href="javascript:void(0);" onclick="batchTransfer();" title='批量转移' class="btn btn-primary btn-sm">批量转移</a>
+                            <a href="javascript:void(0);" onclick="add();" title='新增文档' class="btn btn-primary btn-sm">新增文档</a>
+                            <a href="javascript:void(0);" onclick="cancels();" title='批量作废文档' class="btn btn-primary btn-sm">批量作废文档</a>
+                            <a href="javascript:void(0);" onclick="dels();" title='批量删除文档' class="btn btn-primary btn-sm">批量删除文档</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+	                        <ul class="nav nav-tabs">
+	                            <li ${queryStatus == 'all' ? 'class="active"' : ''} data-status="all"><a data-toggle="tab" href="#tab-1">全部</a></li>
+	                            <li ${queryStatus == '1' ? 'class="pending"' : ''} data-status="pending"><a data-toggle="tab" href="#tab-2">待审</a></li>
+	                            <li ${queryStatus == 'notpassed' ? 'class="active"' : ''} data-status="notpassed"><a data-toggle="tab" href="#tab-3">退回</a></li>
+	                            <li ${queryStatus == '1' ? 'class="active"' : ''} data-status="1"><a data-toggle="tab" href="#tab-4">审核中</a></li>
+	                            <li ${queryStatus == 'A' ? 'class="active"' : ''} data-status="A"><a data-toggle="tab" href="#tab-5">已发布</a></li>
+	                            <li ${queryStatus == 'B' ? 'class="active"' : ''} data-status="B"><a data-toggle="tab" href="#tab-6">草稿</a></li>
+	                            <li ${queryStatus == 'D' ? 'class="active"' : ''} data-status="D"><a data-toggle="tab" href="#tab-7">退稿</a></li>
+	                            <li ${queryStatus == 'X' ? 'class="active"' : ''} data-status="X"><a data-toggle="tab" href="#tab-8">回收站</a></li>
+	                        </ul>
+                        </div>
+					</div>
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<div class="qrcode-wrap">
+	<div class="qrcode-inner"></div>
+</div>
+
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+            	$("#nodeTree").jstree({
+                    "core" : {
+            			'data' : {
+            				"url" : "cms/info/nodeTreeJson?queryNodeId=${queryNodeId}",
+            				"dataType" : "json"
+            			}}, 
+                    "themes": { "theme": "default", "dots": false, "icons": true },
+                    "plugins" : ["wholerow","theme", "ui"]
+                    
+                }).
+                bind("select_node.jstree",  function(e,data){
+                	$('#queryNodeId').val(data.node.id);
+                	queryGrid();
+                });
+
+           		$("#table_list").jqGrid({
+   					url : "cms/info/infoListJson",
+   					postData : { queryNodeId: '${queryNodeId}', showDescendants: '${showDescendants}', queryStatus: '${queryStatus}', columnFiled:'${columnFiled}', keyWord: '${keyWord}'},
+   					datatype : "json",
+   					page:'${start}',
+   	                mtype:"POST",
+   					height : 450,
+   					autowidth : true,
+   					shrinkToFit : true,
+   					rowNum : 10,
+   					rowList : [ 10, 20, 30 ],
+   					colModel : [ {
+   						label : "ID",
+   						classes : 'mshow',
+   						name : 'id',
+   						index : 'id',
+   						width : 30,
+   						align : "center",
+   						sorttype : "int"
+   					}, {
+   						label : "标题",
+   						classes : 'mshow',
+   						name : 'title',
+   						index : 'title',
+   						width : 120,
+   						align : "left",
+   						formatter : titleFmt
+   					}, {
+   						label : "发布时间",
+   						name : 'publishDate',
+   						index : 'publishDate',
+   						width : 60,
+   						align : "left",
+   						formatter : publishDateFmt
+   					},{
+   						label : "其他",
+   						name : 'views',
+   						index : 'views',
+   						width : 30,
+   						align : "center",
+   						formatter : otherFmt
+   					}, {
+   						label : "状态",
+   						name : 'status',
+   						index : 'status',
+   						width : 20,
+   						align : "center",
+   						formatter : statusFmt
+   					}, {
+   						label : "操作",
+   						classes : 'mshow',
+   						name : 'op',
+   						sortable : false,
+   						width : 90,
+   						align : "center",
+   						formatter : window.oprationFmt
+   					} ],
+   					pager : "#pager_list",
+   					viewrecords : true,
+   					multiselect : true,
+   					sortname : 'id',
+   					sortorder : "desc",
+   					caption : "管理文档列表",
+   					loadtext : '正在加载...',
+   					hidegrid : false,
+   					gridComplete : function(){
+   						if(typeof gridComplete == "function"){
+   							gridComplete();
+   						}else{return null;}
+  					}
+   				});
+           		
+           		//qrcode
+           		function gridComplete(){
+           			var triggerEl = null;
+           			$('.qrcode-box').hover(function(e){
+           				triggerEl = this;
+           				var url =  $(this).find(".qrcode").attr("data-url");
+           				var title =  $(this).find(".qrcode").attr("data-title");
+           				$(".qrcode-inner").qrcode({title:title, width:200,height:200,background:"#ffffff",correctLevel:0,text:url});
+           				
+           				var pos = this.getBoundingClientRect();
+           				var windowHeight = window.document.body.clientHeight;
+           				//console.log("pos", pos);
+           				if(windowHeight - pos.top < 250){
+           					$(".qrcode-wrap").css({"bottom": windowHeight - pos.top - 5, "top":"auto", "left":pos.left-5 ,"z-index":999}).show();
+           				}else{
+           					$(".qrcode-wrap").css({"top": pos.top+5,"bottom":"auto", "left":pos.left-5 ,"z-index":999}).show();
+           				}
+           				$(".qrcode-wrap").show();
+           			}, function(e){
+           				//console.log(e);
+           				//console.log($(".qrcode-wrap")[0].getBoundingClientRect());
+           				var pos = $(".qrcode-wrap")[0].getBoundingClientRect();
+           				if(e.clientX >= pos.left && e.clientX <= pos.right && e.clientY >= pos.top && e.clientY <= pos.bottom){
+           					return;
+           				}
+           				//if (e.toElement.tagName.toUpperCase() == 'CANVAS' || $(e.toElement).hasClass("qrcode-wrap")) return;
+           				$(".qrcode-wrap").hide();
+           			});
+           			
+           			$(".qrcode-wrap").mouseleave(function (e) {
+           				console.log(e);
+           				var pos = triggerEl.getBoundingClientRect();
+           				if(e.clientX >= pos.left && e.clientX <= pos.right && e.clientY >= pos.top && e.clientY <= pos.bottom){
+           					return;
+           				}
+           			    //if ($(e.toElement).hasClass("qrcode-box")) return;
+           			    $(this).hide();
+           			})
+           			
+           		}
+
+            		
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+				
+	            $('.i-checks').iCheck({
+	                checkboxClass: 'icheckbox_square-green',
+	                radioClass: 'iradio_square-green',
+	            }); 
+	            
+	            $('.nav-tabs li').click(function() {
+            		var idStr = this.id;
+            		var status = $(this).attr('data-status');
+            		$('#queryStatus').val(status);  
+    				queryGrid(); 
+            	})
+            	
+			});
+			
+			$('#showDescendants').on('ifChanged', function(event){  
+				queryGrid(); 
+       		});  
+
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += "<button class='btn btn-primary' type='button' title='编辑' onclick='edit("+ rowObject.id + ",1);'><i class='fa fa-edit'></i>编辑</button>";
+				if(rowObject.status != "X") {
+					html += " <button class='btn btn-primary' type='button' title='作废' onclick='cancel(" + rowObject.id + ");'><i class='fa fa-remove'></i>作废</button>";
+				} else {
+					html += " <button class='btn btn-primary' type='button' title='删除' onclick='del(" + rowObject.id + ");'><i class='fa fa-remove'></i>删除</button>";
+				}
+				html += "<button class='btn btn-primary' type='button' title='审核流程' onclick='workflow("+ rowObject.id + ");'><i class='iconfont icon-shenhe1'></i>审核流程</button>";
+				return html;
+			}
+			
+			function titleFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += "<a class='info-title' href='javascript:view("+rowObject.id+");'>"+rowObject.title+"</a><br/>";
+				html += "<span class='text-danger'>["+rowObject.modeName+"]</span> <span class='text-success'>["+rowObject.nodeName+"]</span>";
+				html += " <a class='btn btn-primary btn-xs' title='普通编辑器' style='color:#fff' onclick='edit("+ rowObject.id + ",0);'><i class='fa fa-edit'></i>&nbsp;普通编辑</a>";
+				return html;
+			}
+			
+			function publishDateFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += rowObject.publishDate +"<br/>";
+				html += "<span class='text-success'>"+rowObject.creator+"</span>";
+				return html;
+			}
+			
+			function otherFmt(cellvalue, options, rowObject) {
+				var html = "";
+				if(rowObject.infoLevel == "1") {
+					html += "<font color='red'>校内</font>";
+				} else if(rowObject.infoLevel == "2") {
+					html += "<font color='#197f2e'>校外</font>";
+				} else if(rowObject.infoLevel == "3") {		
+					var url = "https://mapp.nudt.edu.cn/widget/share/detail/"+rowObject.id;
+					html += "<i class='fa fa-qrcode qrcode-box'><div class='qrcode' data-url='"+ url +"' data-title='"+rowObject.title+"'></div></i>";
+					html += "<a href='https://mapp.nudt.edu.cn/widget/share/detail/"+rowObject.id+"' target='_blank' style='color:#18A689;'>校外-分享</a>";
+				}
+				return html;
+			}
+			
+			function statusFmt(cellvalue, options, rowObject) {
+				var html = "";
+				if(rowObject.status == "1") {
+					html= "审核中";
+				} else if(rowObject.status == "A") {
+					html= "已发布";
+				} else if(rowObject.status == "B") {
+					html= "草稿";
+				} else if(rowObject.status == "C") {
+					html= "投稿";
+				} else if(rowObject.status == "D") {
+					html= "退稿";
+				} else if(rowObject.status == "E") {
+					html= "采集";
+				} else if(rowObject.status == "F") {
+					html= "待发布";
+				} else if(rowObject.status == "G") {
+					html= "已过期";
+				} else if(rowObject.status == "X") {
+					html= "作废";
+				} else if(rowObject.status == "Z") {
+					html= "归档";
+				}else{
+					html = rowObject.status;
+				}
+				return html;
+			}
+			
+			function view(id) {
+	            var queryNodeId = $('#queryNodeId').val();
+	            var showDescendants = false;
+	            if($('#showDescendants').is(':checked')) { 
+	            	showDescendants = true;
+	            }
+	            var queryStatus = $('#queryStatus').val();
+	            
+	            
+	            
+				window.open('cms/info/infoView?id='+id+'&queryNodeId=' + queryNodeId + '&showDescendants=' + showDescendants + '&queryStatus=' + queryStatus +'&start=${start}&rnd='+ Math.random());
+			}
+			
+			function workflow(id){
+				if(id){
+					$.ajax({
+						url : 'cms/info/hasLog',
+						data : {id:id},
+						success : function(res){
+							if(res==''){
+								alert("文章没有审核记录！");
+							}else{
+								layer.open({
+									type : 1, //page层
+									area : [ '660px', '450px' ],
+									title : '审核流程',
+									shade : 0.6, //遮罩透明度
+									moveType : 1, //拖拽风格，0是默认，1是传统拖动
+									shift : -1, //0-6的动画形式，-1不开启
+									content : $("#popWin").load('cms/info/flowLog?id='+id),
+								    btn: ['确定'],
+								    yes: function(index, layero){
+								    	layer.close(index); //如果设定了yes回调，需进行手工关闭
+									  }
+								});
+							}
+						}
+					});
+				}
+			}
+			
+			function add() {
+	            var queryNodeId = $('#queryNodeId').val();
+	            var showDescendants = false;
+	            if($('#showDescendants').is(':checked')) { 
+	            	showDescendants = true;
+	            }
+	            var queryStatus = $('#queryStatus').val();
+	            var columnFiled =  $('#columnFiled').val();
+	            var keyWord =  encodeURIComponent(encodeURIComponent($('#keyWord').val()));
+	            
+				loadFrameContent('cms/info/infoAdd?queryNodeId=' + queryNodeId + '&showDescendants=' + showDescendants + '&queryStatus=' + queryStatus + '&columnFiled=' + columnFiled + '&keyWord=' + keyWord +'&rnd='+ Math.random());
+			}
+
+			function edit(id, eMode) {
+				var page = $('#table_list').getGridParam('page');
+	            var queryNodeId = $('#queryNodeId').val();
+	            var showDescendants = false;
+	            var columnFiled = $('#columnFiled').val();
+	            var keyWord = encodeURIComponent(encodeURIComponent($('#keyWord').val()));
+	            if($('#showDescendants').is(':checked')) { 
+	            	showDescendants = true;
+	            }
+	            var queryStatus = $('#queryStatus').val();
+				loadFrameContent('cms/info/infoEdit?queryNodeId=' +queryNodeId + '&id=' + id + '&showDescendants=' + showDescendants + '&queryStatus=' + queryStatus+'&start='+page +'&eMode='+eMode + '&columnFiled=' + columnFiled + '&keyWord=' + keyWord +'&rnd='+ Math.random());
+			}
+
+			function cancel(id) {
+				layer.confirm('确定作废该文档吗?', {
+					btn : [ '作废', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/info/infoCancel", {
+						id : id
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('作废成功.');
+						} else {//失败
+							layer.alert("作废失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function batchInfoPass() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量操作的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量发布这些文档吗?', {
+					btn : [ '发布', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/info/infoPass", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('发布成功.');
+						} else {//失败
+							layer.alert("发布失败."+json.resultMsg, {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+
+			function del(id) {
+				layer.confirm('确定删除该文档吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/info/infoDel", {
+						id : id
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('删除成功.');
+						} else {//失败
+							layer.alert("删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function cancels() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量作废的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量作废文档吗?', {
+					btn : [ '作废', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/info/infoCancels", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('批量作废成功.');
+						} else {//失败
+							layer.alert("批量作废失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			function dels() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量删除的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量删除文档吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/info/infoDels", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('批量删除成功.');
+						} else {//失败
+							layer.alert("批量删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			
+			function batchTransfer(){
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				
+				if (ids.length == 0){
+	                layer.alert("没有选择要移动的数据.", {icon: 2});
+	                return;
+	            }
+				var index = layer.open({
+					type : 1, //page层
+					area : [ '660px', ($(window).height() - 200) +'px'],
+					title : '栏目选择',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					maxmin: true,
+					content : $("#popWin").load('cms/selector/nodeSelector'),
+				    btn: ['确定', '取消'],
+				    yes: function(index, layero){
+				    	var menuIds = $("#selectNode").val();
+				    	if(!menuIds){
+				    		alert("请选择转移的目的栏目！");
+				    		return;
+				    	}
+				    	$.post('cms/info/transfer', {infoId:ids.join(','),nodeId:menuIds}, function (json) {
+		                    //var data = $.parseJSON(json);
+		                    if (json.resultStatus) {
+		                        //成功
+		                        closeAllPopWin();
+		                        layer.msg('处理成功.');
+		                        reloadGrid();
+		                    } else {
+		                    	//
+		                    	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+		                    }
+		                }, "json");
+					}
+				});
+			}
+			
+			function reloadGrid() {
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		
+		  		var grid = $("#table_list");
+		  		var columnFiled = $("#columnFiled").val();
+	            var keyWord = $('#keyWord').val();
+	            var queryNodeId = $('#queryNodeId').val();
+	            var showDescendants = false;
+	            if($('#showDescendants').is(':checked')) { 
+	            	showDescendants = true;
+	            }
+	            var queryStatus = $('#queryStatus').val();
+				
+	          //增加提交参数
+	            var postData = {columnFiled : columnFiled, keyWord : keyWord, queryNodeId: queryNodeId, showDescendants: showDescendants, queryStatus: queryStatus};
+	            $("#table_list").jqGrid("setGridParam", { page:1, postData: postData});
+
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  	}
+		  	
+		  	
+		  	
+		  	
+		  	
+		</script>
+	
+<%}%>

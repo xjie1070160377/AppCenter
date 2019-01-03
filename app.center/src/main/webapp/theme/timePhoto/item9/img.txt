@@ -1,0 +1,30 @@
+url: "http://slide.toutiao.com/pub/desktop/57e946a2c17c0bcded16ad31",
+			title: "水墨山水",
+			
+			
+url: "http://slide.toutiao.com/pub/desktop/57f85b630ef676a44c740229",
+			title: "夏天",
+			
+			
+url: "http://slide.toutiao.com/pub/desktop/58043d4396c2fac8611155d4",
+			title: "快乐玩耍",
+
+
+coverURL: "https://static.everphoto.cn/slides/covers/freshair.png",
+			title: "清新文艺",		
+
+
+coverURL: "https://static.everphoto.cn/slides/covers/lovememory.png",
+			title: "爱的纪念册",			
+			
+url: "http://slide.toutiao.com/pub/mobile/581ecb21ca11d14f9f98d71b",
+			title: "认真的雪",
+			
+			
+coverURL: "https://static.everphoto.cn/slides/covers/havefun.png",
+			title: "吃喝玩乐",
+			
+			
+url: "http://slide.toutiao.com/pub/mobile/576901b2b8a393f661387e2e",
+			title: "夏天的味道",
+			

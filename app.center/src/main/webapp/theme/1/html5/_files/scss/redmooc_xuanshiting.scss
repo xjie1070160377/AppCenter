@@ -1,0 +1,33 @@
+//color
+$red1 : #e74c3c;
+$green: #49BE38;
+$green1:#68bb23;
+$blue:#4094c7;
+$sidebarbg:#2A2A2A;
+//width
+$iphone4:320px;
+$iphone6:375px;
+$iphone6s:414px;
+$mobile:768px;
+$pc_xs:1024px;
+$pc_sm:1281px;
+$pc_md:1441px;
+$pc_lg:1600px;
+
+.contentBox{ width: auto !important;
+        .xst-list{padding-left: 56px; margin: 45px 0 0;min-height: 700px;
+          li { float: left; position: relative; width: 220px; padding-right: 2px; padding-bottom: 10px; margin: 0 3.5% 17px; border-bottom: 1px dashed #d9d9d9; 
+             a{ display: block;position:relative; 
+                img{ width: 100%; height: auto;}
+				img.play{width: auto; height: auto;position: absolute;left: 70px;top: 50px;}
+             }
+             h4{font-size: 14px; height: 40px; line-height: 20px; overflow: hidden;}
+             p{ overflow: hidden;
+                span{ float: left; font-size: 12px; margin-right: 10px; line-height: 36px;}
+                a{ float: right; width: 60px; height: 26px; line-height: 26px; display: block; background: $blue; color: #ffffff; text-align: center; font-size: 12px; cursor: hand;}
+             }          
+          }
+        }
+		.paged{margin: 0 3.5%;}
+        .loadMore{padding: 10px 30px;background-color: #49BE38;color: #fff;border-radius: 5px;border:none;margin-left: 45%; margin-bottom: 30px;}
+}

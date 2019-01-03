@@ -1,0 +1,103 @@
+<%include("inc_head.html"){} %>
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_topic.css" />
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_complete.css" />
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_page.css" />
+<title>${site.name}-专题</title>	 
+</head>	
+<body class="output p-specials">
+	<%include("inc_nav_side.html"){} %>
+	<%include("inc_nav_user.html"){} %>
+	<!-- 内容 -->
+	<div class="row-fluid">
+		<div class="collections">
+		<%include("inc_left_cover.html"){} %>
+			<div class="offset span7">
+				<div class="page-title">
+<!-- 					<a class="btn btn-success pull-right" href="#">新建专题</a> -->
+					<ul class="clearfix collections-nav navigation">
+						<li class="active"><a href="specials">专题广场</a></li>
+						<li><a data-pjax="true" href="myMarkSpecials">我关注的</a></li>
+<!-- 						<li><a data-pjax="true" href="/Special/mySpecial.htx">我的专题</a></li> -->
+						<li class="t-serch search">
+							<form id="searchForm" class="search-form" action="${ctxPath}/search.htx">
+								<input name="q" type="text" class="search-keyword input-medium search-query" id="search-keyword" value="在这里搜索..."  onfocus="if(this.value=='在这里搜索...'){this.value='';}"  onblur="if(this.value==''){this.value='在这里搜索...';}" /> 
+									<a onclick="submitSearchForm()"><i class="iconfont">&#xe608;</i></a>
+							</form>
+						</li>
+					</ul>
+				</div>
+				<div class="tab-pane big_window active" id="Special">
+					<ul class="unstyled clearfix sort-nav">
+						<li <%if (isNotEmpty(isRecommend) && isRecommend == false){%>class="active"<%}%>><a class="category" href="specials">热门</a></li>
+						<li <%if (isNotEmpty(isRecommend) && isRecommend == true){%>class="active"<%}%>><a class="category" href="specials?isRecommend=1">推荐</a></li>
+					</ul>
+					<div class="sequence-nav"><a href="#"></a></div>
+					<div id="Hot" class="project active">
+						<%var specialPageList = SpecialPage({pageSize:20,isRecommend:isRecommend});%>
+						<% for(special in specialPageList){ %>
+						<ul class="unstyled collections-list">
+							<li>
+								<a class="avatar" href="#"> <img src="${ShowFileUrl(special.smallImage!'')}" thumbnail="180*180" onerror="this.src='${session.themeRoot}/_files/img/img_zhuanti.png'"></a>
+									<div class="collections-info">
+									<h5><a href="${ctxPath}/special/${special.id}"><%var title = Substring(special.title, 20, "...");%>${title}</a></h5>
+									<div class="btn btn-success follow">
+										<% if (HasInteractMark({ftype:"AttentionSpecial", fid:special.id})) {%>
+										<a data-type="json" data-remote="true" href="#" onclick="delMark(this, ${special.id});"> <i	class="iconfont">&#xe648;</i><span>取消关注</span></a>
+										<a data-type="json" data-remote="true" href="#" onclick="addMark(this, ${special.id}, '${special.title}', ${special.site.id});" style="display:none;"> <i	class="iconfont">&#xe624;</i><span>添加关注</span></a>
+										<%}else{%>
+										<a data-type="json" data-remote="true" href="#" onclick="delMark(this, ${special.id});"  style="display:none;"> <i class="iconfont">&#xe648;</i><span>取消关注</span></a>
+										<a data-type="json" data-remote="true" href="#" onclick="addMark(this, ${special.id}, '${special.title}', ${special.site.id});"> <i	class="iconfont">&#xe624;</i><span>添加关注</span></a>
+										<%}%>
+									</div>
+									<p class="description"><%var metaDescription = Substring(special.metaDescription, 100, "……");%>${metaDescription}</p>
+									<p>
+										<a class="blue-link" href="#">${special.refers}篇文章</a> · (<span id="special_count_${special.id}"><%var count = CountInteractMark({ftype:"AttentionSpecial", fid:special.id});%>${count}</span>)人关注
+									</p>
+								</div>
+							</li>
+						</ul>
+						<%}%>
+						<%include("inc_page.html",{pagedList:specialPageList}){}; %>	
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>	
+	
+<script src="${session.themeRoot}/_files/js/require.js" type="text/javascript" charset="utf-8"></script>
+<script src="${session.themeRoot}/_files/js/app.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	function addMark(obj, id, ftitle,siteId){
+		$.post("${ctxPath}/mark_submit", {
+			fid : id, ftype : 'AttentionSpecial', ftitle:ftitle,siteId:siteId
+		}, function(json) {
+			if (json.status == 1) {//成功
+				alert('关注成功.');
+				$("#special_count_" + id).html(json.count);
+				$(obj).hide();
+				$(obj).prev().show();
+			} else {//失败
+				alert(json.msg);
+			}
+		}, 'json');
+	}
+	function delMark(obj, id){
+		$.post("${ctxPath}/mark_del", {
+			fid : id, ftype : 'AttentionSpecial'
+		}, function(json) {
+			if (json.status == 1) {//成功
+				alert('取消关注成功.');
+				$("#special_count_" + id).html(json.count);
+				$(obj).hide();
+				$(obj).next().show();
+			} else {//失败
+				alert(json.msg);
+			}
+		}, 'json');
+	}
+</script>
+</body>
+</html>
+
+

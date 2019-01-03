@@ -1,0 +1,254 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>标记列表</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+                        <select class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled">
+                            <option value="EQ_ftype">标记类型</option>
+                            <option value="LIKE_userName">标记人</option>
+                            <option value="EQ_fid">文章ID</option>
+                        </select>
+                        
+                        </div>
+                        <div class="col-sm-2">
+                        <div class="input-group">
+                        <input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control"> 
+                        <span class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();"> 搜索</button> 
+                        </span>
+                        </div>
+                        </div>
+                        <div class="col-sm-5">
+                        
+                        </div>
+                        <div class="col-sm-3 text-right">
+<!--                                     <a href="javascript:void(0);" onclick="add();" class="btn btn-primary btn-sm">新增标记</a> -->
+                            <a href="javascript:void(0);" onclick="dels();" title='批量删除标记' class="btn btn-primary btn-sm">批量删除标记</a>
+                        </div>
+                    </div>
+
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$("#table_list").jqGrid({
+					url : "interact/interactMark/interactMarkListJson",
+					datatype : "json",
+	                mtype:"POST",
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 10,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "ID",
+						classes : 'mshow',
+						name : 'id',
+						index : 'id',
+						width : 60,
+						align : "center",
+						hidden:true,
+						sorttype : "int"
+					}, {
+						label : "标记类型",
+						classes : 'mshow',
+						name : 'ftypeText',
+						index : 'ftype',
+						width : 70,
+						align : "left",
+						formatter : markTypeFmt
+					}, {
+						label : "关注对象ID",
+						name : 'fid',
+						index : 'fid',
+						width : 40,
+						align : "left"
+					}, {
+						label : "标题",
+						name : 'ftitle',
+						index : 'ftitle',
+						width : 150,
+						align : "left"
+					}, {
+						label : "标记人",
+						name : 'userName',
+						index : 'userName',
+						width : 60,
+						align : "left"
+					}, {
+						label : "IP",
+						name : 'ip',
+						index : 'ip',
+						width : 60,
+						align : "left"
+					}, {
+						label : "时间",
+						name : 'createTime',
+						index : 'createTime',
+						width : 70,
+						align : "center",
+						sorttype : "date",
+						formatter : dateTimeFmt
+					}, {
+						label : "操作",
+						classes : 'mshow',
+						name : 'op',
+						sortable : false,
+						width : 50,
+						align : "center",
+						formatter : oprationFmt
+					} ],
+					pager : "#pager_list",
+					viewrecords : true,
+					multiselect : true,
+					sortname : 'createTime',
+					sortorder : "desc",
+					caption : "管理标记列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+			function markTypeFmt(cellvalue, options, rowObject ){
+				return cellvalue + "("+rowObject.ftype+")";
+			}
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				//html += "<button class='btn btn-primary' type='button' onclick='edit(\""+ rowObject.id + "\");'><i class='fa fa-edit'></i>&nbsp;编辑</button>";
+				//html += " <button class='btn btn-primary' type='button' onclick='del(\"" + rowObject.id + "\");'><i class='fa fa-remove'></i>&nbsp;删除</button>";
+				html += " <button class='btn btn-primary' type='button' onclick='cancel(\"" + rowObject.id + "\");'><i class='fa fa-remove'></i>&nbsp;删除</button>";
+				return html;
+			}
+
+			function add() {
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '450px' ],
+					title : '修改标记',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('interact/interactMark/interactMarkAdd')
+				});
+			}
+
+			function edit(id) {
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '450px' ],
+					title : '修改标记',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('interact/interactMark/interactMarkEdit?id=' + id)
+				});
+
+			}
+
+			function del(id) {
+				layer.confirm('确定删除该标记吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("interact/interactMark/interactMarkDel", {
+						id : id
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('删除成功.');
+						} else {//失败
+							layer.alert("删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+
+			function cancel(id) {
+				layer.confirm('确定删除该标记吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("interact/interactMark/interactMarkCancel", {
+						id : id
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('删除成功.');
+						} else {//失败
+							layer.alert("删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			function dels() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量删除的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量删除标记吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("interact/interactMark/interactMarkDels", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('批量删除成功.');
+						} else {//失败
+							layer.alert("批量删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+
+			function reloadGrid() {
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list");
+		  		var columnFiled = $("#columnFiled").val();
+	            var keyWord = $("#keyWord").val();
+				
+	          //增加提交参数
+	            var postData = { columnFiled : columnFiled, keyWord : keyWord};
+	            $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  		
+		  		
+		  	}
+		</script>
+	
+<%}%>

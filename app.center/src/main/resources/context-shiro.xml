@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+
+	<bean id="shiroFilter" class="cn.mooc.app.core.web.shiro.auth.db.DbShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/ulogin" />
+		<property name="filters">
+			<map>
+				<entry key="mauth" value-ref="mAuthenticationFilter" />
+				<entry key="uauth" value-ref="uAuthenticationFilter" />
+				<entry key="ajaxAuthc" value-ref="ajaxAuthcFilter"/>
+				<entry key="dbRoles" value-ref="dbRolesAuthorizationFilter" />
+				<!-- <entry key="roles" value-ref="dbRolesAuthorizationFilter" /> -->
+				<entry key="webRoles" value-ref="webRolesAuthorizationFilter" />		
+				<entry key="user" value-ref="userFilter" />
+				<entry key="logout" value-ref="logoutFilter" />
+				<entry key="mlogout" value-ref="mLogoutFilter" />
+			</map>
+		</property>
+		<property name="filterChainDefinitions">
+			<value>				
+				/js/**=anon
+				/css/**=anon
+				/assets/**=anon
+				/static/**=anon
+				/theme/**=anon
+				/error/**=anon
+				/widget/**=anon
+				/help/**=anon
+				/=anon
+				/index=anon
+				
+				/ajaxlogin = ajaxAuthc
+				
+				/ulogin = uauth		
+								
+				/logout*=user,logout
+				
+				/ucenter/logout=logout								
+				/ucenter/**=dbRoles[memberUser]
+				
+				/mcenter/logout=mlogout
+				/mcenter/login=mauth
+				/mcenter/**=mauth,dbRoles
+				#/mcenter/**=roles[superUser]				
+				#/mcenter/userlist=user,dbRoles[superUser],perms[sysuser.list,sysuser.add]
+
+			</value>
+		</property>
+	</bean>
+
+	<!-- 自定义的Realm处理类 -->
+	
+	<bean id="mWebAuthRealm" class="cn.mooc.app.core.web.shiro.auth.db.MWebDbAuthRealm">
+		<property name="credentialsMatcher" ref="credentialsMatcher"></property> 
+	</bean>
+	
+	<bean id="credentialsMatcher" class="cn.mooc.app.core.web.shiro.auth.matcher.NormalCredentialsMatcher">
+		<constructor-arg name="credentialsDigest" ref="sha1CredentialsDigest"></constructor-arg>
+	</bean>
+	
+<!-- 	<bean id="credentialsMatcher" class="cn.mooc.app.module.cms.web.auth.matcher.CmsCredentialsMatcher">
+		<constructor-arg name="credentialsDigest" ref="sha1CredentialsDigest"></constructor-arg>
+	</bean> -->
+	
+	<bean id="ajaxAuthcFilter" class="cn.mooc.app.core.web.shiro.auth.db.AjaxAuthFilter" >
+		<property name="usernameParam" value="username"/>
+		<property name="passwordParam" value="password"/>
+		<property name="validateCodeParameter" value="verifyUCode"/>
+		<property name="validateCodeSessionName" value="verifyUCode"/>
+		<property name="checkValidateCode" value="false"/>
+		<property name="authLoginUrl" value="/ajaxlogin"/>
+	</bean>
+	
+	<bean id="sha1CredentialsDigest" class="cn.mooc.app.core.security.SHA1CredentialsDigest"/>
+		
+	<bean id="md5PasswordMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher"> 
+		<property name="hashAlgorithmName" value="MD5"></property> 
+		<property name="hashIterations" value="1"></property> 
+		<property name="hashSalted" value="true"></property>
+		<property name="storedCredentialsHexEncoded" value="true"></property> 
+    </bean>
+	
+	<!-- Shiro中增加的过滤器 -->
+	<!-- <bean id="userFilter" class="org.apache.shiro.web.filter.authc.UserFilter"/> -->
+	<bean id="userFilter" class="cn.mooc.app.core.web.shiro.auth.db.AppUserFilter"/>
+	<bean id="logoutFilter" class="cn.mooc.app.core.web.shiro.auth.db.WebLogoutFilter">
+		<property name="redirectUrl" value="/ulogin" /> 
+	</bean>
+	<bean id="mLogoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter">
+		<property name="redirectUrl" value="/mcenter/login" /> 
+	</bean>
+	
+	<bean id="rolesFilter" class="org.apache.shiro.web.filter.authz.RolesAuthorizationFilter"/>
+	<bean id="dbRolesAuthorizationFilter" class="cn.mooc.app.core.web.shiro.auth.db.DbRolesAuthorizationFilter">
+		<property name="ctxPath" value="mcenter"/>
+	</bean>
+	<bean id="webRolesAuthorizationFilter" class="cn.mooc.app.core.web.shiro.auth.db.DbRolesAuthorizationFilter">
+		<property name="ctxPath" value=""/>
+	</bean>
+	
+	<!-- 该过滤器接收表单信息，然后创建 AuthenticationToken 对象 -->
+	<bean id="mAuthenticationFilter" class="cn.mooc.app.core.web.shiro.auth.db.WebDbAuthenticationFilter" >
+		<property name="usernameParam" value="userName"/>
+		<property name="passwordParam" value="passWord"/>
+		<property name="chkPwdSafe" value="false"/>
+		<property name="maxLoginFail" value="3"/>
+		<property name="validateCodeParameter" value="verifyMCode"/>
+		<property name="validateCodeSessionName" value="verifyMCode"/>
+		<property name="checkValidateCode" value="false"/>
+		<property name="successUrl" value="/mcenter/main"/>
+		<property name="authLoginUrl" value="/mcenter/login"/>
+	</bean>
+	
+	<bean id="uAuthenticationFilter" class="cn.mooc.app.core.web.shiro.auth.db.WebDbAuthenticationFilter" >
+		<property name="usernameParam" value="userName"/>
+		<property name="passwordParam" value="passWord"/>
+		<property name="validateCodeParameter" value="verifyCode"/>
+		<property name="validateCodeSessionName" value="verifyCode"/>
+		<property name="checkValidateCode" value="false"/>
+		<property name="successUrl" value="/index.htx"/>
+		<property name="authLoginUrl" value="/ulogin"/>
+	</bean>
+	
+	<!-- 将自己实现的ShiroRealm注入到Shiro默认的安全管理者中 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realms">
+			<list>
+				<!-- <ref bean="memberAuthRealm"/> -->
+				<ref bean="mWebAuthRealm"/>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+	
+	
+	<bean id="passwordService" class="org.apache.shiro.authc.credential.DefaultPasswordService" />
+	
+
+	
+</beans>

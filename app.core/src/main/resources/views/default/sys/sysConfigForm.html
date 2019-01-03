@@ -1,0 +1,78 @@
+<div class="col-sm-12">
+    <div class="ibox float-e-margins">
+        
+        <div class="ibox-content">
+            <form id="postForm" method="post" class="form-horizontal" action="sys/sysConfigSave">
+                
+                <div class="form-group"><label class="col-sm-3 control-label" for="name">参数名</label>
+
+                    <div class="col-sm-8"><input type="text" class="form-control" placeholder="参数的名称" name="keyName" value="${entity.keyName}"></div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                
+                <div class="form-group"><label class="col-sm-3 control-label" for="name">参数值</label>
+
+                    <div class="col-sm-8"><input type="text" class="form-control" placeholder="参数的值"  name="keyValue" value="${entity.keyValue}"></div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                
+                <div class="form-group"><label class="col-sm-3 control-label" for="name">用途说明</label>
+
+                    <div class="col-sm-8"><input type="text" class="form-control" placeholder="用途的描述信息" name="note" value="${entity.note}"></div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+    	
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        
+        $("#postForm").on("submit", function() { submitForm(); return false; });
+        $("#postForm input").on("keydown", function(event) { if(event.keyCode==13){submitForm();} });
+        
+        //表单验证
+        $("#postForm").validate({
+            rules: {
+            	keyName: {
+                    required: true,
+                    minlength: 2
+                },
+                keyValue: {
+                    required: true,
+                    minlength: 1
+                }
+            }
+        });
+        
+    });
+        
+    
+    function submitForm(){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (json) {
+            //var data = $.parseJSON(json);
+            if (json.resultStatus) {
+                //成功
+                reloadGrid();
+                closeAllPopWin();
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    	
+    }
+</script>

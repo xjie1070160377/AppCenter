@@ -1,0 +1,254 @@
+<style>
+	#userName {
+	    display:inline-block;
+	    height: 30px;
+	    border:none;
+	    outline:none;
+	    padding:0 8px;
+	}
+	#dropdown_usernames{
+		display:none;
+		position: absolute;
+	    background: #fff;
+	    z-index: 99;
+	    width: 95%;
+	    box-shadow: 0 3px 6px #ccc;
+	    list-style:none;
+	    padding:0 8px;
+	}
+	#dropdown_usernames li {
+	    padding: 8px 0;
+	    border-bottom: 1px dashed #ddd;
+	    list-style:none;
+	}
+	#dropdown_usernames li:last-child{
+		border:none;
+	}
+	.userContainer{border:1px solid #ccc;}
+	.userContainer span{
+	    display: none;
+	    height: 30px;
+	    line-height: 30px;
+	    padding: 0 8px;
+	}
+	.userContainer .icon-close{
+		background:url("/static/base/js/plugins/layer/skin/default/icon.png");
+		background-position: 0 -40px;
+    	cursor: pointer;
+        position: relative;
+    	width: 16px;
+    	height: 16px;
+    	display:inline-block;
+    	margin-left:8px;
+	}
+	
+	
+</style>
+
+<div class="col-sm-12">
+    <div class="ibox float-e-margins">
+        
+        <div class="ibox-content">
+            <form id="postForm" method="post" class="form-horizontal" action="guestbook/guestbook/${oprt}">
+            	<input type="hidden" class="form-control" placeholder="用户ID"  id="userId" name="userId" value="${entity.userId}">
+            	<input type="hidden" class="form-control" placeholder="信件数"  id="total" name="total" value="${entity.total}">
+            	<input type="hidden" class="form-control" placeholder="答复数"  id="replys" name="replys" value="${entity.replys}">
+                
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="infoTitle">信箱名称</label>
+                    <div class="col-sm-10"><input type="text" class="form-control" maxlength="20" id="name" name="name" value="${entity.name}"></div>
+                </div>
+                <div class="form-group">
+	            	<label class="col-sm-2 control-label" for="userName">选择用户</label>
+	            	<div class="col-sm-10">
+	            		<div class="userContainer">
+	            			<%if(isNotEmpty(userName)){%>
+	            			<input readonly="true" type="text" class="userName" id="userName" name="userName" autocomplete="off" value="${userName}" />
+	            			<%}else{%>
+	            			<span><b></b><i class="icon-close"></i></span>
+	            			<input type="text" class="userName" id="userName" name="userName" autocomplete="off" placeholder="请输入用户名"/>
+	            			<%}%>
+	            		</div>
+	            		<ul id="dropdown_usernames"></ul>
+	            	</div>
+	            	
+	            </div>
+                <div class="form-group">
+	            	<label class="col-sm-2 control-label" for="state">图标</label>
+	                <div class="col-sm-10">
+	                	<a class="btn btn-primary" id="imgselectfile-btn">图标上传</a>
+	                	<div class="dropzone" id="dropzone" style="display:none;"></div>
+	                	<div class="table table-striped files" id="previews">
+	                		<%if(isNotEmpty(entity.icon)){%>
+	                			<img class="preview-icon" src="${entity.icon}" style="width:80px;height:80px;" alt="" />
+	                			<input type="hidden" name="icon" id="icon" value="${entity.icon}"/>
+	                		<%}else{%>
+	                			<input type="hidden" name="icon" id="icon" />
+	                		<%}%>
+	                	</div>
+                	</div>
+	            </div>
+	            
+	            <div class="form-group">
+	            	<label class="col-sm-2 control-label" for="state">信件开关</label>
+	                <div class="col-sm-4">
+	                	<select name="state" id="state" class="form-control valid">
+	                		<% for(state in states){ %>
+	                		<option value="${state.key}" <%if(entity.state == state.key){%>selected="selected"<%}%> >${state.value}</option>
+	                		<%}%>
+	                	</select>
+                	</div>
+	            </div>
+	            
+	             <div class="form-group">
+	            	<label class="col-sm-2 control-label" for="state">排名权重</label>
+	                <div class="col-sm-4">
+	                	 <input type="tel" class="form-control" maxlength="5" id="ranking" name="ranking" value="${entity.ranking!0}">
+                	</div>
+                	<div class="col-sm-4">
+                		<i class="fa fa-exclamation-circle" style="line-height:30px;">0-99999，数字越大排名越靠前</i>
+                	</div>
+	            </div>
+               
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="content">简介</label>
+                    <div class="col-sm-10">
+                    	<textarea class="form-control" style="height:100px;padding:8px;" id="summary" name="summary" >${entity.summary}</textarea>
+                    </div>
+                </div>
+<!--                 <div class="hr-line-dashed"></div> -->
+                
+                <div class="form-group">
+                    <div class="col-sm-4 col-sm-offset-2">
+                    	<input type="hidden" name="oid" value="${entity._id}" >
+                        <button onclick="submitForm();" title='提交保存' class="btn btn-primary" type="button">提交保存</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/base/js/plugins/underscore/underscore-min.js"></script>
+<script src="${ctxPath}/static/base/js/plugins/dropzone/dropzone.js"></script>
+<script type="text/javascript">
+	var myDropzone = new Dropzone("#dropzone", { // 需要有个容器来加载控件
+		url : "sys/upload", // Set the url
+		thumbnailWidth : 80,
+		thumbnailHeight : 80,
+		parallelUploads : 20,
+		maxFiles:1,
+		addRemoveLinks:false,
+		dictRemoveFile:'取消上传',
+		dictMaxFilesExceeded:'超出允许上传数量,不允许上传',
+		dictInvalidInputType:"只允许上传图片文件",
+		acceptedFiles:"image/*",
+		autoQueue : true, // 自动上传
+		previewTemplate:'<span class="preview"><img style="width:80px;height:80px;" data-dz-thumbnail /></span>',
+		previewsContainer : "#previews", // 定义预览模版,
+		clickable : "#imgselectfile-btn", // 定义点击按钮， 点击后弹出文件选择框
+		init:function(){
+			this.on("addedfile",function(file){
+				$("#previews .preview-icon").remove();
+			});
+			this.on("success", function(a, b){ 
+				$("input[name='icon']").val(b.fileUrl);
+				setTimeout(function(){
+					$(".preview img").attr("src", b.fileUrl);
+				}, 10);
+			});
+			this.on("error", function(a, b) {
+				alert("图片上传失败");
+			});
+		}
+	});
+	
+	
+	
+    $(document).ready(function () {
+    	
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        
+        
+        //表单验证
+        $("#postForm").validate({
+            rules: {
+            	name: {
+                    required: true,
+                    minlength: 2
+                },
+                userName: {
+                    required: true
+                },
+                ranking:{
+                	range:[0,99999]
+                }
+            }
+        });
+        
+        /**
+        **用户选择
+        */
+        $('#userName').on("keyup", _.debounce(autoComplete, 500));
+        $('#dropdown_usernames').on("click", "li", function(){
+        	var $self = $(this);
+        	var userId = $self.attr("data-userId");
+        	$("#userId").val(userId);
+        	$(".userContainer span").css("display","inline-block").find("b").html($self.text());
+        	$("#dropdown_usernames, #userName").hide();
+        });
+        $('.userContainer .icon-close').on("click", function(){
+        	var $self = $(this);
+        	$("#userId").val("");
+        	$(".userContainer span").hide();
+        	$("#userName").val("").show();
+        });
+        
+    });
+    
+    function autoComplete(){
+    	var val = $("input[name='userName']").val();
+    	$.post("guestbook/guestbook/queryUser", {userName:val}, function(data){
+    		if(data.resultStatus){
+    			render(data.rows);
+    		}
+    	},"json");
+    	
+    	function render(data){
+    		var html = "";
+    		for(var i = 0; i < data.length; i++){
+    			html += "<li data-userId=" + data[i].userId +">" + data[i].userName + "</li>";
+    		}
+    		$("#dropdown_usernames").html(html);
+    		if($("#dropdown_usernames li").length > 0){
+    			$("#dropdown_usernames").show();
+    		}else{
+    			$("#dropdown_usernames").hide();
+    		}
+    	}
+    }
+        
+    
+    function submitForm(){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (json) {
+            //var data = $.parseJSON(json);
+            if (json.resultStatus) {
+                //成功
+                reloadGrid();
+                closeAllPopWin();
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    	
+    }
+    
+        
+</script>

@@ -1,0 +1,46 @@
+<script type="text/javascript">
+	var ctx = '${ctxPath}';
+</script>
+<div class="header clearfix">
+	<div class="logo">
+		<img src="${session.themeRoot}/_files/img/logo.png" alt="" />
+	</div>
+	<ul class="clearfix">  
+		<li class="n-tougaoindex"><a href="${ctxPath}/tg-main.htx">首页</a></li>
+		<li class="n-tougao"><a href="${ctxPath}/tg-tougao.htx">投稿</a></li>
+		<li class="n-tougaorecord"><a href="javascript:gotoUrl('${ctxPath}/tougao/list.htx');">投稿记录</a></li>
+		<li class="n-tougaoxuzhi"><a href="${ctxPath}/tg-xuzhi.htx">稿费需知</a></li>
+		<%var authUserInfo = AuthUserInfo();%>
+		<%if(isNotEmpty(authUserInfo)){%>
+		<li class="fr"><a class="logout-btn" href="javascript:void(0);">退出登录</a></li>
+		<%}else{%>
+		<li class="fr"><a class="login-btn" href="javascript:void(0);">用户登录</a></li>
+		<%}%>
+		<li class="fr n-tougaosetting"><a href="javascript:gotoUrl('${ctxPath}//tougao/update.htx');">设置</a></li>
+	</ul>
+</div>
+
+<div class="login-container" style="display:none;width: 450px;background: #fff;position: fixed;z-index:999;top: 50%;left: 50%;margin: -155px 0 0 -260px;text-align: center; padding:60px;padding-bottom: 30px;box-shadow: 0 2px 5px rgba(0,0,0,.3); border-radius: 4px;margin-top: -215px;">
+	<div class="logo">
+		<img src="${session.themeRoot}/_files/img/sp_logo.png"/>
+		<img src="${session.themeRoot}/_files/img/logo02.png" style="margin-left: 10px;"/>
+	</div>
+	<div class="title">
+		<span>请用民网账号密码登入</span>
+	</div>
+	<div class="sign-in">
+		<form id="login_form">
+			<div class="username form-control">
+				<label for="">账号</label>
+				<input type="text" name="username" id="username" required value="" autocomplete="off"/>
+			</div>
+			<div class="password form-control">
+				<label for="">密码</label>
+				<input type="password" name="password" id="password" required value="" autocomplete="off"/>
+			</div>
+			<button id="login_btn">登入</button>
+		</form>
+	</div>
+	<!-- <a href="" class="account">账号管理</a> -->
+	<i class="icon-close"></i>
+</div>

@@ -1,0 +1,53 @@
+<%include("inc_head.html"){} %> 
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_userHomePage.css"/>
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_page.css" />
+<title>${site.name}-${node.name}</title>	
+</head>	
+<body class="output p-index">
+	<%include("inc_nav_side.html"){} %>
+	<%include("inc_nav_user.html"){} %>
+	<!-- 内容 -->
+	<div class="row-fluid clearfix">
+		<%include("inc_left_cover.html"){} %>
+		<div class="contentBox">
+			<div class="page-title clearfix">	
+				<%include("inc_nav_node.html"){} %>	
+			</div>	
+			<ul class="sort-nav"></ul>	
+			<ul class="article-list thumbnails">
+				<%var infoPageList = InfoPage({nodeId:node.id,isIncludeChildren:true,pageSize:20});%>
+				<% for(info in infoPageList){ %>
+				<li class="clearfix">
+					<% if (isNotEmpty(info.smallImage)){ %>
+					<a href="${ctxPath}/${info.url}" target="_blank" class="wrap-img">
+						<img src="${ShowFileUrl(info.smallImage)}" onerror="this.src='${session.themeRoot}/_files/img/noPic2.png'" width="148" height="110">
+					</a>
+					<%}%>
+					<div>
+						<p class="info-top">
+							<span class="author"><%if(info.author != null){%>${info.author}<%}else{var author = UserName(info.creatorId);%>${author}<%}%></span><em>.</em>
+							<span class="publishTime"><%var time = DateUtil({date:info.publishDate});%>${time}</span>
+						</p>
+						<h4 class="title">
+							<a href="${ctxPath}/${info.url}" title="${info.title}" target="_blank"><%var title = Substring(info.title, 20, "...");%>${title}</a></h4>
+						<p class="info-bottom">
+							<span class="views">阅读：${info.views!0}</span>
+							<span class="comments">评论数：${info.comments!0}</span></p>
+					</div>
+				</li>
+				<%}%>
+				<%include("inc_page.html",{pagedList:infoPageList}){}; %>	
+<!-- 				[#include "inc_page.html"]		 -->
+			</ul>		
+			
+			<!-- Footer Start -->
+			<%include("inc_foot.html"){} %>
+			<!-- Footer End -->
+		</div>
+	
+	</div>
+<script src="${session.themeRoot}/_files/js/require.js" type="text/javascript" charset="utf-8"></script>
+<script src="${session.themeRoot}/_files/js/app.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>
+

@@ -1,0 +1,95 @@
+<div id="${id}_div">
+
+<div class="col-lg-12">
+	<div class="form-group col-sm-offset-2">
+		<span class="btn btn-success fileinput-button imgselectfile-btn"> <i
+			class="glyphicon glyphicon-plus"></i> <span>选择文件</span>
+		</span>
+		<input type="checkbox" name="autoLogo" id="${id}_autoLogo" value="1" > 视频自动加水印
+	</div>
+	<div class="form-group"><label class="col-sm-1 control-label text-center" for="${fileNameId}">名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称</label>
+        <div class="col-sm-10"><input type="text" class="form-control" placeholder="文件名称"  id="${fileNameId}" name="${fileNameId}" value="${fileName}"></div>
+    </div>
+	<div class="form-group"><label class="col-sm-1 control-label text-center" for="${fileUrlId}">文件地址</label>
+        <div class="col-sm-10"><input type="text" class="form-control" placeholder="文件地址" readonly="readonly" value="${fileUrl}" id="${fileUrlId}" name="${fileUrlId}" ></div>
+    </div>
+    <div class="form-group"><label class="col-sm-1 control-label text-center" for="${fileSizeId}">大&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;小</label>
+        <div class="col-sm-4"><input type="text" class="form-control text-center" placeholder="文件大小"  id="${fileSizeId}" name="${fileSizeId}" value="${fileSize}"></div>
+        <%if(isNotEmpty(fileTimeId)){%>
+    	<label class="col-sm-1 control-label text-center" for="${fileTimeId} ">时&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;长</label>
+        <div class="col-sm-4"><input type="text" class="form-control text-center" placeholder="视频时长"  id="${fileTimeId}" name="${fileTimeId}" value="${fileTime}"></div>
+        <%}%>
+    </div>        
+</div>
+
+
+<div id="${id}_dropZoneDiv"></div>
+<div id="actions" class="row">
+	
+	<div class="col-lg-6">
+		<div class="table table-striped files" id="${id}_previews">
+			<div id="${id}_template" class="file-row">
+				<div>
+					<span class="preview"><img data-dz-thumbnail /></span>
+				</div>
+				<div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+					<div class="progress-bar progress-bar-success" style="width: 0%;" data-dz-uploadprogress></div>
+				</div>
+				<strong class="error text-danger" data-dz-errormessage></strong>
+			</div>
+		</div>
+	</div>	
+</div>	
+</div>
+<script type="text/javascript">
+	$('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green',
+    }); 
+		//图片上传
+    	//定义文件选择后的模板
+		var previewNode = document.querySelector("#${id}_template");
+		previewNode.id = "";
+		var previewTemplate = previewNode.parentNode.innerHTML;
+		previewNode.parentNode.removeChild(previewNode);
+		var uploadUrl = "sys/upload";
+		<% if (isNotEmpty(url)){ %>
+			uploadUrl = "${url}";
+		<%}%>
+		
+		var ${id}_Dropzone = new Dropzone("#${id}_dropZoneDiv", { // 需要有个容器来加载控件
+			url : uploadUrl, // Set the url
+			thumbnailWidth : 80,
+			thumbnailHeight : 80,
+			parallelUploads : 20,
+			maxFiles:1,
+			addRemoveLinks:false,
+			dictRemoveFile:'取消上传',
+			dictMaxFilesExceeded:'超出允许上传数量,不允许上传',
+			dictInvalidInputType:"只允许上传图片文件",
+			<% if (isNotEmpty(acceptedFiles)){ %>acceptedFiles:"<% if (isNotEmpty(acceptedFiles)){ %>${acceptedFiles}<%}else{%>*<%}%>",<%}%>
+			//maxFiles:1,
+			previewTemplate : previewTemplate,
+			autoQueue : true, // 自动上传
+			previewsContainer : "#${id}_previews", // 定义预览模版
+			clickable : "#${id}_div .imgselectfile-btn" // 定义点击按钮， 点击后弹出文件选择框
+		});
+		${id}_Dropzone.on("addedfile",function(){
+			
+		});
+		${id}_Dropzone.on("success", function(a, b) {
+			$("#${fileNameId}").val(b.fileName);
+			$("#${fileUrlId}").val(b.fileUrl);
+			$("#${fileSizeId}").val(b.fileSize);
+			
+			setTimeout(function(){
+				${id}_Dropzone.removeAllFiles(true);
+            }, 1200);
+		});
+		
+		${id}_Dropzone.on("error", function(a, b) {
+			setTimeout(function(){
+				${id}_Dropzone.removeAllFiles(true);
+            }, 1200);
+		});
+</script>

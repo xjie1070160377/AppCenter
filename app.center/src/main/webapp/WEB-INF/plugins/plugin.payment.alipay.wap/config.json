@@ -1,0 +1,40 @@
+{
+	"id": "plugin.payment.alipay.wap",
+	"name": "支付宝手机支付",
+	"desc": "支付宝手机支付插件",
+	"logo": "logo.gif",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Payment",
+	"platforms": ["WAP","MOBILE"],
+	"pluginData": {
+		"Partner": {
+			"desc": "",
+			"val": "2088221443412814"
+		},
+		"seller_email": {
+			"desc": "",
+			"val": "moochn@163.com"
+		},
+		"Key": {
+			"desc": "",
+			"val": "ilhowojhnqagdzdr62rfp3tzy6bmpj9w"
+		},
+		"GateWay": {
+			"desc": "",
+			"val": "http://wappaygw.alipay.com/service/rest.htm?"
+		},
+		"VeryfyUrl": {
+			"desc": "",
+			"val": "https://mapi.alipay.com/gateway.do?service=notify_verify&"
+		},
+		"getTokenService": {
+			"desc": "",
+			"val": "alipay.wap.trade.create.direct"
+		},
+		"getDataService": {
+			"desc": "",
+			"val": "alipay.wap.auth.authAndExecute"
+		}
+	}
+}

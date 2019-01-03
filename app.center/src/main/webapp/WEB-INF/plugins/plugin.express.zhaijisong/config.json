@@ -1,0 +1,32 @@
+{
+	"id": "plugin.express.zhaijisong",
+	"name": "宅急送",
+	"desc": "宅急送快递插件",
+	"logo": "logo.png",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Express",
+	"platforms": ["PC","WAP","MOBILE","WEIXIN"],
+	"pluginData": {
+		"Kuaidi100Code": {
+			"desc": "",
+			"val": "zhaijisong"
+		},
+		"TaobaoCode": {
+			"desc": "",
+			"val": "ZJS"
+		},
+		"Width": {
+			"desc": "",
+			"val": "2300"
+		},
+		"Height": {
+			"desc": "",
+			"val": "1270"
+		},
+		"BackGroundImage": {
+			"desc": "",
+			"val": ""
+		}
+	}
+}

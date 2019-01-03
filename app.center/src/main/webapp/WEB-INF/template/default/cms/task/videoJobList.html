@@ -1,0 +1,180 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>视频转换任务列表</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+                        <button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();">刷新</button> 
+                        </div>
+                        <div class="col-sm-2">
+                        <div class="input-group">
+
+                        </div>
+                        </div>
+                        <div class="col-sm-5">
+                        
+                        </div>
+                        <div class="col-sm-3 text-right">
+
+                        </div>
+                    </div>
+
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$("#table_list").jqGrid({
+					url : "cms/task/videoJobListJson",
+					datatype : "json",
+					mtype : "POST",
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 10,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "任务Id",
+						classes : 'mshow',
+						name : 'id',
+						index : 'id',
+						width : 40,
+						align : "center"
+					}, {
+						label : "任务名称",
+						name : 'jobName',
+						index : 'jobName',
+						width : 110,
+						align : "left"
+					}, {
+						label : "任务状态",
+						classes : 'mshow',
+						name : 'status',
+						index : 'status',
+						width : 30,
+						align : "center",
+						formatter : statusFmt
+					}, {
+						label : "创建时间",
+						name : 'createTime',
+						index : 'createTime',
+						width : 60,
+						align : "center",
+						sorttype : "date",
+						formatter : dateTimeFmt
+					}, {
+						label : "最后更新时间",
+						name : 'updateTime',
+						index : 'updateTime',
+						width : 60,
+						align : "center",
+						sorttype : "date",
+						formatter : dateTimeFmt
+					},{
+						label : "操作",
+						classes : 'mshow',
+						name : 'op',
+						sortable : false,
+						width : 60,
+						align : "center",
+						formatter : oprationFmt
+					} ],
+					pager : "#pager_list",
+					viewrecords : true,
+					sortname : 'id',
+					sortorder : "desc",
+					caption : "视频转换任务列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += "<button class='btn btn-primary' type='button' onclick='videoPreview("+rowObject.id+",\""+ rowObject.jobData + "\");'><i class='fa fa-play-circle-o' style='font-size:18px;'></i>&nbsp;预览</button>";
+				return html;
+			}
+
+			function statusFmt(cellvalue, options, rowObject) {
+				//status：0 待执行，1 执行中 2 执行完成 -1 执行出错
+				var html = "";
+				switch (cellvalue) {
+				case 0:
+					html = "<font color='green'>待执行</font>";
+					break;
+				case 1:
+					html = "<font color='red'>执行中</font>";
+					break;
+				case 2:
+					html = "<font color='gray'>执行完成</font>";
+					break;
+				case -1:
+					html = "<font color='blue'>执行出错</font>";
+					break;
+				default:
+					html = "<font color='gray'>未知["+cellvalue+"]</font>";
+					break;
+				}
+
+				return html;
+			}
+	
+			function videoPreview(id,mediaUrl) {
+
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '450px' ],
+					title : '视频预览',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('cms/task/videoPreview',{jobId:id,mediaUrl:mediaUrl}),
+				    btn: ['关闭'],
+				    yes: function(index, layero){
+				    	layer.close(index);
+					}
+				});
+
+			}
+
+
+
+			function reloadGrid() {
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+
+				//刷新grid
+		  		reloadGrid();
+		  		
+		  		
+		  	}
+		</script>
+	
+<%}%>

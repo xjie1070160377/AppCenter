@@ -1,0 +1,448 @@
+<% layout("/share/mlayout.html"){%>
+<link href="${ctxPath}/static/base/css/plugins/jsTree/style.min.css" rel="stylesheet">
+<script src="${ctxPath}/static/base/js/plugins/jsTree/jstree.min.js"></script>
+<!-- moocShop -->
+<style>
+#table_list{
+	width:100%;
+}
+table#list, table.category_table, table#applyList, table#HandSlideDatagrid {
+    margin-top: 16px;
+}
+table thead tr th {
+    background-color: #e6e6e6;
+    border: 0;
+    height: 40px;
+    color:#333;
+}
+.btn-a a, .btn-a .good-share {
+    cursor: pointer;
+    transition: all linear .2s;
+    padding: 0 8px;
+}
+table>tbody>tr:nth-child(2n+1) {
+    background-color: #fafbfb;
+}
+table>tbody>tr>td {
+    border-bottom: 1px dashed #f4f4f4;
+    border-top: 0;
+    padding:8px;
+}
+.btn-a a+a {
+    border-left: 1px solid #e6e6e6;
+}
+.info-title{
+	color:#333;
+}
+.table-bt {
+    background: #fff;
+    padding: 14px 0;
+}
+.table-bt .tabel-operate {
+    float: left;
+    margin-left: 17px;
+}
+.table-bt label {
+    font-weight: 200;
+    margin-right: 8px;
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+.table-bt label input {
+    vertical-align: top;
+    margin: 2px 5px 0 0;
+}
+.table-bt .btn {
+    margin-left: 8px;
+}
+.btn-ssm:not(.btn-danger) {
+    padding: 2px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    vertical-align: baseline;
+    background:none;
+    color:#333;
+}
+.table-bt .pager {
+    float: right;
+    margin: 0;
+    position: relative;
+    margin-right: 10px;
+}
+.pager {
+    padding-left: 0;
+    margin: 20px 0;
+    text-align: center;
+    list-style: none;
+}
+.table-bt .pager .active-page {
+    vertical-align: middle;
+}
+.pager .tipic-dialog {
+    bottom: 30px;
+    right: 0;
+}
+.tipic-dialog {
+    position: absolute;
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 1px #ECF0F1;
+    background: #fff;
+    display: none;
+}
+
+/*jstree*/
+.jstree-default .jstree-themeicon{
+	background:none;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translate(0, 0);
+    font-weight:700;
+}
+.jstree-default .jstree-themeicon:after{
+    content: "\f016";
+}
+.jstree-default .jstree-closed > a .jstree-themeicon:after{
+    content: "\f114";
+}
+.jstree-default .jstree-open > a .jstree-themeicon:after{
+	content: "\f115";
+}
+
+
+</style>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-2 visible-lg-block">
+			<div>
+				<label class="checkbox-inline i-checks jstree-top">
+					<input type="hidden" id="queryNodeId" value="${queryNodeId}"/>
+					<input type="hidden" id="queryStatus" value="${queryStatus}"/>
+					<input type="checkbox" id="showDescendants" value="1" ${showDescendants != null && showDescendants ? 'checked' : ''} />包含子栏目文档
+				</label>
+			</div>
+       		<div id="nodeTree"></div>
+		</div>
+		<div class="col-lg-10">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>文档列表</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+                        <select class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled">
+                            <option value="LIKE_detail.title">文档标题</option>
+                        </select>
+                        </div>
+                        <div class="col-sm-2">
+                        <div class="input-group">
+                        <input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control"> 
+                        <span class="input-group-btn">
+                            <button id="search" type="button" class="btn btn-sm btn-primary"> 搜索</button> 
+                        </span>
+                        </div>
+                        </div>
+                        <div class="col-sm-5">
+                        </div>
+                        <div class="col-sm-3 text-right">
+                            <a href="javascript:void(0);" title='新增文档' onclick="add();" class="btn btn-primary btn-sm">新增文档</a>
+                            <a href="javascript:void(0);" title='批量作废文档' onclick="cancels();" class="btn btn-primary btn-sm">批量作废文档</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+	                        <ul class="nav nav-tabs">
+	                            <li ${queryStatus == 'all' ? 'class="active"' : ''} data-status="all"><a data-toggle="tab" href="#tab-1">全部</a></li>
+	                            <li ${queryStatus == 'B' ? 'class="active"' : ''} data-status="B"><a data-toggle="tab" href="#tab-2">草稿</a></li>
+	                            <li ${queryStatus == 'A' ? 'class="active"' : ''} data-status="A"><a data-toggle="tab" href="#tab-3">已发布</a></li>
+	                            <li ${queryStatus == 'X' ? 'class="active"' : ''} data-status="X"><a data-toggle="tab" href="#tab-4">回收站</a></li>
+	                        </ul>
+                        </div>
+					</div>
+					<div class="">
+						<table id="table_list"></table>
+						<div class="tabel-operate" id="batchDelete">
+				            <button type="button" class="btn btn-danger btn-ssm" onclick="batchDelete()">批量删除</button>
+				        </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+                            
+		<script>
+		
+		var categoryId;
+
+		$(function () {
+			initJsTree();
+			
+		    initTable();
+
+		    bindSearchBtnClick();
+		});
+
+		function bindSearchBtnClick() {
+		    $('#search').click(function () {
+		        reload();
+		    });
+		}
+		
+		function initJsTree(){
+			$("#nodeTree").jstree({
+                "core" : {
+        			'data' : {
+        				"url" : "cms/info/nodeTreeJson?queryNodeId=${queryNodeId}",
+        				"dataType" : "json"
+        			}}, 
+                "themes": { "theme": "default", "dots": false, "icons": true },
+                "plugins": ["theme","ui"],
+            }).
+            bind("select_node.jstree",  function(e,data){
+            	$('#queryNodeId').val(data.node.id);
+            	reload();
+            });
+		}
+
+		function initTable() {
+
+		    //文档列表
+		    $("#table_list").moocDatagrid({
+		        url: "cms/info/infoListJson",
+		        nowrap: false,
+		        rownumbers: true,
+		        NoDataMsg: '没有找到符合条件的数据',
+		        border: false,
+		        fit: true,
+		        fitColumns: true,
+		        pagination: true,
+		        idField: "id",
+		        pageSize: 9,
+		        pagePosition: 'bottom',
+		        pageNumber: 1,
+		        queryParams: {},
+		        operationButtons: '#batchDelete',
+		        columns:
+		        [[
+		            { 
+		            	checkbox: true,
+		            	width: 39 
+	            	},
+		            {
+		            	field: "id",
+		            	title: "ID",
+		            	width: 50,
+		            	align: 'left',
+		            },
+		            {
+		                field: "title",
+		                title: '标题',
+		                width: 250,
+		                align: 'left',
+		                formatter: function (value, row, index) {
+		                	var html = "";
+		    				html += "<a class='info-title' href='javascript:view("+row.id+");'>"+row.title+"</a><br/>";
+		    				html += "<span class='text-danger'>["+row.modeName+"]</span> <span class='text-success'>["+row.nodeName+"]</span>";
+		    				return html;
+	                    }
+		            },
+		            { 
+		            	field: "publishDate",
+		            	title: "发布时间", 
+		            	width: 85, 
+		            	align: "left",
+		            	formatter: function (value, row, index) {
+		            		var html = "";
+		    				html += row.publishDate +"<br/>";
+		    				html += "<span class='text-success'>"+row.creator+"</span>";
+		    				return html;
+		            	}
+	            	},
+		        	{
+		            	field: "priority", 
+		            	title: "优先级", 
+		            	width: 70, 
+		            	align: "center",
+		        	},
+		        	{
+		            	field: "views", 
+		            	title: "点击量", 
+		            	width: 70, 
+		            	align: "center",
+		        	},
+		        	{
+		            	field: "status", 
+		            	title: "状态", 
+		            	width: 70, 
+		            	align: "center",
+		            	formatter: function (value, row, index) {
+		    				var html = "";
+		    				if(row.status == "1") {
+		    					html= "审核中";
+		    				} else if(row.status == "A") {
+		    					html= "已发布";
+		    				} else if(row.status == "B") {
+		    					html= "草稿";
+		    				} else if(row.status == "C") {
+		    					html= "投稿";
+		    				} else if(row.status == "D") {
+		    					html= "退稿";
+		    				} else if(row.status == "E") {
+		    					html= "采集";
+		    				} else if(row.status == "F") {
+		    					html= "待发布";
+		    				} else if(row.status == "G") {
+		    					html= "已过期";
+		    				} else if(row.status == "X") {
+		    					html= "作废";
+		    				} else if(row.status == "Z") {
+		    					html= "归档";
+		    				}
+		    				return html;
+		    			}
+		        	},
+		        	{
+		            	field: "op", 
+		            	title: "操作", 
+		            	width: 90, 
+		            	align: "center",
+		           		formatter: function (value, row, index) {
+			                var html = "";
+			                html += '<span class="btn-a">';
+			                html += '<a class="good-check" onclick="edit(' + row.id + ')">编辑</a>';
+			                if(row.status != "X") {
+			                	html += '<a class="good-check" onclick="cancel(' + row.id + ');">作废</a>';
+			                }else{
+			                	html += '<a class="good-check" onclick="del(' + row.id + ')">删除</a>';
+			                }
+			                html += '</span>';
+			                return html;
+			            },
+			            classes: 'td-operate'
+			        }
+		        ]]
+		    });
+
+		}
+		
+		function batchDelete() {
+
+		    var selected = $("#table_list").moocDatagrid('getSelections');
+		    var ids = [];
+		    $.each(selected, function (i, item) {
+		        ids.push(item.id);
+		    });
+		    if (ids.length > 0) {
+		    	layer.confirm('您确定要删除选中的' + ids.length + '个文档吗？', {btn : [ '作废', '取消' ]}, function () {
+		            //var loading = showLoading();
+		            $.post("cms/info/infoCancels", {
+						ids : ids.toString()
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							layer.msg('批量作废成功.');
+		                    reload();
+						} else {//失败
+							layer.alert("批量作废失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+		        });
+		    }
+		}
+
+		function reload() {
+			var pageNo = $("#table_list").moocDatagrid('options').pageNumber;
+			var columnFiled = $("#columnFiled").val();
+            var keyWord = $("#keyWord").val();
+            var queryNodeId = $('#queryNodeId').val();
+            var showDescendants = false;
+            if($('#showDescendants').is(':checked')) { 
+            	showDescendants = true;
+            }
+            var queryStatus = $('#queryStatus').val();
+		    var postData = { columnFiled : columnFiled, keyWord : keyWord, queryNodeId: queryNodeId, showDescendants: showDescendants, queryStatus: queryStatus, pageNumber: pageNo};
+		    $("#table_list").moocDatagrid('reload', postData);
+		}
+			
+		function view(id) {
+            var queryNodeId = $('#queryNodeId').val();
+            var showDescendants = false;
+            if($('#showDescendants').is(':checked')) { 
+            	showDescendants = true;
+            }
+            var queryStatus = $('#queryStatus').val();
+			loadFrameContent('cms/info/infoView?id='+id+'&queryNodeId=' + queryNodeId + '&showDescendants=' + showDescendants + '&queryStatus=' + queryStatus +'&rnd='+ Math.random());
+		}
+		
+		function add() {
+            var queryNodeId = $('#queryNodeId').val();
+            var showDescendants = false;
+            if($('#showDescendants').is(':checked')) { 
+            	showDescendants = true;
+            }
+            var queryStatus = $('#queryStatus').val();
+			loadFrameContent('cms/info/infoAdd?queryNodeId=' + queryNodeId + '&showDescendants=' + showDescendants + '&queryStatus=' + queryStatus +'&rnd='+ Math.random());
+		}
+
+		function edit(id) {
+            var queryNodeId = $('#queryNodeId').val();
+            var showDescendants = false;
+            if($('#showDescendants').is(':checked')) { 
+            	showDescendants = true;
+            }
+            var queryStatus = $('#queryStatus').val();
+			loadFrameContent('cms/info/infoEdit?queryNodeId=' +queryNodeId + '&id=' + id + '&showDescendants=' + showDescendants + '&queryStatus=' + queryStatus +'&rnd='+ Math.random());
+		}
+			
+		function del(id) {
+			layer.confirm('确定删除该文档吗?', {
+				btn : [ '删除', '取消' ]
+			//按钮
+			}, function() {
+				$.post("cms/info/infoDel", {
+					id : id
+				}, function(json) {
+					if (json.resultStatus == true) {//成功
+						reload();
+						layer.msg('删除成功.');
+					} else {//失败
+						layer.alert("删除失败.请先清除下属数据.", {icon: 2});
+					}
+				}, 'json');
+			});
+		}
+		
+		function cancel(id) {
+			layer.confirm('确定作废该文档吗?', {
+				btn : [ '作废', '取消' ]
+			//按钮
+			}, function() {
+				$.post("cms/info/infoCancel", {
+					id : id
+				}, function(json) {
+					if (json.resultStatus == true) {//成功
+						reload();
+						layer.msg('作废成功.');
+					} else {//失败
+						layer.alert("作废失败.请先清除下属数据.", {icon: 2});
+					}
+				}, 'json');
+			});
+		}
+
+
+
+		
+		
+		
+		</script>
+	
+<%}%>

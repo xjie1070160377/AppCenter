@@ -1,0 +1,170 @@
+<%var style = {%>
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/base.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/style.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/iCheck/custom.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/three-quarters.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/redmooc_topic.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/redmooc_page.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/lc_switch.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/receiveBox.css" />
+<style>
+	.f-toe{text-overflow: ellipsis;overflow: hidden;}
+	i.state0, i.state1,i.state-1{width:6px;height:6px;display:inline-block;margin-right:3px;background-color:#ccc;border-radius:100%;}
+	i.state0{background-color:#f8ac59;}
+	i.state1{background-color:#1ab394;}
+	.ui-jqgrid tr.ui-row-ltr td.f-toe{white-space: nowrap;}
+	.ui-jqgrid tr.jqgrow td {padding: 11px 6px;}
+	.row-fluid{padding:20px 10px 10px 10px;}
+	body.output{background:#fff;}
+	.ibox-title{border:none;border-bottom:1px solid #ccc;margin:0 20px;}
+	.ibox-content{border:none;}
+	.ibox {padding:10px;margin:20px;background: #fff;box-shadow:0 0 8px #ccc;}
+	.jqGrid_wrapper{margin-top:16px;}
+	.ui-jqgrid .ui-jqgrid-hbox{padding:0;}
+	.ui-jqgrid .ui-jqgrid-htable, .ui-jqgrid .ui-jqgrid-btable{width:100%!important;}
+	.row-fluid .contentBox{width:100%;margin:0;max-width:100%;padding:0 20px;}
+	.page-title {border-bottom: 2px solid #d9d9d9;height: 52px;}
+	h3.u-message-tt{color: #1ab394;font-weight: 700;font-family: "microsoft yahei";margin-bottom:16px;padding-bottom:16px;border-bottom:1px dashed #1ab394;}
+	@media screen and (max-width:768px){
+		.ui-jqgrid tr.jqgrow td{display:none;}
+		.ui-jqgrid .ui-jqgrid-htable th{display:none;}
+		.ui-jqgrid tr.jqgrow td.mshow{display:table-cell;}
+		.jqgfirstrow{display:none;}
+		#table_list_username, #table_list_title,#table_list_state,#table_list_op{
+			display:table-cell;width:20%!important;
+		}
+		#table_list_title, td.mshow[aria-describedby="table_list_title"]{
+			width:40%!important;
+		}
+		.ibox{margin: 0;box-shadow: none;border: none;}
+		.ibox-title{margin:0;border:none;padding-left:0;}
+		.ibox-content{padding:0 8px;}
+		.row-fluid .contentBox .page-title{border-top: 2px solid #eee;}
+		.row-fluid{padding:0;}
+		.row-fluid .contentBox .page-title li.active{height:50px;}
+		.ui-jqgrid tr.jqgrow td{padding:0;}
+		.ui-widget-content a.btn{margin-left:0!important;margin-top:6px;margin-bottom:6px;padding:3px 10px;}
+		.ui-widget-content a.btn:first-child{margin-bottom:0px;}
+		.control-label { margin-top: 16px;margin-bottom: 4px;color:#5fa207}
+		.form-group{ margin-top: 8px!important; margin-bottom: 8px!important;}
+  	 	 h3.u-message-tt{margin-top:16px;margin-bottom:0;color:#861817;border-color:#861817;}
+  	 	 .row-fluid .contentBox .page-title li {padding: 15px 3%;}
+  	 	 .form-group.icheck .col-sm-4{margin-bottom:10px;}
+  	 	 .btn-primary {background-color: #861817;border-color: #861817;}
+		.btn-primary.active,.btn-primary.active:focus,.btn-primary.active:hover,.btn-primary:active,.btn-primary:active:focus,.btn-primary:active:hover,.btn-primary:focus,.btn-primary:hover,.open .dropdown-toggle.btn-primary{background-color:#861817;border-color:#861817;color:#FFF}
+	}
+	.app .wrap-btn,.app .nav-shrink{display:none;}
+	.app .row-fluid{width:100%;overflow-x:hidden;}
+	.app .row-fluid .contentBox{padding:0;}
+	.app .row-fluid .contentBox .page-title{margin-top:0;padding: 10px 10px 0 10px;border-top:none;height: 60px;}
+	
+</style>
+<%};%>
+
+<%include("shared/inc_head.html", {title:entity.title, style:style}){} %> 
+
+
+<body class="output p-guestbook-form app <%if(isNotEmpty(session.token)){ %> app <%}%>">
+	
+	<%include("shared/inc_nav_side.html"){} %>
+	<%include("shared/inc_nav_user.html"){} %>
+	
+
+<div class="row-fluid wrapper wrapper-content  animated fadeInRight row-fluid clearfix">
+	<div class="row">
+		<div class="col-sm-12">
+		    <div class="ibox float-e-margins">
+		        <div class="ibox-content">
+		            <form id="postForm" method="post" class="form-horizontal" action="/widget/guestbook/message/${oprt}">
+		                <input type="hidden" name="_id" value="${entity._id}"/>
+		                <p class="item title">${entity.title!} <%if(entity.sourceId != null){%> （转发） <%}%></p>
+		                <p class="item username"><label for="">发件人:</label> <span style="color:#b05d2b;">${entity.username!}</span></p>
+		                <p class="item createTime"><label for="">时&nbsp;&nbsp;&nbsp;间:</label>${entity.createTime!}</p>
+		                <p class="item email"><label for="">邮&nbsp;&nbsp;&nbsp;箱:</label>${entity.email!}</p>
+		                <p class="item text">${entity.text!}</p>
+		               
+		                
+		                <%if(entity.sourceId != null){%>
+		                <div class="col-sm-10 col-md-offset-2" style="padding:0 6px;"> <h3 class="u-message-tt offset-md-2">转发信件内容</h3></div>
+		                <div class="form-group" style="margin-top:30px;margin-bottom:30px;">
+		                	<label class="col-sm-2 control-label" for="username">转发自</label>
+		                    <div class="col-sm-4"><input type="text" class="form-control" readonly="readonly" id="username" value="${entity.sourceUserName!}"></div>
+		                </div>
+		                <div class="form-group" style="margin-top:30px;margin-bottom:30px;">
+		                	<label class="col-sm-2 control-label" for="text">转发信件</label>
+		                    <div class="col-sm-10">
+		                    	<textarea class="form-control" style="height:200px;padding:8px;line-height:2;resize:none" readonly="readonly">${entity.sourceText!}</textarea>
+		                    </div>
+		                </div>
+	                    <%}%>
+		                
+		               <input type="hidden" name="replyId" value="${isNotEmpty(reply)? reply._id:''}"/>
+		                <div class="form-group" style="margin-top:30px;margin-bottom:30px;">
+		                	<label class="col-sm-2 control-label" for="text">回复内容</label>
+		                    <div class="col-sm-10">
+		                    	<textarea type="text" id="text" class="form-control" name="text" style="height:200px;padding:8px;line-height:2;resize:none">${isNotEmpty(reply)? reply.text:''}</textarea>
+		                    </div>
+		                </div>
+		                <div class="form-group icheck" style="margin-top:30px;margin-bottom:30px;">
+		               	    <p>
+		               	    	<label style="width: 9em;" class="col-sm-2 control-label" for="isVisibile">是否前台显示:</label>
+		                		<input type="checkbox" name="isVisibile" value="0" class="lcs_check" autocomplete="off" />
+		               	    </p>
+		                	<p>
+			                	<label style="width: 9em;" class="col-sm-2 control-label" for="isTop">是否置顶:</label>
+			                	<input type="checkbox" name="isTop" value="0" class="lcs_check" autocomplete="off" />
+		                	</p>
+		                </div>
+		                <div style="margin-top:10px;height:1px;"></div>	
+		                <div class="form-group">
+		                    <div class="col-sm-4 col-sm-offset-2">
+		                    	<input type="hidden" name="oid" value="${entity._id}" >
+		                        <button onclick="submitForm();" title='提交保存' class="btn btn-primary" type="button">提交保存</button>
+		                        <button onclick="back()" title='返回' class="btn btn-primary" type="button">返回</button>
+		                    </div>
+		                </div>
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+
+</div>
+<script type="text/javascript" src="${session.guestbook}/_js/jquery.js"></script>
+<script type="text/javascript" src="${session.guestbook}/_js/lc_switch.js"></script>	
+<script type="text/javascript">
+$(document).ready(function () {
+      /*  $('.i-checks').iCheck({
+           checkboxClass: 'icheckbox_square-green',
+           radioClass: 'iradio_square-green',
+       }); */
+       
+	$('input').lc_switch("是","否");
+	// triggered each time a field changes status
+	$('body').delegate('.lcs_check', 'lcs-statuschange', function() {
+		var status = ($(this).is(':checked')) ? 'checked' : 'unchecked';
+		$(this).val(status == "checked" ? 1 : 0);
+		console.log('field changed status: '+ status );
+	});
+});
+       
+   
+function submitForm(){
+  	var postData = $("#postForm").serializeArray();
+	$.post($("#postForm").attr("action"), postData, function (data) {
+          if (data.resultStatus) {
+              back();
+          } else {
+          	layer.alert("失败了："+ data.resultMsg, {icon: 2});
+          }
+    }, "json");
+  	
+}
+  
+function back(){
+	location.href="/widget/guestbook/manage";
+}
+</script>
+	
+

@@ -1,0 +1,20 @@
+ <% var node_ind = 0; %> 
+  <% var activeInd = null; %>
+<ul class="nodelist clearfix">
+	<% for(_node in NodeList({limit:9,parent:'redmooc'})){ %>
+		<li <% if ( node.id == _node.id || (node.id == 1 && node_ind == 0)){ activeInd = node_ind; %> class="active"  <% }%> >	
+			 <a href="/node/${_node.id}">${_node.name}</a>
+		</li> 
+		<% if(node_ind == 0){  firstNode = _node; }%> 
+		<% node_ind++; %> 
+	<% }%>
+	<li class="t-serch">
+		<form id="searchForm" action="${ctxPath}/search.htx">
+			<input name="q" type="text" class="search-keyword"
+				id="search-keyword" value="在这里搜索..."
+				onfocus="if(this.value=='在这里搜索...'){this.value='';}"
+				onblur="if(this.value==''){this.value='在这里搜索...';}" /> <a
+				onclick="submitSearchForm()"><i class="iconfont">&#xe608;</i></a>
+		</form>
+	</li>
+</ul>

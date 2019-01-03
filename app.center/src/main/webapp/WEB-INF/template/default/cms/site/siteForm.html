@@ -1,0 +1,139 @@
+<div class="col-sm-12">
+	<div class="ibox-title">
+		<h5>站点信息修改</h5>
+	</div>
+	<div class="ibox-title">
+		<button class="btn btn-info " type="button" id="btn_back"><i class="fa fa-mail-reply-all"></i> 返回</button>
+	</div>
+    <div class="ibox float-e-margins">
+        
+        <div class="ibox-content">
+            <form id="postForm" method="post" class="form-horizontal" action="cms/site/site${entity.id == 0 ? 'Save' : 'Update'}">
+
+<!--  
+                <div class="form-group"><label class="col-sm-2 control-label">上级站点</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="上级站点" id="parentIdName" value="根站点"></div>
+               		<label class="col-sm-2 control-label" for="type">组织</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="所属组织" id="orgIdName" value="默认组织"></div>
+                </div>
+                <div class="hr-line-dashed"></div>
+-->              
+                <div class="form-group"><label class="col-sm-2 control-label">站点名称</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="站点的名称" name="name" value="${entity.name}"></div>
+               		<label class="col-sm-2 control-label" for="type">全称</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="站点的全称" name="fullName" value="${entity.fullName}"></div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                
+                <div class="form-group"><label class="col-sm-2 control-label">域名</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="域名" name="domain" value="${entity.domain}"></div>
+               		<label class="col-sm-2 control-label" for="type">代码</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="站点代码" name="number" value="${entity.number}"></div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                
+                <div class="form-group"><label class="col-sm-2 control-label">模板主题</label>
+                    <div class="col-sm-4">
+                    <select class="input-sm form-control input-s-sm inline" name="templateTheme">
+						<% for(item in themeList){ %>
+						    <option value="${item}" ${item==entity.templateTheme?"selected":""}>${item}</option>
+						<% } %>
+                    </select>	
+                    </div>
+               		<label class="col-sm-2 control-label" for="type">文章点击累加数</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="" name="pointStep" value="${entity.pointStep}"></div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                
+                <div class="form-group"><label class="col-sm-2 control-label">状态</label>
+                    <div class="col-sm-4"><#RadioTag mapData="${ { 启用:1,禁用:0 \} }" defaultValue="${entity.status}" fieldName="status" /></div>
+               		<label class="col-sm-2 control-label" for="type">默认站点</label>
+                    <div class="col-sm-4">
+                 		<label class="checkbox-inline i-checks">
+						<input type="checkbox" name="def" value="true" ${entity.def?"checked":""}>
+						</label>
+					</div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                              
+                <div class="form-group"><label class="col-sm-2 control-label" for="passWord">无图时显示</label>
+                    <div class="col-sm-10">
+                    <#SimpleFileUploadTag defaultValue="${entity.noPicture}" width="100" height="100" id="noPicture" isImg="false" placeholder="" isHiddenUrl="false" isPreview="true"/>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                
+                <div class="form-group"><label class="col-sm-2 control-label">启用PC端页面</label>
+                    <div class="col-sm-4"><#RadioTag mapData="${ { 启用:1,禁用:0 \} }" defaultValue="${entity.showIndex}" fieldName="showIndex" /></div>
+               		<label class="col-sm-2 control-label" for="type">PC端强制登录</label>
+                    <div class="col-sm-4"><#RadioTag mapData="${ { 启用:1,禁用:0 \} }" defaultValue="${entity.needLogin}" fieldName="needLogin" /></div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                
+                <div class="form-group">
+                    <div class="col-sm-12 text-right">
+                    	<input type="hidden" name="oid" value="${entity.id}" >
+                        <button onclick="submitForm();" title='提交保存' class="btn btn-primary" type="button">提交保存</button>
+                        
+<!--                         <button onclick="back();" class="btn btn-primary" type="button">返回</button> -->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+    	
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        
+        
+        
+        //表单验证
+        $("#postForm").validate({
+            rules: {
+            	name: {
+                    required: true,
+                    minlength: 2
+                }
+            }
+        });
+        
+    });
+        
+    
+    function submitForm(){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (json) {
+            //var data = $.parseJSON(json);
+            if (json.resultStatus) {
+                //成功
+                //reloadGrid();
+                //closeAllPopWin();
+                back();
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    	
+    }
+    
+    function back() {
+    	loadFrameContent('cms/site/siteList');
+    }
+
+    $("#btn_back").click(function(){
+    	back();
+    });
+    
+</script>

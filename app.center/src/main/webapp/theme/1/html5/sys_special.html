@@ -1,0 +1,108 @@
+<%include("inc_head.html"){} %>
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/sys_special.css" />
+<title>${site.name}-专题</title>	
+</head>	
+<body class="output p-specials">
+	<%include("inc_nav_side.html"){} %>
+	<%include("inc_nav_user.html"){} %>
+	<!-- 内容 -->
+	<div class="row-fluid clearfix">
+		<%include("inc_left_cover.html"){} %>
+		<div class="contentBox">
+			<div class="page-title clearfix">	
+				<div class="special">
+					<div class="header clearfix">
+						<div class="smallImage fl">
+							<img src="${special.smallImage!}" thumbnail="180*180" onerror="this.src='${session.themeRoot}/_files/img/img_zhuanti.png'" alt="" />
+						</div>
+						<div class="fl meta">
+							<h3 class="title">${special.title!}</h3>
+							<p class="author">
+								<span class="followers">${special.refers!0}篇文章</span>
+								<span class="creator"><i class="iconfont">&#xe60d;</i>创建者: <%var specialsAuthor = UserName(special.creatorId);%>${specialsAuthor}</span>
+							</p>
+							<div class="btn btn-success follow">
+										<% if (HasInteractMark({ftype:"AttentionSpecial", fid:special.id})) {%>
+										<a data-type="json" data-remote="true" href="#" onclick="delMark(this, ${special.id});"> <i	class="iconfont">&#xe648;</i><span>取消关注</span></a>
+										<a data-type="json" data-remote="true" href="#" onclick="addMark(this, ${special.id}, '${special.title}', ${special.site.id});" style="display:none;"> <i	class="iconfont">&#xe624;</i><span>添加关注</span></a>
+										<%}else{%>
+										<a data-type="json" data-remote="true" href="#" onclick="delMark(this, ${special.id});" style="display:none;"> <i	class="iconfont">&#xe648;</i><span>取消关注</span></a>
+										<a data-type="json" data-remote="true" href="#" onclick="addMark(this, ${special.id}, '${special.title}', ${special.site.id});"> <i	class="iconfont">&#xe624;</i><span>添加关注</span></a>
+										<%}%>
+									</div>
+						</div>
+						
+					</div>
+					
+					<p class="description">
+						${special.description!}
+					</p>
+				</div>
+			</div>	
+			<ul class="sort-nav"></ul>	
+			<ul class="article-list thumbnails">
+				<%var infoPageList = InfoPage({specialId:special.id,pageSize:20});%>
+				<% for(info in infoPageList){ %>
+				<li class="clearfix">
+					<% if (isNotEmpty(info.smallImage)){ %>
+					<a href="${ctxPath}/${info.url}" target="_blank" class="wrap-img">
+						<img src="${info.smallImage}" onerror="this.src='${session.themeRoot}/_files/img/noPic2.png'" width="148" height="110">
+					</a>
+					<%}%>
+					<div>
+						<p class="info-top">
+							<span class="author"><%if(info.author != null){%>${info.author}<%}else{var author = UserName(info.creatorId);%>${author}<%}%></span><em>.</em>
+							<span class="publishTime"><%var time = DateUtil({date:info.publishDate});%>${time}</span>
+						</p>
+						<h4 class="title">
+		                	<a href="${ctxPath}/${info.url}" title="${info.title!}" target="_blank"><%var title = Substring(info.title, 20, "...");%>${title}</a></h4>
+						<p class="info-bottom">
+							<span class="views">阅读：${info.views!0}</span>
+							<span class="comments">评论数：${info.comments!0}</span></p>
+					</div>
+				</li>
+				<%}%>
+				<%include("inc_page.html",{pagedList:infoPageList}){}; %>	
+			</ul>		
+					
+			<!-- Footer Start -->
+			<%include("inc_foot.html"){} %>
+			<!-- Footer End -->
+		</div>
+	
+	</div>
+<script src="${session.themeRoot}/_files/js/require.js" type="text/javascript" charset="utf-8"></script>
+<script src="${session.themeRoot}/_files/js/app.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	function addMark(obj, id, ftitle,siteId){
+		$.post("${ctxPath}/mark_submit", {
+			fid : id, ftype : 'AttentionSpecial', ftitle:ftitle,siteId:siteId
+		}, function(json) {
+			if (json.status == 1) {//成功
+				alert('关注成功.');
+				$("#special_count_" + id).html(json.count);
+				$(obj).hide();
+				$(obj).prev().show();
+			} else {//失败
+				alert(json.msg);
+			}
+		}, 'json');
+	}
+	function delMark(obj, id){
+		$.post("${ctxPath}/mark_del", {
+			fid : id, ftype : 'AttentionSpecial'
+		}, function(json) {
+			if (json.status == 1) {//成功
+				alert('取消关注成功.');
+				$("#special_count_" + id).html(json.count);
+				$(obj).hide();
+				$(obj).next().show();
+			} else {//失败
+				alert(json.msg);
+			}
+		}, 'json');
+	}
+</script>
+</body>
+</html>
+

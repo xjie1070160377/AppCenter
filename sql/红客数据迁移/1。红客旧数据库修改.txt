@@ -1,0 +1,27 @@
+EXISTS `
+EXISTS `t_
+
+TABLE `
+TABLE `t_
+
+`f_
+`
+
+REFERENCES `
+REFERENCES `t_
+
+TABLES `
+TABLES `t_
+
+INSERT INTO `
+INSERT INTO `t_
+
+`key`
+`key_`
+
+`value`
+`value_`
+
+
+1。将红客数据库导出的SQL文件，批量替换。再导入到数据库中。
+2。生成新的空红客数据库， 将红客数据库与空库进行数据同步。

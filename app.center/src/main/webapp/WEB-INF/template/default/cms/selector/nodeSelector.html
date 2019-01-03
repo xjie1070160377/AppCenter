@@ -1,0 +1,69 @@
+
+<link href="${ctxPath}/static/base/css/plugins/jsTree/style.min.css" rel="stylesheet">
+<script src="${ctxPath}/static/base/js/plugins/jsTree/jstree.min.js"></script>
+
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        
+                        <div class="ibox-content">
+                            <form id="postForm" method="post" class="form-horizontal" action="sys/saveRoleResource">
+                            	<input type="hidden" name="selectNode" id="selectNode">
+                            	<div class="hr-line-dashed"></div>
+                                <div class="form-group"><label class="col-sm-3 control-label" >栏目选择</label>
+                                    <div class="col-sm-8">
+                                    <div id="menuTree"></div>
+									</div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+    
+        <script type="text/javascript">
+        
+            $(document).ready(function () {
+            	
+            	$("#menuTree").jstree({
+                    "core" : {
+            			'data' : {
+            				"url" : "cms/info/nodeTreeJson",
+            				"dataType" : "json"
+            			}}, 
+                    "themes": { "theme": "default", "dots": false, "icons": true },
+                    "plugins": ["themes", "ui"]
+                }).
+                bind("select_node.jstree",  function(e,data){
+                	$('#selectNode').val(data.node.id);
+                });;
+            });
+            
+            function getTreeChecked(){
+    	    	//
+    	    	var menuIds = $("#menuTree").jstree("get_checked");
+                return menuIds;
+    	    }
+            
+            function transferData(index, ids){
+            	var menuIds = getTreeChecked();
+            	alert(menuIds);
+            	return;
+            	$("#menuIds").val(menuIds);
+            	var postData = $("#postForm").serializeArray();            	
+            	
+    			$.post($("#postForm").attr("action"), postData, function (json) {
+                    //var data = $.parseJSON(json);
+                    if (json.resultStatus) {
+                        //成功
+                        closeAllPopWin();
+                    } else {
+                    	//
+                    	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+                    }
+                }, "json");
+            	
+            } 
+        </script>
+        

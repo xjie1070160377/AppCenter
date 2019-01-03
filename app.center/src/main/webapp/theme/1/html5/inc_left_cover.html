@@ -1,0 +1,18 @@
+<div class="cover">
+	<%var jianshuAdList = AdList({slot:"jianshu_conver",pageSize:1});%>
+	<%
+	var converimgUrl = session.themeRoot + "/_files/img/coverimg.jpg";
+	var converimgText = "厚德博学 强军兴国";
+	var converimgText2 = "一个全军服务的开放平台";
+	for(ad in jianshuAdList){
+		converimgUrl = ctxPath + "/" + ad.image;
+		converimgText = ad.text;
+		converimgText2 = ad.url;
+	}%>
+	<div class="coverimg" style="background:url(${converimgUrl})"></div>
+	<div class="bottom-block">
+		<h1>${converimgText}</h1>
+		<h3>${converimgText2}</h3>
+	<a href="${ctxPath}/tg-main.htx" target="_blank"><i class="iconfont">&#xe625;</i>提笔写篇文章</a>
+	</div>
+</div>

@@ -1,0 +1,387 @@
+<div class="col-sm-12 m-pointRule-form" style="margin-bottom:20px;">
+	<div class="ibox-title">
+		<h5>积分规则维护</h5>
+	</div>
+	<div class="ibox-title">
+		<button class="btn btn-info " type="button" id="btn_back"><i class="fa fa-mail-reply-all"></i> 返回</button>
+	</div>
+    <div class="ibox-content">
+        <form id="postForm" method="post" class="form-horizontal" action="points/rule/${bean.id == null ? 'save' : 'update'}">
+            <div class="form-group"><label class="col-sm-2 control-label" for="name">规则代码</label>
+                <div class="col-sm-4"><input type="text" class="form-control" placeholder="规则代码"  id="ruleCode" name="ruleCode" value="${bean.ruleCode}"></div>
+            	<label class="col-sm-2 control-label" for="text">规则名称</label>
+                <div class="col-sm-4"><input type="text" class="form-control" placeholder="规则名称"  id="ruleName" name="ruleName" value="${bean.ruleName}"></div>
+            </div>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group"><label class="col-sm-2 control-label" for="name">描述</label>
+                <div class="col-sm-10"><textarea rows="5" name="caption" id="caption" style="width:100%">${bean.caption}</textarea></div>
+            </div>
+            <div class="form-group"><label class="col-sm-2 control-label" for="name">加减状态</label>
+                <div class="col-sm-4">
+                	<#RadioTag mapData="${ { 减:-1,加:1 \} }" defaultValue="${bean.isas == null ? 1 : bean.isas}" fieldName="isas" />
+                </div>
+            	<label class="col-sm-2 control-label" for="text">积分</label>
+                <div class="col-sm-4"><input type="text" class="form-control" placeholder="积分"  id="points" name="points" value="${bean.points}"></div>
+            </div>
+            <div class="form-group"><label class="col-sm-2 control-label" for="name">每天最大操作次数</label>
+                <div class="col-sm-4"><input type="text" class="form-control" placeholder="每天最大操作次数"  id="maxOpnum" name="maxOpnum" value="${bean.maxOpnum == null ? 0 : bean.maxOpnum}"></div>
+            	<label class="col-sm-2 control-label" for="text">每天最多累计积分</label>
+                <div class="col-sm-4"><input type="text" class="form-control" placeholder="每天最多累计积分"  id="maxPoints" name="maxPoints" value="${bean.maxPoints  == null ? 0:bean.maxPoints}"></div>
+            </div>
+            <div class="form-group"><label class="col-sm-2 control-label" for="name">是否有效</label>
+            	<div class="col-sm-4">
+	            	<#RadioTag mapData="${ { 无效:0,生效:1 \} }" defaultValue="${bean.status == null ? 1 : bean.status}" fieldName="status" />
+                </div>
+            	<label class="col-sm-2 control-label" for="text">指定文章规则</label>
+                <div class="col-sm-4 m-isspecial">
+                	<#RadioTag mapData="${ { 否:0,是:1 \} }" defaultValue="${bean.isspecial == null ? 0 : bean.isspecial}" fieldName="isspecial" />
+                </div>
+            </div>
+            <div class="jqGrid_wrapper" id="infoList-select">
+				<table id="table_list1"></table>
+				<div id="pager_list1"></div>
+			</div>
+            <div class="form-group">
+                <div class="col-sm-12 text-right">
+                	<input type="hidden" name="oid" value="${bean.id}" >
+                	<input type="hidden" name="id" value="${bean.id}" >
+                	<input type="hidden" name="details" id="details" value=""/> 
+                    <button id="submit" class="btn btn-primary" type="button">提交保存</button>
+                </div>
+            </div>
+        </form>
+        
+        
+    </div>
+    
+    
+</div>
+
+
+
+<script type="text/javascript">
+    
+    
+	var pointRule = (function ($) {
+		var pis = $("#details").val();
+		var Width = document.body.clientWidth * 0.6 ;
+		var Height = document.body.clientHeight * 0.7 ;
+		$("body").addClass("m-pointRule-form");
+		var infoIds = [];
+		
+		var init = function(){
+			init_icheck();
+			init_validator();
+			initjqGrid();
+			bindEvent();
+		}
+		/* 绑定事件 */
+		var bindEvent = function(){
+			//返回按钮
+	        $("#btn_back").bind("click", function(){
+	        	loadFrameContent('points/rule/list');
+	        });
+	        //浏览器窗口变化时，自动宽度
+	        $(window).bind('resize', function () {
+        		var width = $('.jqGrid_wrapper').width();
+	            $('#table_list').setGridWidth(width);
+	        });
+	        
+	        //提交
+	        $("#submit").bind("click", function(){
+	        	submitForm();
+	        })
+	        //添加按钮
+			$("#addInfo").unbind("click").bind("click", function(){
+				openlayer();
+			});
+	        
+		}
+		var bindIsspecial = function(){
+			//指定文章规则
+	        $("#isspecial_1").on('ifChecked', function(event){
+	    		$("#infoList-select").show();
+			});
+	        $("#isspecial_1").on('ifUnchecked', function(event){
+	        	$("#infoList-select").hide();
+	        });
+		}
+		/* 初始化radio */
+		var init_icheck = function(){
+		    $('.i-checks').iCheck({
+		        checkboxClass: 'icheckbox_square-green',
+		        radioClass: 'iradio_square-green',
+		    });
+		    bindIsspecial();
+		}
+		//表单验证
+		var init_validator= function(){
+			
+			$.validator.addMethod("ruleCode", function(value, element) {   
+			    var reg = /^[\w]{2,20}$/;
+			    return this.optional(element) || (reg.test(value));
+			}, "请输入2-20位的字母和数字");
+			
+			$("#postForm").validate({
+		        rules: {
+		        	ruleName: {
+		                required: true,
+		                minlength: 2,
+		                maxlength:150
+		            },
+		            ruleCode: {
+		                required: true,
+		                ruleCode: true
+		            },
+		            caption: {
+		                required: true,
+		                minlength: 2,
+		                maxlength:150
+		            },
+		        	points: {
+		                required: true,
+		                number: true,
+		                maxlength:11
+		            },
+		            maxPoints: {
+		                required: true,
+		                number: true,
+		                maxlength:11
+		            },
+		            maxOpnum: {
+		                required: true,
+		                number: true,
+		                maxlength:11
+		            }
+		        }
+		    });
+		}
+		//表单提交
+		var submitForm = function(){
+			function delHtmlTag(str){
+			    return str.replace(/<[^>]+>/g,"");//去掉所有的html标记
+			}
+	    	if($("#postForm").valid()==false){
+	    		return;
+	    	}
+	    	if($("input[name='isspecial']:checked").val() == 1){
+	    		var ids = $("#table_list1").getDataIDs();
+		    	var details = [];
+		    	for(var i = 0; i < ids.length; i++){
+		    		var id = ids[i];
+		    		var haslike = $("#"+id).find("select").eq(0).val();
+		    		var hascomment = $("#"+id).find("select").eq(1).val();
+		    		var infoid = $("#"+id).find("td[aria-describedby='table_list1_infoid']").text();
+		    		details.push({infoid: infoid, haslike: haslike, hascomment: hascomment});
+		    	}
+		    	$("#details").val(JSON.stringify(details));
+	    	}
+			$.post($("#postForm").attr("action"), $("#postForm").serializeArray(), function (json) {
+	            if (json.resultStatus) {
+	                //成功
+	            	layer.msg("保存成功");
+	            	loadFrameContent('points/rule/list');
+	            } else {
+	            	//
+	            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+	            }
+	        }, "json");
+	    }
+		function isRepeat(arr, str){
+			for(var i = 0; i < arr.length; i++){
+				if(arr[i] == str){
+					return true;
+				}
+			} 
+			return false;
+		}
+		var addRow = function(id, title){
+			infoIds =  $("#table_list1").getDataIDs();
+			if(!isRepeat(infoIds, id)){
+				$("#table_list1").addRowData(id, {infoid:id,title: title});
+				//移除
+		        $(".btn-remove").unbind("click").bind("click", function(){
+		        	var infoId = $(this).parents(".jqgrow").attr("id");
+					$(this).parents(".jqgrow").remove();
+				});
+			}
+		}
+		
+		//文章列表
+		var init_infoList = function(){
+			
+			window.gridComplete = function(){
+				$(".ui-jqgrid tr.jqgrow").each(function(){
+					var html = '<button class="btn btn-primary btn-opt btn-select" type="button" title="选择">选择</button>'
+					$(this).find("td[aria-describedby='table_list_op']").html(html);
+				});
+				//添加文章
+				$(".btn-select").unbind("click").bind("click", function(){
+					var id = $(this).parents(".jqgrow").attr("id");
+					var title = $(this).parents(".jqgrow").find(".info-title").text();
+					addRow(id, title);
+				});
+				//失效了？再绑定
+				bindIsspecial();
+			}
+			
+			
+			gridComplete();
+			var inputbox = $("#m-pointRule-infoList").find(".ibox-content .row").eq(0).find(".col-sm-2").eq(1);
+			inputbox.bind("click", function(){
+				inputbox.animate({"width": "83%"}, 500);
+			});
+		};
+		
+		var openlayer = function(){
+			layer.open({
+				id  : "m-pointRule-infoList",
+				type : 1, //page层
+				area : ["1000px", "800px" ],
+				title : '文章选择',
+				shade : 0.6, //遮罩透明度
+				moveType : 1, //拖拽风格，0是默认，1是传统拖动
+				shift : -1, //0-6的动画形式，-1不开启
+				content : $("#popWin").load('cms/info/infoList'),
+				btn: ['确定', '取消'],
+				success: function(layero, index){
+					//计时器查询是否加载jqgrid完成
+					var t = setInterval(function(){
+						if($(".ui-jqgrid tr.jqgrow").length > 0){
+							clearInterval(t);
+							//失效了？再绑定
+							bindIsspecial();
+							//初始化文章列表
+							init_infoList();
+						}
+					}, 200);
+					
+				},
+			    yes: function(index, layero){
+			    	//添加表格前复选框被勾选的数据
+			    	var ids = $("#table_list").jqGrid('getGridParam','selarrrow');
+			    	for(var i = 0; i < ids.length; i++){
+			    		 var rowdata = $("#table_list").jqGrid("getRowData", ids[i]);
+			    		 var title = $($(rowdata.title)[0]).text();
+			    		 addRow(ids[i], title);
+			    	}
+			    	layer.close(index); //如果设定了yes回调，需进行手工关闭
+				}
+			});
+		};
+		
+		var initjqGrid = function(){
+			//添加按钮
+			var oid = $("input[name='oid']").val();
+			var html = '<div class="row"><div class="col-sm-12"><a id="addInfo" href="javascript:void(0);" title="添加文章" class="btn btn-primary btn-sm">添加文章</a></div></div>';
+			($("#infoList-select")).prepend(html);
+			$("#table_list1").jqGrid({
+				url : "points/rule/pageRuleInfo?id="+oid,
+				datatype : "json",
+				width: "100%",
+				height : 450,
+				autowidth : false,
+				shrinkToFit : false,
+				rowNum : 10,
+				rowList : [ 10, 20, 30 ],
+				colModel : [ {
+					label : "ID",
+					classes : 'mshow',
+					name : 'infoid',
+					index : 'infoid',
+					width : 100,
+					align : "center",
+					sorttype : "int"
+				}, {
+					label : "标题",
+					classes : 'mshow',
+					name : 'title',
+					index : 'title',
+					width : 500,
+					align : "left",
+					formatter : titleFmt
+				}, {
+					label : "是否包含点赞",
+					classes : 'mshow',
+					name : 'haslike',
+					index : 'haslike',
+					width : 100,
+					align : "left",
+					formatter : haslikeFmt
+				}, 
+				 {
+					label : "是否包含评论",
+					classes : 'mshow',
+					name : 'hascomment',
+					index : 'hascomment',
+					width : 100,
+					align : "left",
+					formatter : hascommentFmt
+				}, {
+					label : "操作",
+					classes : 'mshow',
+					name : 'op',
+					sortable : false,
+					width : 100,
+					align : "center",
+					formatter : oprationFmt
+				} ],
+				pager : "#pager_list1",
+				viewrecords : true,
+				multiselect : true,
+				sortname : 'id',
+				sortorder : "desc",
+				caption : "文章选择",
+				loadtext : '正在加载...',
+				hidegrid : false,
+				gridComplete : function(){
+					if($("input[name='isspecial']:checked").val() == 1){
+						$("#infoList-select").show();
+						infoIds =  $("#table_list1").getDataIDs();
+						//移除
+						$(".btn-remove").unbind("click").bind("click", function(){
+							$(this).parents(".jqgrow").remove();
+						});
+					}
+				}
+			});
+			
+			function oprationFmt(cellvalue, options, rowObject) {
+				return '<button class="btn btn-primary btn-opt btn-remove" type="button" title="移除">移除</button>';
+			}
+			
+			function titleFmt(cellvalue, options, rowObject) {
+				return "<a class='info-title' href='javascript:view("+rowObject.id+");'>"+rowObject.title+"</a><br/>";
+			}
+			function haslikeFmt(cellvalue, options, rowObject){
+				var haslike = rowObject.haslike == "包含" ? "selected" : "";
+				var notlike = rowObject.haslike == "不包含" ? "selected" : "";
+				return '<select><option value="1" '+ haslike  +'>包含</option><option value="0" '+ notlike +'>不包含</option></select>';
+			}
+			function hascommentFmt(cellvalue, options, rowObject){
+				var hascomment = rowObject.hascomments == "包含" ? "selected" : "";
+				var notcomment = rowObject.hascomments == "不包含" ? "selected" : "";
+				return '<select><option value="1" '+ hascomment  +'>包含</option><option value="0" '+ notcomment +'>不包含</option></select>';
+			}
+			
+		};
+		
+		init();
+		
+	})(jQuery); 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+ 
+    
+     
+
+</script>

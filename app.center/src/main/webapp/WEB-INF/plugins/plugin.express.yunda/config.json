@@ -1,0 +1,32 @@
+{
+	"id": "plugin.express.yunda",
+	"name": "韵达快递",
+	"desc": "韵达快递插件",
+	"logo": "logo.png",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Express",
+	"platforms": ["PC","WAP","MOBILE","WEIXIN"],
+	"pluginData": {
+		"Kuaidi100Code": {
+			"desc": "",
+			"val": "yunda"
+		},
+		"TaobaoCode": {
+			"desc": "",
+			"val": "YUNDA"
+		},
+		"Width": {
+			"desc": "宽",
+			"val": "2300"
+		},
+		"Height": {
+			"desc": "高",
+			"val": "1270"
+		},
+		"BackGroundImage": {
+			"desc": "",
+			"val": ""
+		}
+	}
+}

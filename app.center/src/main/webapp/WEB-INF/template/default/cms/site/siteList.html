@@ -1,0 +1,341 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1">站点列表</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-2">全站设置</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+                                <!-- Tab开始 -->
+									<div class="col-sm-12">
+									    <div class="ibox float-e-margins">
+									        
+										<div class="ibox-content">
+													<div class="row">
+														<div class="col-sm-2 m-b-xs">
+														<select class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled">
+															<option value="LIKE_name">站点名称</option>
+															<option value="LIKE_fullName">站点全称</option>
+														</select>
+														
+														</div>
+														<div class="col-sm-2">
+														<div class="input-group">
+														<input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control"> 
+														<span class="input-group-btn">
+																<button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();"> 搜索</button> 
+														</span>
+														</div>
+														</div>
+														<div class="col-sm-5">
+														
+														</div>
+														<div class="col-sm-3 text-right">
+															
+															<a href="javascript:void(0);" title='新增站点信息' onclick="add();" class="btn btn-primary btn-sm">新增站点信息</a>
+															<a href="javascript:void(0);" title='批量删除站点信息' onclick="dels();" class="btn btn-primary btn-sm">批量删除站点信息</a>
+															
+														</div>
+													</div>
+
+											<div class="jqGrid_wrapper">
+												<table id="table_list"></table>
+												<div id="pager_list"></div>
+											</div>
+
+										</div>
+									    </div>
+									</div>
+
+                                   <!-- Tab结束 -->
+                                </div>
+                            </div>
+                            <div id="tab-2" class="tab-pane">
+                                <div class="panel-body">
+                                   <!-- Tab开始 -->
+									<div class="col-sm-12">
+									    <div class="ibox float-e-margins">
+									        
+									        <div class="ibox-content">
+									            <form id="tabForm-2" method="post" class="form-horizontal" action="cms/site/globalUpdate">
+																	                                
+					                                <div class="form-group"><label class="col-sm-3 control-label" >协议</label>
+					
+					                                    <div class="col-sm-5">
+						                                <select class="input-sm form-control input-s-sm inline" name="protocol">
+						                                <% var protocolMap = {HTTP:'http',HTTPS:'https'}; %>
+														<% for(item in protocolMap){ %>
+														    <option value="${item.value}" ${item.value==global.protocol?"selected":""}>${item.key}</option>
+														<% } %>
+						                                </select>
+						                                
+						                                
+														</div>
+					                                </div>
+					                                <div class="hr-line-dashed"></div>
+
+					                                
+					                                <div class="form-group"><label class="col-sm-3 control-label" >端口号</label>
+					
+					                                    <div class="col-sm-5"><input type="text" class="form-control" placeholder="" name="port" value="${global.port}"></div>
+					                                </div>
+					                                <div class="hr-line-dashed"></div>
+					                                
+					                                <div class="form-group"><label class="col-sm-3 control-label" >上下文路径</label>
+					
+					                                    <div class="col-sm-5"><input type="text" class="form-control" placeholder="" name="contextPath" value="${global.contextPath}"></div>
+					                                </div>
+					                                <div class="hr-line-dashed"></div>
+					                                
+					                                <div class="form-group"><label class="col-sm-3 control-label" >URL带域名</label>
+					
+					                                    <div class="col-sm-5">
+					                                    <#RadioTag mapData="${ { 是:true,否:false \} }" defaultValue="${global.withDomain}" fieldName="withDomain" />
+					                                    </div>
+					                                </div>
+					                                <div class="hr-line-dashed"></div>
+
+									                
+									                <div class="form-group">
+									                    <div class="col-sm-4 col-sm-offset-4">
+									                    	<input type="hidden" name="id" value="${global.id}" >
+									                        <button onclick="submitForm();" title='提交保存' class="btn btn-primary" type="button">提交保存</button>
+									                        									                        
+									                    </div>
+									                </div>
+									            </form>
+									        </div>
+									    </div>
+									</div>
+                                   <!-- Tab结束 -->
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+</div>
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+                $('.i-checks').iCheck({
+                    checkboxClass: 'icheckbox_square-green',
+                    radioClass: 'iradio_square-green',
+                });
+                
+                
+				$("#table_list").jqGrid({
+					url : "cms/site/siteListJson",
+					datatype : "json",
+	                mtype:"POST",
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 10,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "ID",
+						classes : 'mshow',
+						name : 'id',
+						index : 'id',
+						width : 60,
+						align : "center",
+						sorttype : "int"
+					}, {
+						label : "站点名称",
+						classes : 'mshow',
+						name : 'name',
+						index : 'name',
+						width : 90,
+						align : "left"
+					}, {
+						label : "全称",
+						name : 'fullName',
+						index : 'fullName',
+						width : 120,
+						align : "left"
+					}, {
+						label : "域名",
+						name : 'domain',
+						index : 'domain',
+						width : 90,
+						align : "left"
+					}, {
+						label : "状态",
+						name : 'status',
+						index : 'status',
+						width : 60,
+						formatter : 'select',
+						editoptions : {
+							value : "0:禁用;1:启用"
+						},
+						align : "center"
+					}, {
+						label : "操作",
+						classes : 'mshow',
+						name : 'op',
+						sortable : false,
+						width : 80,
+						align : "center",
+						formatter : oprationFmt
+					} ],
+					pager : "#pager_list",
+					viewrecords : true,
+					multiselect : true,
+					sortname : 'id',
+					sortorder : "desc",
+					caption : "管理站点信息列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += "<button class='btn btn-primary btn-opt' type='button' title='编辑' onclick='edit("+ rowObject.id + ");'><i class='fa fa-edit'></i>&nbsp;编辑</button>";
+				html += " <button class='btn btn-primary btn-opt' type='button' title='删除' onclick='del(" + rowObject.id + ");'><i class='fa fa-remove'></i>&nbsp;删除</button>";
+				return html;
+			}
+			
+			
+			function add() {
+				loadFrameContent('cms/site/siteAdd');
+			}
+			
+			function edit(id) {
+				loadFrameContent('cms/site/siteEdit?id=' + id);
+			}
+
+			function add_bak() {
+				layer.open({
+					type : 1, //page层
+					area : [ '800px', ($(window).height() - 50) +'px'],
+					title : '新增站点',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					maxmin: true,
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('cms/site/siteAdd')
+				});
+			}
+
+
+			function edit_bak(id) {
+				layer.open({
+					type : 1, //page层
+					area : [ '800px', ($(window).height() - 50) +'px'],
+					title : '修改站点',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					maxmin: true,
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('cms/site/siteEdit?id=' + id)
+				});
+
+			}
+
+			function del(id) {
+				layer.confirm('确定删除该站点信息吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/site/siteDel", {
+						id : id
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('删除成功.');
+						} else {//失败
+							layer.alert("删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function dels() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量删除的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量删除站点信息吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/site/siteDels", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('批量删除成功.');
+						} else {//失败
+							layer.alert("批量删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+
+			function reloadGrid() {
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list");
+		  		var columnFiled = $("#columnFiled").val();
+	            var keyWord = $("#keyWord").val();
+				
+	          //增加提交参数
+	            var postData = { columnFiled : columnFiled, keyWord : keyWord};
+	            $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  		
+		  		
+		  	}
+		  	
+		  	
+		    function submitForm(){
+		    	if($("#tabForm-2").valid()==false){
+		    		return;
+		    	}
+		    	var postData = $("#tabForm-2").serializeArray();
+				$.post($("#tabForm-2").attr("action"), postData, function (json) {
+		            //var data = $.parseJSON(json);
+		            if (json.resultStatus) {
+		                //成功
+		                layer.alert("保存成功");
+		                back();
+		            } else {
+		            	//
+		            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+		            }
+		        }, "json");
+		    	
+		    }
+		    
+		</script>
+	
+<%}%>

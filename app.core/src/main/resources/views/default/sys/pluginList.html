@@ -1,0 +1,229 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+
+                        
+                        </div>
+                        <div class="col-sm-2">
+                        
+                        </div>
+                        <div class="col-sm-5">
+                        
+                        </div>
+                        <div class="col-sm-3 text-right">
+                        
+                            <div class="form-group">
+                        	<a href="javascript:void(0);" onclick="refreshAll();" title='刷新所有插件' class="btn btn-primary btn-sm">刷新所有插件</a>
+                        	</div>                                    
+                            
+                        </div>
+                    </div>
+
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$("#table_list").jqGrid({
+					url : "sys/pluginListJson",
+					datatype : "json",
+					mtype : "POST",
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : -1,
+					colModel : [ {
+						label : "插件标识",
+						classes : 'mshow',
+						name : 'id',
+						width : 100,
+						align : "center"
+					}, {
+						label : "名称",
+						classes : 'mshow',
+						name : 'name',
+						index : 'name',
+						width : 90,
+						align : "center"
+					},  {
+						label : "类型",
+						name : 'pluginType',
+						index : 'pluginType',
+						width : 50,
+						align : "center"
+					}, {
+						label : "版本",
+						name : 'version',
+						index : 'version',
+						width : 50,
+						align : "center"
+					},  {
+						label : "描述",
+						name : 'desc',
+						index : 'desc',
+						width : 90,
+						align : "center"
+					}, {
+						label : "状态",
+						name : 'status',
+						index : 'status',
+						width : 30,
+						align : "center",
+						formatter : statusFmt
+					},{
+						label : "操作",
+						classes : 'mshow',
+						name : 'op',
+						sortable : false,
+						width : 80,
+						align : "center",
+						formatter : oprationFmt
+					} ],
+					pager: "false",
+					viewrecords : true,
+					sortname : 'id',
+					sortorder : "desc",
+					caption : "当前系统中发现的插件列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += "<div class='tooltip-btn'>";
+				html += "<button class='btn btn-success btn-circle' type='button' title='配置插件' onclick='edit(\""+ rowObject.id + "\");'><i class='fa fa-edit'></i></button>";
+				html += " <button class='btn btn-primary btn-circle' type='button' title='启动插件' onclick='start(\"" + rowObject.id + "\");'><i class='fa fa-play'></i></button>";
+				html += " <button class='btn btn-danger btn-circle' type='button' title='禁用插件' onclick='stop(\"" + rowObject.id + "\");'><i class='fa fa-ban'></i></button>";
+				html += " <button class='btn btn-default btn-circle' type='button' title='刷新插件' onclick='refresh(\"" + rowObject.id + "\");'><i class='fa fa-refresh'></i></button>";
+				html += "</div>";
+				return html;
+			}
+
+			function statusFmt(cellvalue, options, rowObject) {
+				var html = "";
+				switch (cellvalue) {
+				case 0:
+				case "Disable":
+					html = "<font color='red'>禁用</font>";
+					break;
+				case 1:
+				case "Enable":
+					html = "<font color='green'>启用</font>";
+					break;
+				default:
+					html = "<font color='gray'>未知["+cellvalue+"]</font>";
+					break;
+				}
+
+				return html;
+			}
+
+			function start(id) {
+				layer.confirm('确定启动插件吗?', {
+					btn : [ '启动', '取消' ]
+				//按钮
+				}, function() {
+					$.post("sys/pluginStart", {
+						pluginId : id
+					}, function(json) {
+						if (json.resultStatus) {//成功
+							reloadGrid();
+							layer.msg('操作成功.');
+						} else {//失败
+							layer.alert("操作失败." + json.resultMsg, {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function stop(id) {
+				layer.confirm('确定停止插件吗?', {
+					btn : [ '停止', '取消' ]
+				//按钮
+				}, function() {
+					$.post("sys/pluginStop", {
+						pluginId : id
+					}, function(json) {
+						if (json.resultStatus) {//成功
+							reloadGrid();
+							layer.msg('操作成功.');
+						} else {//失败
+							layer.alert("操作失败." + json.resultMsg, {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function edit(id) {
+				loadFrameContent('sys/pluginEdit?pluginId=' + id);
+			}
+
+			function refresh(id) {
+				layer.confirm('确定刷新吗?', {
+					btn : [ '刷新', '取消' ]
+				//按钮
+				}, function() {
+					$.post("sys/pluginRefresh", {
+						pluginId : id
+					}, function(json) {
+						if (json.resultStatus) {//成功
+							reloadGrid();
+							layer.msg('刷新成功.');
+						} else {//失败
+							layer.alert("刷新失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function refreshAll() {
+				layer.confirm('确定刷新所有插件吗?', {
+					btn : [ '刷新', '取消' ]
+				//按钮
+				}, function() {
+					$.post("sys/pluginRefreshAll", function(json) {
+						if (json.resultStatus) {//成功
+							reloadGrid();
+							layer.msg('刷新成功.');
+						} else {//失败
+							layer.alert("刷新失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}		
+
+			function reloadGrid() {
+
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		</script>
+	
+<%}%>

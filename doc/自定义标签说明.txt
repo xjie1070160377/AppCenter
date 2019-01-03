@@ -1,0 +1,93 @@
+<#SimpleFileUploadTag defaultValue="${entity.image}" width="100" height="100" id="image" 
+isImg="true" acceptedFiles="image/*" placeholder="图片地址" isPreview="true"/>
+
+单文件上传标签
+SimpleFileUploadTag
+id 文件上传后，url保存的位置
+defaultValue 默认文件url
+isImg 如果为true,则会出现 高度，宽度，压缩，拉伸，水印 参数
+width 默认宽度 ,不传不显示
+height 默认高度,不传不显示
+scale 是否选中压缩，true/false,不传不显示
+stretch 是否选中拉伸，true/false,不传不显示
+watermark 是否选中水印，true/false,不传不显示
+acceptedFiles 可选择上传的文件mime type, 默认为 所有文件
+placeholder 文件url文本框的默认显示值
+isPreview 是否带预览， 图片才可以预览
+isHiddenUrl 是否隐藏url地址文本框
+uploadUrl 自定义图片上传URL
+
+
+<#ImagesUploadTag mapData="${ imgList }" width="100" height="100" id="image"/>
+多图片上传标签
+ImagesUploadTag
+id 标签唯一标识符
+mapData 默认图片列表
+width 默认宽度,不传不显示
+height 默认高度,不传不显示
+scale 是否选中压缩，true/false,不传不显示
+stretch 是否选中拉伸，true/false,不传不显示
+watermark 是否选中水印，true/false,不传不显示
+
+
+mapData 的值，从后台按格式进行构造
+Map<String, Object> map1 = new HashMap<String, Object>();
+map1.put("note", "摘要1");
+map1.put("url", "/uploads/sdfs");
+map1.put("width", 1);
+map1.put("height", 11);
+map1.put("fileName", 11);
+Map<String, Object> map2 = new HashMap<String, Object>();
+map2.put("note", "摘要2");
+map2.put("url", "www.baidu.com2");
+map2.put("width", 12);
+map2.put("height", 112);
+map2.put("fileName", 11);
+List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+list.add(map1);
+list.add(map2);
+model.addAttribute("imgList", list);
+
+图片列表获取方法
+getImgList();
+引用标签后，直接调用该方法，可获取该标签所有的已上传图片信息
+
+<#SingeAvdioUploadTag id="flash" fileNameId="flashName" fileName="abc.mp4" fileUrlId="flashUrl" fileUrl="/uploads/p/abcd.mp4" 
+fileSizeId="flashSize" fileSize="11112" fileTimeId="flashTime" fileTime="12"/>
+单视频上传标签
+SingeAvdioUploadTag
+id 标签唯一标识符
+fileNameId 文件名称控件ID
+fileName 文件名称默认值
+fileUrlId 文件路径控件ID
+fileUrl 文件路径默认值
+fileSizeId 文件大小控件ID
+fileSize 文件大小默认值
+fileTimeId 视频时长控件ID
+fileTime 视频时长默认值
+
+
+<#NodeSelectorBtnTag id="nodeSele" callback="nodeSeleCallBack" defaultValue="12"/>
+栏目树选择弹出按钮
+NodeSelectorBtnTag
+id 标签唯一标识符
+defaultValue 默认选择节点值
+callback 确定选择按钮回调方法
+callback 实现示例
+function nodeSeleCallBack(id, text){
+	alert("a:"+id+"  text:"+text)
+}
+
+
+<#SpecialSelectorBtnTag id="specialSele" callback="nodeSeleCallBack" infoId="1"/>
+专题选择按钮
+SpecialSelectorBtnTag
+id 标签唯一标识符
+infoId 文章id
+callback 确定选择按钮回调方法
+callback 实现示例
+function nodeSeleCallBack(idlist){
+	$.each(idlist, function(){
+		alert("id:"+this.id+"  text:"+this.text)	
+	})
+}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+		<meta http-equiv="x-ua-compatible" content="ie=7" />
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/swiper.min.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/common.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/movie_detail.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/jquery.sinaEmotion.css" />
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/articleShareDetail.css?v=11301039"/>
+		<script src="${ctxPath}/static/widget/js/swiper.min.js"></script>
+		<title>${articleInfo.title} 详情</title>
+	</head>
+	<body class="p-moviedetail p-articleShareDetail">
+		
+		<div class="downapp downapp_tips_top">
+			<a href="https://mapp.nudt.edu.cn/widget/getApp">
+				<div class="logo"><img src="${ctxPath}/static/widget/img/logo.png" alt="" /></div>
+				<span>红客 国防科大官方客户端</span>
+				<div class="btn">下载</div>
+			</a>
+		</div>
+		<div class="title">${articleInfo.title}</div>
+		<!-- <div class="time">
+			<span><i class="iconfont">&#xe608;</i>${articleInfo.dates}</span>
+			<span><i class="iconfont">&#xe612;</i>${articleInfo.browsers}</span>
+		</div> -->
+		
+		<div class="author">作者：${articleInfo.author}</div>
+		
+        <div class="content">
+        	<% if(isNotEmpty(articleInfo.video)){ %>
+        	
+        	<section style="position: static; box-sizing: border-box;">
+			    <section class="" style="position: static; box-sizing: border-box;">
+			        <section class="" style="box-sizing: border-box;">
+			            <p style="box-sizing: border-box; text-align: center;">
+						<video width="300" height="160" poster="${articleInfo.image}" src="${articleInfo.video}" controls="controls">
+						您的浏览器不支持 video 标签。
+						</video>
+			            </p>
+			        </section>
+			    </section>
+			</section>
+        	
+        	<% } %>
+ 
+			<% if(isNotEmpty(articleInfo.audio)){ %>
+			
+			<section style="position: static; box-sizing: border-box;">
+			    <section class="" style="position: static; box-sizing: border-box;">
+			        <section class="" style="box-sizing: border-box;">
+			            <p style="box-sizing: border-box; text-align: center;">
+			                <audio controls="true" class="edui-faked-music" style="float:none;" width="400" height="95" src="${articleInfo.video}">
+			                    你的浏览器不支持audio标签。
+			                </audio>
+			            </p>
+			        </section>
+			    </section>
+			</section>
+			
+			<% } %>
+			
+			
+			<% if(isNotEmpty(articleInfo.images)){ %>
+			
+			<div class="swiper-container" style="margin-top: -2px;">
+				<div class="swiper-wrapper">
+					<%for(var image in articleInfo.images){%>
+					<div class="swiper-slide">
+						<div class="img-box">
+							<img src="${image.image}" alt="" />
+						</div>
+						<div class="text-box">
+							<p>
+								${image.text}
+							</p>
+						</div>
+					</div>
+					<%}%>
+				</div>
+			</div>
+			
+			
+			<% } %>
+
+        	${articleInfo.content}
+        	
+        </div>
+        
+        <div class="downapp downapp_tips_bottom">
+        	<a href="https://mapp.nudt.edu.cn/widget/getApp">
+			<div class="btn">更多精彩内容请下载客户端</div>
+			</a>
+		</div>
+		<br/>
+		<br/>
+		<br/>
+		
+		<div class="foot">
+			<div class="right">				
+				<a href="javascript:;" class="zan" style="padding-top: 15px;"><i class="iconfont" style="font-size:18px;">&#xe616;</i><sup id="zanCount"></sup></a>
+			</div>
+		</div>
+		
+		
+		<script src="${ctxPath}/static/widget/js/jquery-2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="${ctxPath}/static/widget/js/template.js" type="text/javascript" charset="utf-8"></script>
+		<script src="${ctxPath}/static/base/js/plugins/layer/layer.js"></script>
+		
+		<script>
+		 /* var mySwiper = new Swiper ('.swiper-container', {
+		    direction: 'vertical',
+		    loop: true
+		  })    */     
+		  var swiper = new Swiper('.swiper-container',{
+			  loop: true,
+			  autoplay:3000
+		  });
+		</script>
+
+	<script id="template" type="text/html">
+
+				{{each result as item i}}
+
+        		<li>
+        			<a href="javascript:void(0);">
+        				<span><img src="${ctxPath}/static/widget/img/widget_dface.png" alt="" /></span>
+        				<h3>{{item.creator}}</h3>
+        				<em>{{item.creationDate}}</em>
+        			</a>
+        			<p>{{item.text}}</p>
+        		</li>
+
+				{{/each}}
+
+		</script>
+		
+		<script type="text/javascript">
+			var articleId = "${articleInfo.articleId}";
+			//点赞收藏
+			var is = true;
+			$(".zan").on("click",function(){
+				if(is){
+					//成功
+					ping('.zan i','&#xe616;','#ff5500',true)
+				}else{
+					ping('.zan i','&#xe616;','#a7a7a7',false)
+				}	
+			});
+			
+			
+			function ping(Elements,str,color,Is){
+			  $(Elements).html(str).css('color',color)
+			  is = !Is;
+			  postReDiggs(Is);
+			}
+			
+			
+			
+			
+
+			function postReDiggs(isReDiggs){
+				$.post("${ctxPath}/widget/m-article-diggs.htx", {isReDiggs: isReDiggs, articleId: articleId,}, function(data){
+					if(data.msg_code==0){
+						if(isReDiggs){
+							layer.msg("点赞成功");
+						}else{
+							layer.msg("取消点赞");
+						}
+						
+					}else{
+						$('.zan i').html('&#xe616;').css('color','#a7a7a7');
+						layer.alert("操作失败");
+					}
+				}, "json");
+				
+			}
+			
+		</script>
+        
+        
+		
+		
+        
+		
+		
+		
+		
+		
+		
+	</body>
+</html>

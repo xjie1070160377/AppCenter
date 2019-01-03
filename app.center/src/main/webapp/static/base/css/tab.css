@@ -1,0 +1,25 @@
+.ls_search{ width:100%; padding-bottom: 10px; overflow:hidden;}
+.ls_search .ui-buttonset{ float: left; margin-top: 5px; margin-right: 15px;display: inline-block; vertical-align: middle;}
+.ls_search .ui-helper-hidden-accessible{border: 0; clip: rect(0 0 0 0); height: 1px;  margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px;}
+.ls_search .ui-button{ margin-left: 0; margin-right: -.3em;    font-weight: normal;border: 1px solid #d3d3d3; background: #e6e6e6 url(../images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x; color: #555555; font-family: Verdana,Arial,sans-serif; font-size: 1.1em;}
+.ls_search .ui-button-text{line-height: 1; padding: .4em 1em;    display: block;    color: #555555;}
+.ls_search .ui-state-active{border: 1px solid #aaaaaa; background: #ffffff url(../images/ui-bg_glass_65_ffffff_1x400.png) 50% 50% repeat-x; font-weight: normal; color: #212121;}
+.ls_search .form-group{float: left; margin-top: 5px;display: inline-block; margin-bottom:0; overflow:hidden;}
+.ls_search .form-group .col{ float:left; margin-right:5px; overflow:hidden;}
+.ls_search .input-rk{padding: 0 12px;    height: 30px; line-height: 30px;border: 1px solid #ddd; background: none; outline: none;  max-width: 100%;border-radius: 1px;}
+.ls_search .input-key{ width:120px; padding: 0 12px;border: 1px solid #ddd; background: none; outline: none; max-width: 100%; height: 30px;  line-height: 30px;  font-size: 14px;}
+.ls_search .start_txt ,.end_txt{ float:left; padding:0 5px; }
+.ls_search .start_date ,.end_date{ float:left;width:100px;}
+.ls_search .start_date input ,.end_date input{border: 1px solid #ddd; background: none; outline: none; max-width: 100%; height: 30px; padding:0 5px;}
+.ls_search .search{float:left; margin-left:5px; background-color: #1ab394; border-color: #1ab394; color: #fff;padding: 5px 10px;font-size: 12px; line-height: 1.5; margin-bottom: 0; display: inline-block; text-align: center; border: 1px solid transparent;margin-left: 5px;}
+.ls_search .right_btn{text-align:right;margin-top: 5px; width: 192px;float: right;}
+.ls_search .right_btn2{text-align:right;margin-top: 5px; width: 300px;float: right;}
+.ls_search .btn-primary{background-color: #1ab394; border-color: #1ab394; color: #fff; border-radius: 3px;padding: 5px 10px;font-size: 12px; line-height: 1.5;display: inline-block;margin-bottom: 0;    border: 1px solid transparent;}
+.ls_search .btn-danger{ background-color: #ed5565; border-color: #ed5565; color: #fff; border-radius: 3px;padding: 5px 10px;font-size: 12px; line-height: 1.5;display: inline-block;margin-bottom: 0;    border: 1px solid transparent;}
+.ls_search .btn-success{ background-color: #1c84c6; border-color: #1c84c6; color: #fff; border-radius: 3px;padding: 5px 10px;font-size: 12px; line-height: 1.5;display: inline-block;margin-bottom: 0;    border: 1px solid transparent;}
+.ls_search .btn-primary a ,.btn_danger a{ color: #fff;}
+.ls_search .btn-primary a:hover ,.btn_danger a:hover{ color: #fff;}
+
+.ls_search .input-am{padding: 0 12px;  height: 30px; line-height: 30px;border: 1px solid #ddd; background: none; outline: none; max-width: 100%;    border-radius: 1px;font-size: 14px;}
+.ls_search .sylx_txt{ float: left;padding: 0 5px;}
+.ls_search .sxlx_cot{ float: left;}

@@ -1,0 +1,73 @@
+<%
+//${ShowFileUrl('/static/base/images/profile_small.png')
+
+var avatarUrl = ctxPath+"/static/base/images/profile_small.png";
+if(isNotEmpty(userExt.avatarUrl)){
+	if(strutil.startWith(userExt.avatarUrl,"http")){
+		avatarUrl = userExt.avatarUrl;
+	}else{
+		avatarUrl = ctxPath + userExt.avatarUrl;
+	}
+	
+}
+%>
+
+    <nav id="navMenu" class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element"> <span>
+                            <img alt="image" class="img-circle" src="${avatarUrl}" onerror="this.src='${ctxPath}/static/base/images/profile_small.png'" width="48" height="48" />
+                             </span>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="javascript:void(0);" data-url="#">
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">${AuthUserName()}</strong>
+                             </span> <span class="text-muted text-xs block">个人设置 <b class="caret"></b></span> </span> </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <!-- <li><a href="javascript:void(0);" data-url="#">个人中心</a></li> -->
+                            <li><a href="javascript:void(0);" data-url="/sys/changePwd">修改密码</a></li>
+                            <li class="divider"></li>
+                            <li><a href="${ctxPath}/${SYS_ADMIN_PATH}/logout">退出</a></li>
+                        </ul>
+                    </div>
+                    <div class="logo-element">
+                        APP
+                    </div>
+                </li>
+
+                
+                <% for(menu in menusTree){ %>
+                
+                <li>
+                    <a href="javascript:void(0);" data-url="${menu.menuUrl}"><i class="fa ${menu.iconCls}"></i> <span class="nav-label">${menu.menuName}</span>
+                    <% if(menu.children != null){ %>
+                    <span class="fa arrow"></span>
+                    <% } %>
+                    </a>
+                    
+                    <% if(menu.children != null){ %>
+                    <ul class="nav nav-second-level">
+                    	<% for(cmenu in menu.children){ %>
+                        <li><a href="javascript:void(0);" data-url="${cmenu.menuUrl}">${cmenu.menuName}</a></li>
+                        <% } %>
+                    </ul>
+                    <% } %>
+                </li>
+                
+                <% } %>
+                
+                <li>
+                    <a href="${ctxPath}/${SYS_ADMIN_PATH}/logout"><i class="fa fa-sign-out"></i> <span class="nav-label">退出系统</span></a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+
+
+
+
+
+
+
+
+

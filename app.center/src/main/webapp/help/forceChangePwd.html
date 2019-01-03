@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>强制修改密码</title>
+		
+    <link href="${ctxPath}/static/base/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath}/static/base/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="${ctxPath}/static/base/css/animate.css" rel="stylesheet">
+    <link href="${ctxPath}/static/base/css/style.css" rel="stylesheet">
+    
+    <script src="${ctxPath}/static/base/js/jquery-2.1.1.js"></script>
+    <script src="${ctxPath}/static/base/js/bootstrap.min.js"></script>
+
+    <!-- Jquery Validate -->    
+    <script src="${ctxPath}/static/base/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="${ctxPath}/static/base/js/plugins/validate/localization/messages_zh.js"></script>
+    
+    <script src="${ctxPath}/static/base/js/plugins/layer/layer.js"></script>
+</head>
+
+<body class="gray-bg">
+		<div class="alert alert-danger text-center">
+			检测到您的密码过于简单，请修改密码.
+		</div>
+	
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+			
+            <h3>修改密码</h3>
+            
+            <form id="postForm" class="m-t" role="form" action="forceUpdateUserPwd" method="post">
+                <div class="form-group">
+                    <input type="password" class="form-control" name="passWord" placeholder="新密码" required="">
+                    
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="rePassWord" placeholder="确认密码" required="">
+                </div>
+                
+                <button type="button" title='修改密码' class="btn btn-primary block full-width m-b" onclick="submitForm();" >修改密码</button>
+				
+
+
+            </form>
+            <p class="m-t"> <small>${SYS_NAME} &copy; ${date(), dateFormat="yyyy"}</small> </p>
+        </div>
+    </div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        
+        $("#postForm").bind("submit", function() { submitForm(); return false; });
+        $("#postForm input").on("keydown", function(event) { if(event.keyCode==13){submitForm();} });
+        
+        //表单验证
+        $("#postForm").validate({
+            rules: {
+                passWord: {
+                    required: true,
+                    minlength: 6
+                },
+                rePassWord: {
+                    required: true,
+                    minlength: 6
+                }
+            }
+        });
+        
+    });
+        
+    
+    function submitForm(){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (json) {
+            //var data = $.parseJSON(json);
+            if (json.resultStatus) {
+                //成功
+                layer.msg('修改成功.', {icon: 1},function(){
+                	window.location.href = "${backUrl}";
+                });
+                
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    	
+    }
+</script>
+
+</body>
+
+</html>

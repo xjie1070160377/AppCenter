@@ -1,0 +1,60 @@
+
+/*variables*/
+//color
+$red1 : #e74c3c;
+$green: #49BE38;
+$sidebarbg:#2A2A2A;
+
+.btn-success {
+    span{color: #fff;}
+    i.iconfont{color: #fff;}
+}
+
+.contentBox{
+    .mui-content{padding:0 10%;}
+    .mui-slider .mui-segmented-control.mui-segmented-control-inverted~.mui-slider-group .mui-slider-item{border:none;}
+    .avatar{
+        float: left;
+        width: 40px;
+        height: 40px;
+        margin: 0 10px 0 0;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .subscribing,.users{
+        margin: 20px 0 30px;
+        list-style: none;
+        li{
+            padding: 20px 0;
+            border-bottom: 1px solid #eeeeee;
+        }
+    }
+    .subscribing{
+        .avatar{
+            background: $red1;
+            text-align: center;
+            line-height: 40px;
+            i.iconfont{
+                color: #fff;
+                font-size: 22px;
+            }
+        }
+        li{
+            h4{
+                 margin: 0 0 3px;
+                font-size: 16px;
+                a{color: #555}
+            }
+            .follow{
+                float: right;
+            }
+            p{
+                margin: 0;
+                padding: 0 93px 0 50px;
+                font-size: 12px;
+            }
+           
+        }
+        
+    }
+}

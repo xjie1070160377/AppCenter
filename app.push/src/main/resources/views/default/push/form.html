@@ -1,0 +1,86 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="tabs-container">
+                    	<ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1">单个推送</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab-2" class="tab-pane active">
+                                <div class="panel-body">
+                                   <!-- Tab开始 -->
+									<div class="col-sm-12">
+									    <div class="ibox float-e-margins">
+									        
+									        <div class="ibox-content">
+									            <form id="tabForm-2" method="post" class="form-horizontal" action="sys/sysSettingsSave">
+																	                                
+					                                <div class="form-group"><label class="col-sm-3 control-label" for="userCode">用户账号</label>
+					
+					                                    <div class="col-sm-5"><input type="text" class="form-control" id="userCode" placeholder="用户账号" name="userCode" value=""></div>
+					                                </div>
+					                                <div class="hr-line-dashed"></div>
+					                                <div class="form-group"><label class="col-sm-3 control-label" for="infoId">文章代号</label>
+					
+					                                    <div class="col-sm-5"><input type="text" class="form-control" id="infoId" placeholder="文章代号" name="infoId" value=""></div>
+					                                </div>
+					                                <div class="hr-line-dashed"></div>
+					                                <div class="form-group"><label class="col-sm-3 control-label">文章类型</label>
+					                                    <div class="col-sm-5">
+						                                    <input type="radio" name="showType" value="0">普通文章
+						                                    <input type="radio" name="showType" value="1">图集文章
+						                                    <input type="radio" name="showType" value="2">视频文章
+					                                    </div>
+					                                </div>
+					                                <div class="hr-line-dashed"></div>
+									                
+									                <div class="form-group">
+									                    <div class="col-sm-4 col-sm-offset-4">
+									                        <button onclick="submitForm();" title='推送' class="btn btn-primary" type="button">推送</button>
+									                        									                        
+									                    </div>
+									                </div>
+									            </form>
+									        </div>
+									    </div>
+									</div>
+                                   <!-- Tab结束 -->
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+</div>
+                            
+		<script type="text/javascript">
+
+            function submitForm(){
+            	var userCode = $("#userCode").val();
+            	if(!userCode){
+            		layer.alert("请输入要推送的用户账号！");
+            		return;
+            	}
+            	var postData = $("#tabForm-2").serializeArray();
+            	$.post('push/single/push', postData, function (json) {
+                    if (json.resultStatus) {
+                    	layer.alert(json.resultMsg);
+                    } else {
+                    	//
+                    	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+                    }
+                }, "json");
+            	
+    			
+            }
+      
+		</script>
+	
+<%}%>

@@ -1,0 +1,219 @@
+<div class="col-sm-12" style="margin-bottom:20px;">
+	<div class="ibox-title">
+		<h5>广告信息修改</h5>
+	</div>
+	<div class="ibox-title">
+		<button class="btn btn-info " type="button" id="btn_back"><i class="fa fa-mail-reply-all"></i> 返回</button>
+	</div>
+    <div class="ibox-content">
+        <form id="postForm" method="post" class="form-horizontal" action="service/appService/${entity.serviceId == null ? 'save' : 'update'}">
+            <div class="form-group"><label class="col-sm-2 control-label" for="orgName">所属组织</label>
+                <div class="col-sm-10">
+                		<input type="hidden" id="orgId" name="orgId" value="${entity.orgId}" />
+				  	  	<input type="text" readonly="readonly" id="orgName" class="form-control" name="orgName" value="${orgName}"/>
+				  	  	<%if(oprt=='create' || oprt=='edit'){%>
+				  	  	<div id="parentSelectDiv"></div>
+				  	  	<%}%>
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group" id="datepicker">
+            	<label class="col-sm-2 control-label" for="servicetype">服务号类型</label>
+                <div class="col-sm-4">
+                	 <select class="input-sm form-control input-s-sm inline" id="servicetype" name="servicetype.serviceTypeid">
+                		<% for(item in types){ %>
+	                		<option value="${item.serviceTypeid}" ${item.serviceTypeid==entity.servicetype.serviceTypeid?"selected":""}>${item.serviceTypeName}</option>
+						<% } %>
+					</select>
+                </div>
+            	<label class="col-sm-2 control-label" for="serviceName">服务号简称</label>
+                <div class="col-sm-4">
+                	<input type="text" class="form-control" placeholder="服务号简称"  id="serviceName" name="serviceName" value="${entity.serviceName}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group" id="datepicker">
+            	<label class="col-sm-2 control-label" for="serviceFullname">服务号全称</label>
+                <div class="col-sm-4">
+                	 <input type="text" class="form-control" placeholder="服务号全称"  id="serviceFullname" name="serviceFullname" value="${entity.serviceFullname}">
+                </div>
+            	<label class="col-sm-2 control-label" for="charger">负责人</label>
+                <div class="col-sm-4">
+                	<input type="text" class="form-control" placeholder="负责人"  id="charger" name="charger" value="${entity.charger}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group" id="datepicker">
+            	<label class="col-sm-2 control-label" for="telephone">办公电话</label>
+                <div class="col-sm-4">
+                	 <input type="text" class="form-control" placeholder="办公电话"  id="telephone" name="telephone" value="${entity.telephone}">
+                </div>
+            	<label class="col-sm-2 control-label" for="mobile">移动电话</label>
+                <div class="col-sm-4">
+                	<input type="text" class="form-control" placeholder="移动电话"  id="mobile" name="mobile" value="${entity.mobile}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group" id="datepicker">
+            	<label class="col-sm-2 control-label" for="email">电子邮件</label>
+                <div class="col-sm-4">
+                	 <input type="text" class="form-control" placeholder="电子邮件"  id="email" name="email" value="${entity.email}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group" id="datepicker">
+            	<label class="col-sm-2 control-label" for="intro">简介</label>
+                <div class="col-sm-10">
+                	 <textarea rows="3" name="intro" style="width:100%">${entity.intro}</textarea>
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group" id="datepicker">
+            	<label class="col-sm-2 control-label" for="note">备注</label>
+                <div class="col-sm-10">
+                	 <textarea rows="3" name="note" style="width:100%">${entity.note}</textarea>
+                </div>
+            </div>
+            <%if(oprt=='view' || oprt=='antiAudit'){%>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group" id="datepicker">
+            	<label class="col-sm-2 control-label">审核状态</label>
+                <div class="col-sm-10">
+                	 <select class="input-sm form-control input-s-sm inline">
+                	 	<option value="0" ${entity.isChecked==0?'selected':''}>未审核</option>
+                	 	<option value="1" ${entity.isChecked==1?'selected':''}>审核通过</option>
+                	 	<option value="-1" ${entity.isChecked==-1?'selected':''}>未通过</option>
+                	 </select>
+                </div>
+            </div>
+            <%if(entity.isChecked==1 || entity.isChecked==-1){%>
+            <div class="hr-line-dashed"></div>
+            <div class="form-group" id="datepicker">
+            	<label class="col-sm-2 control-label">审核意见</label>
+                <div class="col-sm-10">
+                	 <textarea rows="3" style="width:100%">${entity.checkNote}</textarea>
+                </div>
+            </div>
+            <%}}%>
+            <%if(oprt=='audit'){%>
+            	<div class="hr-line-dashed"></div>
+	            <div class="form-group" id="datepicker">
+	            	<label class="col-sm-2 control-label" for="isChecked">审核状态</label>
+	                <div class="col-sm-10">
+	                	 <select class="input-sm form-control input-s-sm inline" id="isChecked" name="isChecked">
+	                	 	<option value="1" >审核通过</option>
+	                	 	<option value="-1" >未通过</option>
+	                	 </select>
+	                </div>
+	            </div>
+	            <div class="hr-line-dashed"></div>
+	            <div class="form-group" id="datepicker">
+	            	<label class="col-sm-2 control-label" for="checkNote">审核意见</label>
+	                <div class="col-sm-10">
+	                	 <textarea rows="3" id="checkNote" name="checkNote" style="width:100%"></textarea>
+	                </div>
+	            </div>
+	            <div class="form-group">
+                <div class="col-sm-12 text-right">
+                	<input type="hidden" id="serviceId" name="serviceId" value="${entity.serviceId}" >
+                    <button onclick="checkForm();" class="btn btn-primary" title='审核' type="button">审核</button>
+                </div>
+            </div>
+            <%}%>
+            <%if(oprt=='create' || oprt=='edit'){%>
+            <div class="form-group">
+                <div class="col-sm-12 text-right">
+                	<input type="hidden" name="serviceId" value="${entity.serviceId}" >
+                    <button onclick="submitForm();" class="btn btn-primary" title='提交保存' type="button">提交保存</button>
+                </div>
+            </div>
+            <%}%>
+            <%if(oprt=='antiAudit'){%>
+            <div class="form-group">
+                <div class="col-sm-12 text-right">
+                	<input type="hidden" id="serviceId" name="serviceId" value="${entity.serviceId}" >
+                    <button onclick="antiAudit();" class="btn btn-primary" title="反审核" type="button">反审核</button>
+                </div>
+            </div>
+            <%}%>
+        </form>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    	 $('#parentSelectDiv').load('core/selector/orgTag?id=orgSelect&callback=orgSelectCallBack&selectedId=${entity.orgId}');
+
+        //表单验证
+        $("#postForm").validate({
+            rules: {
+            	serviceName: {
+                    required: true,
+                    minlength: 2,
+                    maxlength:150
+                },
+                email: {
+                    required: true,
+                    email: true
+                }
+            }
+        });
+    });
+    
+    function submitForm(){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (json) {
+            //var data = $.parseJSON(json);
+            if (json.resultStatus) {
+                //成功
+            	loadFrameContent('service/appService/list');
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    }
+    
+    function checkForm(){
+    	var isChecked = $("#isChecked").val();
+    	var checkNote = $("#checkNote").val();
+    	var serviceId = $("#serviceId").val();
+    	$.post("service/appService/audit", {isChecked:isChecked,checkNote:checkNote,id:serviceId}, function (json) {
+            //var data = $.parseJSON(json);
+            if (json.resultStatus) {
+                //成功
+            	loadFrameContent('service/appService/list');
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    }
+    
+    function antiAudit(){
+    	var serviceId = $("#serviceId").val();
+    	$.post("service/appService/antiAudit", {id:serviceId}, function (json) {
+            //var data = $.parseJSON(json);
+            if (json.resultStatus) {
+                //成功
+            	loadFrameContent('service/appService/list');
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    }
+    
+    function orgSelectCallBack(id, text){
+    	$('#orgId').val(id);
+    	$('#orgName').val(text);
+    }
+    
+    $("#btn_back").click(function(){
+    	loadFrameContent('service/appService/list');
+    });
+</script>

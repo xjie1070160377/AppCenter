@@ -1,0 +1,219 @@
+<%var style = {%>
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/base.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/globle.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/ui-dialog.css" />
+<style>
+.right.m-mail-create{background:#fff;border:none;padding:28px;height:620px;box-sizing:border-box;width:888px;margin-bottom:0;border-radius:5px}
+.m-mail-create .u-tt{color:#e74c3c;padding:8px;font-weight:700;font-size:18px;padding:16px 0;line-height:30px;text-align:center}
+.m-mail-create .m-mail-items{padding:8px}
+.m-mail-create li.u-item{padding:16px 0;line-height:30px;font-size:14px;border-bottom:1px dashed #ddd}
+.m-mail-create li.u-item:last-child{border-bottom:none}
+.m-mail-create li.u-item label{font-weight:700;color:#555;font-family:"微软雅黑";text-shadow:none;width:90px;display:block;float:left;text-align:right;margin-right:30px}
+.m-mail-create li.u-item em{color:#e74c3c;font-size:18px;position:relative;top:4px;right:3px}
+.m-mail-create input[type=text],.m-mail-create input[type=email],.m-mail-create select,.m-mail-create textarea{outline:0;border:1px solid #aaa;width:74%;resize:none;border-radius:3px}
+.m-mail-create select{height:28px}
+.m-mail-create textarea{line-height:1.5;padding:8px;box-sizing:border-box}
+.m-mail-create li.u-item input{height:24px;outline:0;border:1px solid #999}
+.m-mail-create li.u-item input[type=radio]{position:relative;margin-right:5px}
+.m-mail-create .m-submit{padding:16px 0 8px 174px}
+.m-mail-create .u-tips{margin-left:174px;color:#e49929;font-size:12px;padding-top:16px}
+.m-mail-create .u-tips .iconfont{font-size:14px}
+#auther,#captcha{width:100px;display:block;float:left}
+#captcha{margin-top:3px;margin-right:6px}
+@media screen and (max-width:768px){
+	.right.m-mail-create{width:100%;padding:16px;}
+	.m-mail-create li.u-item label{text-align: left;color: #777;position:absolute;left:0;top:10px;}
+	.wrap-btn {background: none!important;}
+	.m-mail-create .u-tt{padding-top:0;}
+	.m-mail-create input[type=text], .m-mail-create input[type=email], .m-mail-create select, .m-mail-create textarea{width:100%;}
+	.m-mail-create input[type=text], .m-mail-create input[type=email],.m-mail-create textarea{border:none!important;outline:none!important;}
+	.m-mail-create textarea{height:120px!important;}
+	.m-mail-create .u-tips, .m-mail-create .m-submit{padding-left:0;margin-left:0;}
+	.m-mail-create li.u-item{padding-top:10px;padding-bottom:12px;padding-left:100px;position:relative;}
+	.m-mail-create li.u-item.text{padding-left:0;}
+	.m-mail-create li.u-item.text label{display:none;}
+	.m-mail-create .m-submit .btn{border-color:#861817;background:#861817;width:100%;box-sizing:border-box;padding:8px 0}
+	#guestbook_list{position: absolute; background: #fff;box-shadow: 0 0 6px #ccc;width: calc(100% - 100px);min-height: 200px; z-index: 99; margin-top: 8px; padding: 8px; box-sizing: border-box;}
+	#guestbook_list li{border-bottom:1px dashed #ddd;}
+}
+.app .wrap-btn,.app .nav-shrink{display:none;}
+.app .m-mail-create .u-tt{display:none;}
+</style>
+<%};%>
+
+<%include("shared/inc_head.html", {title:"写新信件", style:style}){} %> 
+
+<body class="output p-mail-new <%if(isNotEmpty(session.token)){ %> app <%}%>">
+	
+	<%include("shared/inc_nav_side.html"){} %>
+	<%include("shared/inc_nav_user.html"){} %>
+	
+	<!-- 内容 -->
+	<div class="row-fluid clearfix">
+		<%include("shared/inc_left_cover.html"){} %>
+		
+		<div class="contentBox">
+			<div class="right m-mail-create">
+            	<div class="u-tt">写新信件</div>
+            	
+            	<form id="validForm" action="/widget/guestbook/saveMsg" method="post">
+            		<ul class="m-mail-items">
+            			<% if(isNotEmpty(guestbookId)){ %>
+            			<input type="hidden" class="guestbookId" name="guestbookId" value="${guestbookId!}"/>
+            			<% }else{ %>
+            			<li class="u-item name">
+            				<label for=""><em>*</em>信箱名称：</label>
+            				<input type="text" class="guestbookName" name="" value="" placeholder="请输入信箱名称"/>
+            				<input type="hidden" class="guestbookId" name="guestbookId" value=""/>
+            				<ul id="guestbook_list" class="f-dn">
+            				</ul>
+            			</li>
+            			<% } %>
+            			<li class="u-item">
+            				<label for=""><em>*</em>信件类型：</label>
+            				<select name="guestbookTypeId" id="guestbookTypeId" required>
+                                 <%for(var type in types){%>
+                                  <option value="${type._id}">${type.name}</option>
+                                 <%}%>
+                            </select>
+            			</li>
+            			<li class="u-item">
+            				<label for=""><em>*</em>标题：</label>
+            				<input type="text" name="title" id="title" style="maxlength="120" placeholder="请填写标题" required />
+            			</li>
+            			<%if(isNotEmpty(state) && state == "allowAnonymous"){%>
+            			<li class="u-item">
+            				<label><em>*</em>是否匿名：</label>
+            				<input type="radio" name="isAnonymous" value="1"/>是
+            				<input type="radio" name="isAnonymous" value="0" checked="checked"/>否&nbsp;&nbsp;&nbsp;&nbsp;
+            			</li>
+            			<%}%>
+            			<li class="u-item">
+            				<label for="">联系邮箱：</label>
+            				<input type="email" name="email" id="email" maxlength="50" placeholder="联系邮箱"/>
+            			</li>
+            			<li class="u-item text">
+            				<label for=""><em>*</em>信件内容：</label>
+            				<textarea name="text" id="text" cols="70" rows="8" style="height: 258px;" placeholder="请填写信件内容（必填）" required></textarea>
+            			</li>
+            			
+            			<div class="u-tips"><i class="iconfont">&#xe614;</i>友情提示:</span>您发布的信息需要管理员审核后才会在信箱中显示，请谨慎发言，禁止发布违规内容。</div>
+            			<li class="m-submit"><a class="btn btn-success">提交</a></li>
+            		</ul>
+            		
+            	</form>
+            </div>
+			
+			
+			<!-- Footer Start -->
+			<%include("shared/inc_footer.html"){} %>
+			<!-- Footer End -->
+		</div>
+	</div>
+	
+<script type="text/javascript" src="${session.guestbook}/_js/jquery-2.1.4.min.js"></script>	
+<script type="text/javascript" src="${session.guestbook}/_js/dialog-min.js"></script>	
+<script src="${session.guestbook}/_js/app.js"></script>
+<script>
+
+	//信箱
+	;(function(){
+		var fetching = false;
+		$(".guestbookName").on("keyup", function(){
+			if(!fetching){
+				search($(this).val());
+			}
+		});
+		
+		$("#guestbook_list").on("click", ".r_gb", function(){
+			var id = $(this).attr("data-id"),
+				state = $(this).attr("data-state");
+			if(state == "allowAnonymous"){
+				setState(state);
+			}
+			$(".guestbookName").val($(this).text());
+			$(".guestbookId").val(id);
+			$("#guestbook_list").hide();
+		});
+		
+		function setState(state){
+			var html = '<li class="u-item">'+
+				'<label><em>*</em>是否匿名：</label>'+
+				'<input type="radio" name="isAnonymous" value="1"/>是'+
+				'<input type="radio" name="isAnonymous" value="0" checked="checked"/>否&nbsp;&nbsp;&nbsp;&nbsp;'+
+				'</li>';
+			$(html).insertAfter(".u-item.name");	
+		}
+		
+		function search(name){
+			fetching = true;
+			$.post("/widget/guestbook/searchMailBox", {name: name}, function(result){
+				if(result.resultStatus){
+					var html = "";
+					for(var i = 0; i < result.rows.length; i++){
+						html += '<li><a class="r_gb" data-state="'+ result.rows[i].state +'" data-id="'+ result.rows[i]._id +'">' + result.rows[i].name + '</a></li>';
+					}
+					$("#guestbook_list").html(html);
+					$("#guestbook_list").show();
+				}
+				fetching = false;
+			}, "json");
+		}
+		
+	})();
+
+	
+	$(".m-submit").on("click", function(){
+		submitForm();
+	});
+	
+	
+	function submitForm(){
+	   if(!$("#guestbookTypeId").val() || $("#guestbookTypeId").val() == 0 || $("#guestbookTypeId").val() == ''){
+		   alert("没有选择信箱类型！");
+		   return;
+	   }
+	   if(!$("#title").val() || $("#title").val() == ''){
+		   alert("标题不能为空！");
+		   return;
+	   }
+	   if(!$("#text").val() || $("#text").val() == ''){
+		   alert("内容不能为空！");
+		   return;
+	   }
+	   var reg = /^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/;
+	   if($("#email").val()!= "" && !reg.test($("#email").val())){
+		   alert("邮箱地址不正确");
+		   return;
+	   }
+	   
+	   var postData = $("#validForm").serialize();
+	   $.post($("#validForm").attr("action"), postData, function(data){
+		   if(data.resultStatus){
+			   d().success.show();
+			   setTimeout(function(){
+				   location.href="/widget/guestbook.htx?token=${session.token!}";
+			   }, 3000);
+		   }else{
+			   alert(data.resultMsg);
+		   }
+	   }, "json")
+	   
+	}
+	
+	function d(){
+		var d = {};
+		d.success = dialog({
+		    title: '提示',
+		    content: '信件发送成功，等待对方审核回复，3秒后自动返回信箱列表！',
+		    okValue: '立即跳转',
+		    ok: function () {
+		    	location.href="/widget/guestbook.htx?token=${session.token!}";
+		    }
+		});
+		return d;
+	}
+
+</script>
+</body>
+</html>

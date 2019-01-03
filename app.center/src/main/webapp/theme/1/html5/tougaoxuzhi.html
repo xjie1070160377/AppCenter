@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!--[if IE 6]><html class="ie lt-ie8"><![endif]-->
+<!--[if IE 7]><html class="ie lt-ie8"><![endif]-->
+<!--[if IE 8]><html class="ie ie8"><![endif]-->
+<!--[if IE 9]><html class="ie ie9"><![endif]-->
+<!--[if !IE]><!--> <html lang="zh-CN"> <!--<![endif]-->
+ <head>
+	<meta charset="utf-8" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name='apple-touch-fullscreen' content='yes'>
+	<meta content="fullscreen=yes,preventMove=no" name="ML-Config">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="format-detection" content="telephone=no,email=no,address=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<!--[if lte IE 8]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/tougao.css"/>
+	<style type="text/css">
+		body{overflow: hidden;}
+		.header{background: #cd9033;}
+		.header ul li a.active{color: #C50B25}
+		.wrapper{height: 100%;}
+		.main{background-color: #eaa62c;height: 100%;}
+		.main .logo-box{margin:100px auto;height: 60px;}
+		.main .logo-box img{height: 100%;width: auto;}
+		.main .text{text-align: center;}
+		.main .text .text-box{text-align: left;display: inline-block;}
+		.main .text span{line-height: 50px;color: #fff;text-align: left;font-size: 20px;}
+		@media only screen and (max-width: 1300px) {
+			.main .logo-box{margin:70px auto;height: 60px;}
+			.main .text span{font-size: 16px;}
+		}
+	</style>
+</head>
+
+<body class="p-tougaoxuzhi">
+	<div class="wrapper">
+		<%include("tg_header.html"){} %>
+		<div class="main">
+			<div class="logo-box">
+				<img src="${session.themeRoot}/_files/img/sp_logo.png"/>
+				<img src="${session.themeRoot}/_files/img/logo02.png" style="margin-left: 10px;"/>
+			</div>
+			<div class="text">
+				<div class="text-box">
+					<span>1、红客稿酬根据 《国防科技大学稿酬发放管理办法》发放，每半年结算一次。      </span>
+					<br/>
+					<span>2、稿费发放采用转账形式，投稿时，请一律填写真名，并且认真核对账号信息。</span>
+					<br/>
+					<span>3、如遇多人采写同一稿件，按第一作者发放。</span>
+					<br/>
+					<span>4、提倡原创，严禁抄袭。抄袭一经发现，通报批评！</span>
+				</div>
+				
+			</div>
+		</div>
+	
+	</div>
+	<script src="${session.themeRoot}/_files/js/plugins/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="${session.themeRoot}/_files/js/plugins/jquery.validate.js" type="text/javascript" charset="utf-8"></script>
+	<script src="${session.themeRoot}/_files/js/plugins/jquery.validation_zh_CN.js" type="text/javascript" charset="utf-8"></script>
+	<script src="${session.themeRoot}/_files/js/tougao.js" type="text/javascript" charset="utf-8"></script>
+</body>

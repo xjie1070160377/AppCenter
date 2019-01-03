@@ -1,0 +1,303 @@
+<div id="${id}_div">
+
+<div class="col-lg-12 form-group">
+	<div class="form-group text-left col-sm-2">
+		<span class="btn btn-success fileinput-button imgselectfile-btn"> <i
+			class="glyphicon glyphicon-plus"></i> <span>选择文件</span>
+		</span>
+	</div>
+	<div class="form-group col-sm-5">
+		<% if (isNotEmpty(width)){ %>
+			<label class="col-sm-2 control-label" for="${id}_width">宽</label>
+            <div class="col-sm-4"><input type="text" class="form-control" placeholder="宽度"  id="${id}_width" name="${id}_width" value="${width}"></div>
+        <%}%>
+        <% if (isNotEmpty(height)){ %>
+        	<label class="col-sm-2 control-label" for="${id}_height">高</label>
+            <div class="col-sm-4"><input type="text" class="form-control" placeholder="高度"  id="${id}_height" name="${id}_height" value="${height}"></div>
+         <%}%>
+    </div>
+    <div class="form-group col-sm-5">
+    	<% if (isNotEmpty(scale)){ %>
+	    	<label class="checkbox-inline i-checks col-sm-3">
+				<input type="checkbox" name="roles" id="${id}_scale" value="1" checked> 压缩 
+			</label>	
+		<%}%>
+		<% if (isNotEmpty(stretch)){ %>
+			<label class="checkbox-inline i-checks col-sm-3">
+				<input type="checkbox" name="roles" id="${id}_stretch" value="1" > 拉伸
+			</label>
+		<%}%>
+		<% if (isNotEmpty(watermark)){ %>
+			<label class="checkbox-inline i-checks col-sm-3">
+				<input type="checkbox" name="roles" id="${id}_watermark" value="1" > 水印
+			</label>
+		<%}%>
+    </div>
+</div>
+<div class="col-sm-12" id="${id}_preview_cont">
+<% var imgCount=0;%>
+<% if (isNotEmpty(mapData)){ %>
+<% for(entry in mapData){ %>
+
+<div class="col-sm-12 img_prev_div" index="${imgCount}">
+	<div class="col-sm-8">
+		<div class="form-group">
+			<input type="hidden" name="${id}_fileName_${imgCount}" id="${id}_fileName_${imgCount}" value="${entry.fileName}"/>
+			<textarea class="form-control" placeholder="摘要" style="height:50px;" id="${id}_note_${imgCount}" name="${id}_note_${imgCount}" >${entry.note}</textarea>
+		</div>
+		<div class="form-group">
+			<input type="text" class="form-control" readonly="readonly" value="${entry.url}" id="${id}_url_${imgCount}" name="${id}_url_${imgCount}" >
+		</div>
+		<div class="form-group text-left col-sm-8">
+			<label class="col-sm-1 control-label" for="'+width_id+'">宽</label>
+			<div class="col-sm-4"><input type="text" class="form-control" placeholder="宽度"  id="${id}_width_${imgCount}" name="${id}_width_${imgCount}" value="${entry.width}"></div>
+			<label class="col-sm-1 control-label" for="'+height_id+'">高</label>
+			<div class="col-sm-4"><input type="text" class="form-control" placeholder="高度"  id="${id}_height_${imgCount}" name="${id}_height_${imgCount}" value="${entry.height}"></div>
+			<div class="col-sm-2">
+				<a id="btnCrop_${imgCount}" class="btn btn-white btn-bitbucket" title="裁剪该图" data-url="${entry.url}" onclick="imagCrop2('${id}','${imgCount}',${entry.width},${entry.height});"><i class="fa fa-cut"></i></a>
+			</div>
+	
+		</div>
+	</div>
+	<div class="col-sm-2">
+		<img id="${id}_imgPreview_${imgCount}" style="cursor:pointer;" onclick="refreshImg2(this);" title="点击刷新" src="${ctxPath}${entry.url}?${date(),dateFormat='yyyyMMddHHmmss'}" width="100px" height="100px">
+	</div>
+	<div class="col-sm-2">
+		<div class="form-group">
+			<button onclick="removeImg(this);" title='删除' class="btn btn-primary" type="button">删除</button>
+		</div>
+		<div class="form-group">
+			<button onclick="moveUp(this);" title='上移' class="btn btn-primary" type="button">上移</button>
+		</div>
+		<div class="form-group">
+			<button onclick="moveDown(this);" title='下移' class="btn btn-primary" type="button">下移</button>
+		</div>
+	</div>
+</div>
+
+<% 
+imgCount++;
+} %>
+<%}%>
+</div>
+
+	<div id="${id}_dropZoneDiv"></div>
+	<div id="actions" class="row">
+		
+		<div class="col-lg-6">
+			<div class="table table-striped files" id="${id}_previews">
+			<div id="${id}_template" class="file-row">
+				<div>
+					<span class="preview"><img data-dz-thumbnail /></span>
+				</div>
+				<div class="progress progress-striped active" role="progressbar"
+					aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+					<div class="progress-bar progress-bar-success" style="width: 0%;"
+						data-dz-uploadprogress></div>
+				</div>
+				<strong class="error text-danger" data-dz-errormessage></strong>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<script type="text/javascript">
+ 		$('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        }); 
+		//图片上传
+    	//定义文件选择后的模板
+		var previewNode = document.querySelector("#${id}_template");
+		previewNode.id = "";
+		var previewTemplate = previewNode.parentNode.innerHTML;
+		previewNode.parentNode.removeChild(previewNode);
+		var uploadUrl = "sys/upload";
+		<% if (isNotEmpty(url)){ %>
+			uploadUrl = "${url}";
+		<%}%>
+		var ${id}_Dropzone = new Dropzone("#${id}_dropZoneDiv", { // 需要有个容器来加载控件
+			url : uploadUrl, // Set the url
+			thumbnailWidth : 80,
+			thumbnailHeight : 80,
+			parallelUploads : 20,
+			maxFiles:10,
+			addRemoveLinks:false,
+			dictRemoveFile:'取消上传',
+			dictMaxFilesExceeded:'超出允许上传数量,不允许上传',
+			dictInvalidInputType:"只允许上传图片文件",
+			acceptedFiles:"image/*",
+			//maxFiles:1,
+			previewTemplate : previewTemplate,
+			autoQueue : true, // 自动上传
+			previewsContainer : "#${id}_previews", // 定义预览模版
+			clickable : "#${id}_div .imgselectfile-btn" // 定义点击按钮， 点击后弹出文件选择框
+		});
+		${id}_Dropzone.on("addedfile",function(){
+			${id}_Dropzone.options.params = {width:$("#${id}_width").val(),height:$("#${id}_height").val(),scale:$('#${id}_scale').is(':checked'),stretch:$('#${id}_stretch').is(':checked'),watermark:$('#${id}_watermark').is(':checked')};
+		});
+		${id}_Dropzone.on("success", function(a, b) {
+			addImgDiv(b.fileUrl, b.fileName);
+			setTimeout(function(){
+				${id}_Dropzone.removeAllFiles(true);
+            }, 1200);
+		});
+		
+		${id}_Dropzone.on("error", function(a, b) {
+			setTimeout(function(){
+				${id}_Dropzone.removeAllFiles(true);
+            }, 1200);
+		});
+		var imgCount = ${imgCount};
+		function addImgDiv(fileUrl, fileName){
+			var note_id = "${id}_note_" + imgCount;
+			var url_id = "${id}_url_" + imgCount;
+			var width_id = "${id}_width_" + imgCount;
+			var height_id = "${id}_height_" + imgCount;
+			var width = $("#${id}_width").val();
+			if(!width){
+			width="";
+			}
+			var height = $("#${id}_height").val();
+			if(!height){
+			height="";
+			}
+			var fileName_id = "${id}_fileName_" + imgCount;
+			var ind = fileName.lastIndexOf(".");
+			fileName = fileName.substring(0, ind);
+			
+			var cont = $("#${id}_preview_cont");
+			var html = '<div class="col-sm-12 img_prev_div" index='+imgCount+'>';
+			html += '<div class="col-sm-8">';
+			html += '<div class="form-group">';
+			html += '<input type="hidden" name="'+fileName_id+'" id="'+fileName_id+'" value="'+fileName+'"/>';
+			html += '<textarea class="form-control" placeholder="摘要" style="height:50px;" id="'+note_id+'" name="'+note_id+'" ></textarea>';
+			html += '</div>';
+			html += '<div class="form-group">';
+			html += '<input type="text" class="form-control" readonly="readonly" value="'+fileUrl+'" id="'+url_id+'" name="'+url_id+'" >';
+			html += '</div>';
+			html += '<div class="form-group text-left col-sm-8"><label class="col-sm-1 control-label" for="'+width_id+'">宽</label>';
+			html += '<div class="col-sm-4"><input type="text" class="form-control" placeholder="宽度"  id="'+width_id+'" name="'+width_id+'" value="'+width+'"></div>';
+			html += '<label class="col-sm-1 control-label" for="'+height_id+'">高</label>';
+			html += '<div class="col-sm-4"><input type="text" class="form-control" placeholder="高度"  id="'+height_id+'" name="'+height_id+'" value="'+height+'"></div>';
+			html += '<div class="col-sm-2"><a id="btnCrop_'+imgCount+'" class="btn btn-white btn-bitbucket" title="裁剪该图" data-url="'+fileUrl+'" onclick="imagCrop2(\'${id}\',\''+imgCount+'\'+','+width+'+','+height+');"><i class="fa fa-cut"></i></a></div>';
+			html += '</div>';
+			html += '</div>';
+			html += '<div class="col-sm-2">';
+			html += '<img id="${id}_imgPreview_'+imgCount+'" style="cursor:pointer;" onclick="refreshImg2(this);" title="点击刷新" src="${ctxPath}'+fileUrl+'?'+Math.random()+'" width="100px" height="100px">';
+			html += '</div>';
+			html += '<div class="col-sm-2">';
+			html += '<div class="form-group">';
+			html += '<button onclick="removeImg(this);" class="btn btn-primary" type="button">删除</button>';
+			html += '</div>';
+			html += '<div class="form-group">';
+			html += '<button onclick="moveUp(this);" class="btn btn-primary" type="button">上移</button>';
+			html += '</div>';
+			html += '<div class="form-group">';
+			html += '<button onclick="moveDown(this);" class="btn btn-primary" type="button">下移</button>';
+			html += '</div>';
+			html += '</div>';
+			html += '</div>';
+			
+			cont.append(html);
+			imgCount++;
+		}
+		function removeImg(obj){
+			layer.confirm('确定删除吗?', {
+				btn : [ '删除', '取消' ]
+			//按钮
+			}, function() {
+				$(obj).parents(".img_prev_div").remove();
+				layer.closeAll();
+			});
+		}
+		function moveUp(obj){
+			var prev = $(obj).parents(".img_prev_div").prev();
+			if(prev.length == 0){
+				layer.msg("已经是最上面了");
+			}else{
+				prev.before($(obj).parents(".img_prev_div"));
+			}
+		}
+		function moveDown(obj){
+			var next = $(obj).parents(".img_prev_div").next();
+			if(next.length == 0){
+				layer.msg("已经是最下面了");
+			}else{
+				next.after($(obj).parents(".img_prev_div"));
+			}
+		}
+		
+		function getImgList(){
+			var prevDiv = $("#${id}_preview_cont").children(".img_prev_div");
+			var seq = 0;
+			var len = prevDiv.length;
+			var imgList = new Array(len);
+			prevDiv.each(function(){
+				var index = $(this).attr('index');
+				var note_id = "${id}_note_" + index;
+				var url_id = "${id}_url_" + index;
+				var width_id = "${id}_width_" + index;
+				var height_id = "${id}_height_" + index;
+				var fileName_id = "${id}_fileName_" + index;
+				var note = $("#"+note_id).val();
+				var url = $("#"+url_id).val();
+				var width = $("#"+width_id).val();
+				var height = $("#"+height_id).val();
+				var fileName = $("#"+fileName_id).val();
+				var map = {};
+				map.note = note;
+				map.url = url;
+				map.width = width;
+				map.height = height;
+				map.fileName = fileName;
+				imgList[seq] = map;
+				seq++;
+			});
+			//alert(imgList)
+			//alert(JSON.stringify(imgList));
+			return JSON.stringify(imgList);
+		}
+		
+		function imagCrop2(pId,imgCount, limitW, limitH) {
+			var fileUrl = $("#btnCrop_"+imgCount).attr("data-url");
+			//alert(fileUrl);
+			var params = {cropWidth:limitW, cropHeight:limitH};
+			params.fileUrl = fileUrl;
+			var index = layer.open({
+				type : 1, //page层
+				area : [ '800px', ($(window).height() - 30) +'px'],
+				title : '图片裁剪',
+				shade : 0.6, //遮罩透明度
+				moveType : 1, //拖拽风格，0是默认，1是传统拖动
+				shift : -1, //0-6的动画形式，-1不开启
+				content : $("#popWin").load('sys/imageCrop', params),
+			    btn: ['完成', '取消'],
+			    yes: function(index, layero){
+			    	startCrop({index: index, pId: pId, imgCount: imgCount}, cropSuccess2);
+				},cancel:function(index){
+					showSelector(false);
+				}
+			});
+			
+			layer.full(index);		  		
+	  	}
+	  	
+	  	function cropSuccess2(json){
+	  		//alert(json.fileUrl);
+			
+	  		$("#"+json.pId+"_url_"+json.imgCount).val(json.fileUrl);
+	  		//alert("裁剪成功");
+	  		$("#"+json.pId+"_imgPreview_"+json.imgCount).attr("src", "${ctxPath}/static/base/images/ok.png"+"?"+Math.random());					
+			setTimeout(function(){
+				$("#"+json.pId+"_imgPreview_"+json.imgCount).attr("src", "${ctxPath}" + json.fileUrl+"?"+Math.random());
+				$("#"+json.pId+"_imgPreview_"+json.imgCount).css({width:100,height:100});
+            }, 1200);	
+
+	  	}
+	  	
+	  	function refreshImg2(obj){
+	  		$(obj).attr("src", $(obj).attr("src")+"?"+Math.random());
+	  	}
+	  	
+</script>

@@ -1,0 +1,137 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="" data-status="basic"><a data-toggle="tab" href="#tab-1">基本信息</a></li>
+                            <li class="" data-status="teaching_rewards"><a data-toggle="tab" href="#tab-2">教学获奖</a></li>
+                            <li class="" data-status="scientific_research"><a data-toggle="tab" href="#tab-3">科研项目</a></li>
+                            <li class="" data-status="books"><a data-toggle="tab" href="#tab-4">专著教材</a></li>
+                            <li class="" data-status="papers"><a data-toggle="tab" href="#tab-5">学术论文</a></li>
+                            <li class="" data-status="research_rewards"><a data-toggle="tab" href="#tab-6">科研获奖</a></li>
+                            <li class="" data-status="books_rewards"><a data-toggle="tab" href="#tab-7">专著教材获奖</a></li>
+                            <li class="" data-status="papents"><a data-toggle="tab" href="#tab-8">专利成果</a></li>
+                            <li class="active" data-status="academic_communion"><a data-toggle="tab" href="#tab-9">学术交流</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+                                <!-- Tab开始 -->
+									<div class="col-sm-12">
+									    <div class="ibox float-e-margins">
+        
+									        <div class="ibox-content">
+									            <form id="postForm" method="post" class="form-horizontal" action="">
+									                <input type="hidden" id="tid" name="tid" value="${tid}"/>
+									                <div class="form-group">
+									                	<label class="col-sm-2 control-label" for="title">名称</label>
+									                    <div class="col-sm-10"><input type="text" class="form-control" placeholder="专题名称" maxlength="150" id="title" name="title" value=""></div>
+									                </div>
+									                <div class="hr-line-dashed"></div>
+									                <div class="form-group">
+									                	<label class="col-sm-2 control-label" for="metaKeywords">关键字</label>
+									                    <div class="col-sm-10"><input type="text" class="form-control" placeholder="关键字" maxlength="150" id="metaKeywords" name="metaKeywords" value=""></div>
+									                </div>
+									                <div class="hr-line-dashed"></div>
+									                <div class="form-group">
+									                	<label class="col-sm-2 control-label" for="metaDescription">描述</label>
+									                    <div class="col-sm-10"><textarea class="form-control" placeholder="描述" maxlength="200" name="metaDescription"></textarea></div>
+									                </div>
+									                <div class="hr-line-dashed"></div>
+									                <div class="form-group">
+									                	<label class="col-sm-2 control-label" for="categoryId">类别</label>
+									                    <div class="col-sm-4">
+									              			<select class="input-sm form-control input-s-sm inline" name="categoryId">
+																
+																    <option value=""></option>
+																
+									           				</select>	           
+									                    </div>
+									                    <label class="col-sm-2 control-label" for="modelId">模型</label>
+									                    <div class="col-sm-4">
+									              			<select class="input-sm form-control input-s-sm inline" name="modelId" id="modelId">
+																
+																    <option value=""></option>
+															
+									           				</select>	        
+									                    </div>
+									                </div>
+									               
+									                <div class="form-group">
+									                    <div class="col-sm-12 text-right">
+									                        <button onclick="submitForm();" title='提交保存' class="btn btn-primary" type="button">提交保存</button>
+									                    </div>
+									                </div>
+									            </form>
+									        </div>
+									    </div>
+									</div>
+
+                                   <!-- Tab结束 -->
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+</div>
+                            
+		<script type="text/javascript">
+
+				 $(document).ready(function () {
+				    	
+				        $('.i-checks').iCheck({
+				            checkboxClass: 'icheckbox_square-green',
+				            radioClass: 'iradio_square-green',
+				        });
+				        
+				        $('.nav-tabs li').click(function() {
+		            		var status = $(this).attr('data-status');
+		            		var str = 'degree/teacher/edit?tid=${tid}&status='+status+'&queryParentId=${queryParentId}&showDescendants=${showDescendants}';
+		            		loadFrameContent(str);
+		            	});
+				        
+				        //表单验证
+				        $("#postForm").validate({
+				            rules: {
+				            	title: {
+				                    required: true,
+				                    minlength: 2,
+				                    maxlength: 150
+				                }
+				            }
+				        });
+				        
+				    });
+				  
+				    function submitForm(){
+				    	if($("#postForm").valid()==false){
+				    		return;
+				    	}
+				    	var postData = $("#postForm").serializeArray();
+						$.post($("#postForm").attr("action"), postData, function (json) {
+				            //var data = $.parseJSON(json);
+				            if (json.resultStatus) {
+				                //成功
+				            	loadFrameContent('cms/special/specialList');
+				            } else {
+				            	//
+				            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+				            }
+				        }, "json");
+				    	
+				    }
+                
+                
+				
+		</script>
+	
+<%}%>

@@ -1,0 +1,9 @@
+
+<% for(entry in mapData){ %>
+
+<label class="checkbox-inline i-checks">
+<input type="checkbox" name="${fieldName}" id="${fieldName}_${entry.value}" value="${entry.value}" ${entry.value==defaultValue?"checked":""}> ${entry.key} 
+</label>
+
+<% } %>
+

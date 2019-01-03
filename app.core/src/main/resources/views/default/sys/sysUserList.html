@@ -1,0 +1,434 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight wrapper-userlist">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>用户列表</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                    	<div class="col-sm-2 m-b-xs">
+                        <select class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled">
+                            <option value="LIKE_userName">用户名称</option>
+                            <option value="EQ_superUser">是否超管</option>
+                        </select>
+                        
+                        </div>
+	                    <div class="col-sm-2">
+		                        <div class="input-group">
+		                        <input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control" onkeydown="javascript:if(event.keyCode==13){queryGrid();}">
+		                        </div>
+	                        </div>
+	                        <div class="col-sm-2 m-b-xs"  style="padding-top:5px;text-align:right;">
+                    	<label class="control-label">角色名称</label></div>
+                        <div class="col-sm-4">
+	                        <div class="input-group">
+	                        	<input type="text" name="rolename" id="rolename" placeholder="角色名称" class="input-sm-2 form-control" onkeydown="javascript:if(event.keyCode==13){queryGrid();}"> 
+	                        	<span class="input-group-btn">
+		                            <button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();"> 搜索</button>
+		                        </span>
+	                        </div>
+	                        
+                        </div>
+                        
+                        <div class="col-sm-3">
+                        
+                        </div>
+                    </div>
+                    <div class="row">
+	                    	<div class="col-sm-12">
+	                    		<a href="javascript:void(0);" onclick="add();" title='新增用户' class="btn btn-primary btn-sm">新增用户</a>
+	                    		<a href="javascript:void(0);" title='批量导入用户' class="btn btn-primary btn-sm btn-upload-excel btn-upload">批量导入用户</a>
+                           		<a href="javascript:void(0);" onclick="dels();" title='批量删除用户' class="btn btn-primary btn-sm">批量删除用户</a>
+                           		<a href="javascript:void(0);" onclick="toUserExtGrid();" title='用户资料查询' class="btn btn-primary btn-sm">资料查询</a>
+	                    	</div>
+	                    </div>
+
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<div id="dropzone_excel" class="dropzone nopreview "></div>
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$("#table_list").jqGrid({
+					url : "sys/sysUserListJson",
+					datatype : "json",
+					mtype : "POST",
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 10,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "ID",
+						classes : 'mshow',
+						name : 'id',
+						index : 'id',
+						width : 50,
+						align : "center",
+						sorttype : "int"
+					}, {
+						label : "用户名",
+						classes : 'mshow',
+						name : 'userName',
+						index : 'userName',
+						width : 90,
+						align : "left"
+					}, {
+						label : "状态",
+						name : 'status',
+						index : 'status',
+						width : 40,
+						align : "center",
+						formatter : statusFmt
+					},  {
+						label : "分类",
+						name : 'uType',
+						index : 'uType',
+						width : 20,
+						align : "center",
+						formatter : uTypeFmt
+					}, {
+						label : "是否超管",
+						name : 'superUser',
+						width : 40,
+						align : "center",
+						formatter : 'select',
+						editoptions : {
+							value : "true:<font color=blue>是</font>;false:否"
+						}
+					}, {
+						label : "创建时间",
+						name : 'createTime',
+						index : 'createTime',
+						width : 80,
+						align : "center",
+						sorttype : "date",
+						formatter : dateTimeFmt
+					}, {
+						label : "最后更新",
+						name : 'lastUpdate',
+						index : 'lastUpdate',
+						width : 80,
+						align : "center",
+						sorttype : "date",
+						formatter : dateTimeFmt
+					}, {
+						label : "操作",
+						classes : 'mshow',
+						name : 'op',
+						sortable : false,
+						width : 130,
+						align : "center",
+						formatter : oprationFmt
+					} ],
+					pager : "#pager_list",
+					viewrecords : true,
+					multiselect : true,
+					sortname : 'id',
+					sortorder : "desc",
+					caption : "管理用户列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += "<button class='btn btn-primary' title='角色' type='button' onclick='role("+ rowObject.id + ");'><i class='iconfont icon-jiaose'></i>角色</button>";
+				html += " <button class='btn btn-primary' title='资料' type='button' onclick='userExt("+ rowObject.id + ");'><i class='iconfont icon-iconset0341'></i>资料</button>";
+				html += " <button class='btn btn-primary' title='编辑' type='button' onclick='edit("+ rowObject.id + ");'><i class='fa fa-edit'></i>编辑</button>";
+				html += " <button class='btn btn-primary' title='删除' type='button' onclick='del(" + rowObject.id + ");'><i class='fa fa-remove'></i>删除</button>";
+				return html;
+			}
+
+			function uTypeFmt(cellvalue, options, rowObject) {
+				var html = "";
+				switch (cellvalue) {
+				case 0:
+					html = "<font color='red'>外</font>";
+					break;
+				case 10:
+					html = "<font color='green'>内</font>";
+					break;
+				default:
+					html = "<font color='gray'>非</font>";
+					break;
+				}
+
+				return html;
+			}
+			
+			function statusFmt(cellvalue, options, rowObject) {
+				var html = "";
+				switch (cellvalue) {
+				case 0:
+					html = "<font color='red'>禁用</font>";
+					break;
+				case 1:
+					html = "<font color='green'>正常</font>";
+					break;
+				default:
+					html = "<font color='gray'>封号</font>";
+					break;
+				}
+
+				return html;
+			}
+
+			function add() {
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '450px' ],
+					title : '新增用户',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('sys/sysUserAdd'),
+				    btn: ['确定', '取消'],
+				    yes: function(index, layero){
+				    	submitForm(index);
+				    	//layer.close(index); //如果设定了yes回调，需进行手工关闭
+					}
+				});
+			}
+			
+
+			function edit(id) {
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '450px' ],
+					title : '修改用户',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('sys/sysUserEdit?rnd='+Math.random()+'&userId=' + id),
+				    btn: ['确定', '取消'],
+				    yes: function(index, layero){
+				    	submitForm(index);
+					}
+				});
+
+			}
+			
+			function userExt(id) {
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '450px' ],
+					title : '修改用户资料',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('sys/sysUserExtEdit?userId=' + id),
+				    btn: ['确定', '取消'],
+				    yes: function(index, layero){
+				    	submitForm(index);
+					}
+				});
+
+			}
+
+			function del(id) {
+				layer.confirm('确定删除该用户吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("sys/sysUserDel", {
+						userId : id
+					}, function(json) {
+						if (json == true) {//成功
+							reloadGrid();
+							layer.msg('删除成功.');
+						} else {//失败
+							layer.alert("删除失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function dels() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量删除的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量删除用户吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("sys/sysUserDels", {
+						userIds : ids.join(',')
+					}, function(json) {
+						if (json == true) {//成功
+							reloadGrid();
+							layer.msg('批量删除成功.');
+						} else {//失败
+							layer.alert("批量删除失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+		  	function role(id) {
+				var index = layer.open({
+					type : 1, //page层
+					area : [ '660px', '350px'],
+					title : '用户授权',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					maxmin: true,
+					full:function(){
+						//alert(index);
+						//全屏了
+						
+					},
+					min:function(){
+						//最小化了
+					},
+					restore:function(){
+						//还原了
+					}, 
+					content : $("#popWin").load('sys/userRoleRelSet?userId=' + id),
+				    btn: ['授权', '取消'],
+				    yes: function(index, layero){
+				    	submitForm(index);
+					}
+				});
+						  		
+		  	}
+
+			function reloadGrid() {
+
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list");
+		  		var columnFiled = $("#columnFiled").val();
+	            var keyWord = $("#keyWord").val();
+	            if("EQ_superUser"==columnFiled){
+	            	if(keyWord=="是"){
+	            		keyWord = true;
+	            	}else if(keyWord=="否"){
+	            		keyWord = false;
+	            	}
+	            }
+	            	
+	            
+	            var rolename = $("#rolename").val();
+				
+	          //增加提交参数
+	            var postData = { columnFiled : columnFiled, keyWord : keyWord, rolename: rolename};
+	            $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  		
+		  		
+		  	}
+		  	
+		  	function toUserExtGrid(){
+		  		
+		  		loadFrameContent("sys/sysUserExtList");
+		  	}
+		  	
+		  //批量导入用户数据
+			(function initDropZone(){
+				var dropzone = new Dropzone("#dropzone_excel", { // 需要有个容器来加载控件
+					url : "sys/upload", // Set the url
+					addRemoveLinks:false,
+					acceptedFiles:".xlsx, *.xls",
+					dictRemoveFile:'取消上传',
+					dictInvalidInputType:"只允许上传xls或xlsx文件",
+					dictMaxFilesExceeded:'超出允许上传数量,不允许上传',
+					dictFileTooBig:"文件大小不能超过5M",
+					maxFiles:99,
+				    maxFilesize: 5, 
+					autoQueue : true, 
+					clickable : ".btn-upload-excel" // 定义点击按钮， 点击后弹出文件选择框
+				});
+				dropzone.on("success", function(a, b) {
+					success(a, b);
+				});
+				dropzone.on("error", function(a, errorMsg) {
+					layer.alert(errorMsg);
+				});
+				dropzone.on("sending", function(a, b) {
+					sending();
+				});
+				dropzone.on("uploadprogress", function(file, percent, bytesSent) {
+					uploadprogress(percent);
+				});
+				function success(a, b){
+					//请求开始导入用户数据
+					$.post("sys/importSysUsersFromExcel", {filePath:b.fileUrl}, function(result){
+						console.log(result);
+						$(".btn-upload-excel").removeClass("uploading").removeAttr("disabled");
+						$(".btn-upload-excel div").remove();
+						if(result.resultStatus){
+							$("#table_list").jqGrid("clearGridData");
+							$("#table_list")[0].addJSONData(result.rows);
+							
+							var users = result.rows;
+							var ids = [];
+							for(var i = 0; i < users.length; i++){
+								ids.push(users[i].id);
+							}
+							exportExcel(ids.toString(), b.fileUrl);
+						}
+					}, "json");
+				}
+				function sending(){
+					var opts = {
+						color: '#fff',
+						lines: 12,
+						radius: 5,
+						length: 3,
+						width: 2,
+						zIndex: 'auto',
+						top: '45%',
+						left: '20%',
+						className: 'spinner'
+					}
+					var spinner = new Spinner(opts).spin();
+					var process = "<div class='process'></div>"
+					$(".btn-upload-excel").addClass("uploading").attr("disabled","disabled").append(spinner.el).append(process);
+				}
+				function uploadprogress(percent){
+					$(".btn-upload-excel .process").css("width", percent+"%")
+				}
+			})();
+		  
+		  
+		  function exportExcel(ids, fileUrl){
+			  var filePath = encodeURIComponent(fileUrl);
+			  window.open("sys/exportSysUsersExcel?ids="+ids+"&filePath="+filePath);
+		  }
+		  	
+		</script>
+	
+<%}%>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<!--[if IE 6]><html class="ie lt-ie8"><![endif]-->
+<!--[if IE 7]><html class="ie lt-ie8"><![endif]-->
+<!--[if IE 8]><html class="ie ie8"><![endif]-->
+<!--[if IE 9]><html class="ie ie9"><![endif]-->
+<!--[if !IE]><!--> <html lang="zh-CN"> <!--<![endif]-->
+ <head>
+	<meta charset="utf-8" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name='apple-touch-fullscreen' content='yes'>
+	<meta content="fullscreen=yes,preventMove=no" name="ML-Config">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="format-detection" content="telephone=no,email=no,address=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<!--[if lte IE 8]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<title>登录 -- 红客</title>
+	<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/fonts/iconfont.css" />	
+	<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_style.css" />	
+	<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_login.css" />	
+	<!-- <script language="javascript" type="text/javascript" src="_files/ckplayer/ckplayer.js" charset="utf-8"></script> -->
+	<link href="${session.themeRoot}/_files/js/plugins/jplayer/blue.monday/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
+	<script data-main="${session.themeRoot}/_files/js/app" src="${session.themeRoot}/_files/js/require.js"></script>
+</head>
+
+<body class="login">
+	
+	<div class="header">
+		<div class="header-container">
+			<div class="header-left">
+				<img src="${session.themeRoot}/_files/img/login_header_left_bg.jpg" alt="" />
+			</div>
+			
+			<div class="header-right">
+				<div class="login-form">
+					<div class="logo">
+						<div class="logo-l">
+							<img src="${session.themeRoot}/_files/img/sp_logo_141.png" alt="" />
+						</div>
+						<div class="logo-r">
+							<a href="http://mcom.nudt.edu.cn/" target="_blank">
+								<img src="${session.themeRoot}/_files/img/sp_logo_plus.png" alt="" />
+							</a>
+						</div>
+						<div class="logo-text">
+							<img src="${session.themeRoot}/_files/img/login_logo_text.png" alt="" />
+						</div>
+					</div>
+				
+					<form class="clearifx" action="${ctxPath}/mcenter/login" method="post">
+					    <div class="input-login">
+					    	<span><i class="iconfont">&#xe603;</i></span>
+					    	<input type="text" name="userName" placeholder="请输入用户名" />
+					    </div>
+					    <div class="input-login">
+					    	<span><i class="iconfont" style="font-size: 20px;">&#xe632;</i></span>
+					    	<input type="password" name="passWord" placeholder="请输入密码" />
+					    </div>
+					    <% if (isNotEmpty(errorClassName)){%>
+							<div class="form-group" style="color: red;">
+							<% switch(errorClassName){					
+									case "org.apache.shiro.authc.UnknownAccountException":
+										//print("用户不存在");//防止别人猜到用户名
+										print("密码不正确");
+										break;
+									case "org.apache.shiro.authc.IncorrectCredentialsException":
+										print("密码不正确");
+										break;
+									default:
+										print(errorClassName);	
+							}%>
+							</div>
+						<%}%>
+					    <button class="btn1">登 录</button>
+				  	</form>
+				  	
+				  	<div class="qrcode clearfix">
+				  		<div class="android">
+				  			<img src="${session.themeRoot}/_files/img/android.png" alt="安卓扫一扫" title="安卓扫一扫" />
+				  			<p>安卓扫一扫</p>
+				  		</div>
+				  		<div class="ios">
+				  			<img src="${session.themeRoot}/_files/img/IOS.png" alt="苹果扫一扫" title="苹果扫一扫" />
+				  			<p>苹果扫一扫</p>
+				  		</div>
+				  	</div>
+				</div>
+			</div>
+		</div>
+	
+		
+		
+		
+	</div>
+
+	<div class="login-banner">
+		<div class="login-banner-box">
+			<img src="${session.themeRoot}/_files/img/login_banner_1.png" alt="红客在手便知科大事" title="红客在手便知科大事" />
+		</div>
+	</div>
+	
+	<div class="login-banner login-banner_2">
+		<div class="top">
+		
+		</div>
+		<div class="content">
+			<img src="${session.themeRoot}/_files/img/login_banner_2.png" alt="红客在手便知科大事" title="红客在手便知科大事" />
+		</div>
+	</div>
+	
+	<div class="login-tg">
+		<div class="tg-title">
+			<img src="${session.themeRoot}/_files/img/login_tg_title.png" alt="投稿必读" title="投稿必读" />
+		</div>
+		<div class="tg-tips">
+			<img src="${session.themeRoot}/_files/img/login_tg_tips.png" alt="投稿必读" title="投稿必读" />
+			<div class="btn-tg">
+				<a href="${ctxPath}/tg-main.htx">点击进入投稿界面</a>
+			</div>
+		</div>
+		<div class="tg-bottom">
+			<img src="${session.themeRoot}/_files/img/login_tg_bottom.png" alt="" title="" />
+		</div>
+	</div>
+
+</body>
+</html>

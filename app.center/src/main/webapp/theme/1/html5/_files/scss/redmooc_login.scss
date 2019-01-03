@@ -1,0 +1,38 @@
+/*variables*/
+//color
+$red1 : #e74c3c;
+$green: #49BE38;
+$green1:#68bb23;
+$blue:#049cdb;
+$sidebarbg:#2A2A2A;
+//width
+$iphone4:320px;
+$iphone6:375px;
+$iphone6s:414px;
+$mobile:768px;
+$pc_xs:1024px;
+$pc_sm:1281px;
+$pc_md:1441px;
+$pc_lg:1600px;
+
+.login{ margin: 0 auto;text-align: center;}
+.content{ width: 100%; margin: 0 auto; padding: 125px 0 50px; text-align: center;
+        .logo1{ 
+           img{ width: 225px;}
+        }
+        .title{margin: 70px 20px 50px;border-bottom: 1px solid #eeeeee;color: #b1b1b1;
+           span{ position: relative; top: 10px; padding: 0 30px; background: #ffffff;  
+                 a{font-size: 18px; font-weight: 100;}
+           }
+        }
+        .input-login{ width: 300px; margin: 0px auto 20px; font-weight: normal; line-height: 34px; overflow: hidden; 
+            span{ float: left; display: inline-block; width: 34px;height: 34px;  border-radius: 4px 0 0 4px; min-width: 16px;
+               padding: 4px 0px; text-align: center; border: 1px solid #ccc;
+               i{font-size: 16px; }
+            }
+            input{float: left; display: inline-block; width: 253px;height: 34px; padding: 4px 5px;font-size: 14px; border-radius: 0px 4px 4px 0px; border: 1px solid #ccc; border-left: none;    box-shadow: inset 0 0 0 100px #fff;
+                &:focus{border-color: #66afe9;outline: 0;-webkit-box-shadow: inset 0 0px 0px 100px #fff,0 0 8px rgba(102,175,233,.6);  box-shadow: inset 0 0px 0px 100px #fff,0 0 8px rgba(102,175,233,.6);}
+            }
+        }
+        .btn1{ width: 300px; height: 46px; background:$blue; border: none; color: #ffffff; font-size: 18px; font-family: "microsoft yahei";}
+}

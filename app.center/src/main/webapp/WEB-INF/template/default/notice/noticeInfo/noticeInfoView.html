@@ -1,0 +1,36 @@
+<link href="${ctxPath}/static/base/css/plugins/jsTree/style.min.css" rel="stylesheet">
+<link href="${ctxPath}/static/base/css/form.css" rel="stylesheet">
+
+
+<div class="form-group clearfix">
+    <div class="col-sm-12">
+        <button onclick="returnList();" title='返回' class="btn btn-primary" type="button">返回</button>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content  animated fadeInRight article">
+	<div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                	<div class="text-center article-title">
+                        <h1>
+                            ${info.title}
+                        </h1>
+                    </div>
+                    <div class="text">${content.content}</div>
+                </div>
+            </div>
+        </div>
+    </div>            
+</div>
+
+
+
+<script>
+
+function returnList(){
+	loadFrameContent('notice/noticeInfo/noticeInfoList?queryNodeId=${queryNodeId}&showDescendants=${showDescendants}');
+}
+</script>
+

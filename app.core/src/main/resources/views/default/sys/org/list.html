@@ -1,0 +1,332 @@
+<% layout("/share/mlayout.html"){%>
+<link href="${ctxPath}/static/base/css/plugins/jsTree/style.min.css" rel="stylesheet">
+<script src="${ctxPath}/static/base/js/plugins/jsTree/jstree.min.js"></script>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-2 visible-lg-block">
+			<div>
+				<label class="checkbox-inline i-checks  jstree-top">
+					<input type="hidden" id="queryParentId" value="${queryParentId}"/>
+					<input type="checkbox" id="showDescendants" value="1" ${showDescendants != null && showDescendants ? 'checked' : ''} >显示子机构
+				</label>
+			</div>
+       		<div id="nodeTree"></div>
+		</div>
+		<div class="col-lg-10">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>机构列表</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+                        <select class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled">
+                            <option value="LIKE_name">名称</option>
+                            <option value="LIKE_number">编码</option>
+                        </select>
+                        
+                        </div>
+                        <div class="col-sm-2">
+                        <div class="input-group">
+                        <input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control"> 
+                        <span class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();"> 搜索</button> 
+                        </span>
+                        </div>
+                        </div>
+                        <div class="col-sm-5">
+                        
+                        </div>
+                    </div>
+                    <div class="row">
+                    	<div class="col-sm-12">
+                    		<a href="javascript:void(0);" title='新增' onclick="add();" class="btn btn-primary btn-sm">新增</a>
+                    		<a href="javascript:void(0);" title='编辑' onclick="editRow();" class="btn btn-primary btn-sm">编辑</a>
+                    		<a href="javascript:void(0);" title='上移' onclick="moveUp();" class="btn btn-primary btn-sm">上移</a>
+                    		<a href="javascript:void(0);" title='下移' onclick="moveDown();" class="btn btn-primary btn-sm">下移</a>
+                    		<a href="javascript:void(0);" title='保存' onclick="submit();" class="btn btn-primary btn-sm">保存</a>
+                    	</div>
+                    </div>
+            		<form id="postForm">
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+                            
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		var nodeTree = $("#nodeTree").jstree({
+                  "core" : {
+          			'data' : {
+          				"url" : "core/org/orgTreeJson?queryParentId=${queryParentId}",
+          				"dataType" : "json"
+          			},
+          			 "themes": { "theme": "default", "dots": false, "icons": true },
+          		  }, 
+                  "plugins": ["themes", "ui"]
+              }).
+              bind("select_node.jstree",  function(e,data){
+              	$('#queryParentId').val(data.node.id);
+              	queryGrid();
+              });
+
+          	$("#table_list").jqGrid({
+			url : "core/org/orgListJson",
+			postData : { queryParentId: '${queryParentId}', showDescendants: '${showDescendants}'},
+			datatype : "json",
+			mtype : "POST",
+			height : "auto",
+			autowidth : true,
+			shrinkToFit : true,
+			rowNum : -1,
+			colModel : [ {
+				label : "ID",
+				classes : 'mshow',
+				name : 'id',
+				index : 'id',
+				width : 30,
+				align : "center",
+				sorttype : "int"
+			}, {
+				label : "名称",
+				classes : 'mshow',
+				name : 'name',
+				index : 'name',
+				width : 90,
+				align : "left"
+			}, {
+				label : "编码",
+				name : 'number',
+				index : 'number',
+				width : 90,
+				align : "left"
+			}, {
+				label : "全称",
+				name : 'fullName',
+				index : 'fullName',
+				width : 90,
+				align : "center"
+			}, {
+				label : "联系人",
+				name : 'contacts',
+				index : 'contacts',
+				width : 90,
+				align : "center"
+			}, {
+				label : "电话",
+				name : 'phone',
+				index : 'phone',
+				width : 40,
+				align : "right"
+			},{
+				label : "pId",
+				name : 'pId',
+				index : 'pId',
+				width : 40,
+				hidden : true,
+				align : "right"
+			},{
+				label : "操作",
+				classes : 'mshow',
+				name : 'op',
+				sortable : false,
+				width : 60,
+				align : "center",
+				formatter : oprationFmt
+			} ],
+			pager: "false",
+			treeGrid: true,
+			treeGridModel: "adjacency",
+			ExpandColumn: "name",
+			treeIcons: {leaf:'ui-icon-document-b'},
+			jsonReader: {
+			  repeatitems: false,
+			  root: "rows"
+			},
+			treeReader : {  
+			  level_field: "level",  
+			  parent_id_field: "parent",   
+			  leaf_field: "isLeaf",  
+			  expanded_field: "expanded"  
+			},
+			viewrecords : true,
+			sortname : 'id',
+			sortorder : "desc",
+			caption : "菜单列表",
+			loadtext : '正在加载...',
+			hidegrid : false
+		});
+
+		//浏览器窗口变化时，自动宽度
+           $(window).bind('resize', function () {
+               var width = $('.jqGrid_wrapper').width();
+               $('#table_list').setGridWidth(width);
+           });
+		
+           $('.i-checks').iCheck({
+               checkboxClass: 'icheckbox_square-green',
+               radioClass: 'iradio_square-green',
+           }); 
+	});
+	
+	$('#showDescendants').on('ifChanged', function(event){  
+		queryGrid(); 
+	});   
+
+	function oprationFmt(cellvalue, options, rowObject) {
+		var html = "";
+		html += "<button class='btn btn-primary btn-opt' type='button' title='编辑' onclick='edit("+ rowObject.id + ");'><i class='fa fa-edit'></i>&nbsp;编辑</button>";
+		html += " <button class='btn btn-primary btn-opt' type='button' title='删除' onclick='del(" + rowObject.id + ");'><i class='fa fa-remove'></i>&nbsp;删除</button>";
+		return html;
+	}
+
+	function add() {
+           var queryParentId = $('#queryParentId').val();
+           var showDescendants = false;
+           if($('#showDescendants').is(':checked')) { 
+           	showDescendants = true;
+           }
+		loadFrameContent('core/org/edit?queryParentId=' + queryParentId + '&showDescendants=' + showDescendants);
+	}
+
+	function edit(id) {
+           var queryParentId = $('#queryParentId').val();
+           var showDescendants = false;
+           if($('#showDescendants').is(':checked')) { 
+           	showDescendants = true;
+           }
+		loadFrameContent('core/org/edit?queryParentId=' +queryParentId + '&id=' + id + '&showDescendants=' + showDescendants);
+	}
+	
+	function editRow() {
+		var id = getGridId();
+		edit(id);
+	}
+	
+	function moveUp() {
+		var id = getGridId();
+		var thisTr = $("#table_list #" + id);
+		var prevTr = $("#table_list #" + id).prev("tr");
+		var prevId = prevTr.attr("id");
+		if(!isNaN(prevId)) {
+			var thisPId = $("#table_list").getCell(id,'pId');
+			var prevPId = $("#table_list").getCell(prevId,'pId');
+			if(thisPId == prevPId) {
+				thisTr.insertBefore(prevTr);
+			}
+		}
+	}
+	
+	function moveDown() {
+		var id = getGridId();
+		var thisTr = $("#table_list #" + id);
+		var nextTr = $("#table_list #" + id).next("tr");
+		var nextId = nextTr.attr("id");
+		if(!isNaN(nextId)) {
+			var thisPId = $("#table_list").getCell(id,'pId');
+			var nextPId = $("#table_list").getCell(nextId,'pId');
+			if(thisPId == nextPId) {
+				thisTr.insertAfter(nextTr);
+			}
+		}
+	}
+	
+	function submit() {
+    	var postData = $("#postForm").serializeArray();
+		$.post("core/org/batchUpdate", postData, function(json) {
+			if (json.resultStatus == true) {//成功
+				reload();
+				layer.msg('保存成功.');
+			} else {//失败
+				layer.alert("保存失败." + json.resultMsg, {icon: 2});
+			}
+		}, 'json');
+	}
+	
+	function getGridId() {
+		var id = $('#table_list').jqGrid('getGridParam','selrow');
+		if(id == null) {
+			layer.alert("请选择数据！", {icon: 2});
+			return false;
+		}
+		return id;
+	}
+
+	function del(id) {
+		layer.confirm('确定删除该机构吗?', {
+			btn : [ '删除', '取消' ]
+		//按钮
+		}, function() {
+			$.post("core/org/orgDel", {
+				id : id
+			}, function(json) {
+				if (json.resultStatus == true) {//成功
+					reload();
+					layer.msg('删除成功.');
+				} else {//失败
+					layer.alert("删除失败.请先清除下属数据.", {icon: 2});
+				}
+			}, 'json');
+		});
+	}
+	
+	function dels() {
+		var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+		
+		if (ids.length == 0){
+               layer.alert("没有选择要批量删除的数据.", {icon: 2});
+               return;
+           }
+		
+		layer.confirm('确定批量删除机构吗?', {
+			btn : [ '删除', '取消' ]
+		//按钮
+		}, function() {
+			$.post("core/org/orgDel", {
+				ids : ids.join(',')
+			}, function(json) {
+				if (json.resultStatus == true) {//成功
+					reload();
+					layer.msg('批量删除成功.');
+				} else {//失败
+					layer.alert("批量删除失败.请先清除下属数据.", {icon: 2});
+				}
+			}, 'json');
+		});
+	}
+
+	function reload() {
+		$("#table_list").trigger('reloadGrid');
+		var tree = jQuery.jstree.reference("#nodeTree");
+		tree.refresh();
+	}
+	
+  	function queryGrid(){
+  		var grid = $("#table_list");
+  		var columnFiled = $("#columnFiled").val();
+           var keyWord = $("#keyWord").val();
+           var queryParentId = $('#queryParentId').val();
+           var showDescendants = false;
+           if($('#showDescendants').is(':checked')) { 
+           	showDescendants = true;
+           }
+		
+         //增加提交参数
+           var postData = { columnFiled : columnFiled, keyWord : keyWord, queryParentId: queryParentId, showDescendants: showDescendants};
+           $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+		//刷新grid
+  		grid.trigger('reloadGrid');
+  	}
+</script>
+	
+<%}%>

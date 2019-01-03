@@ -1,0 +1,125 @@
+<div class="col-sm-12">
+    <div class="ibox float-e-margins" style="margin-bottom:0;">
+        
+        <div class="ibox-content" style="padding-bottom: 0;">
+            <form id="postForm" method="post" class="form-horizontal" action="cms/cmsImage/batchSave">
+                <input type="hidden" name="imgStr" id="imgStr" value="" />
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="title">图片分类：</label>
+                	<div class="col-sm-10">
+						<select name="typeId" id="typeId" class="input-sm form-control input-s-sm inline">
+						<%for(var type in typeList){%>
+							<option value="${type.id}">${type.name}</option>
+						<%}%>
+						</select>
+					</div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="title">上传图片：</label>
+                	<div class="col-sm-10">
+                		<div id="dropzone" class="dropzone"></div>
+						<div id="img-preview"></div>		
+                	</div>
+                </div>
+                <div class="hr-line-dashed"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+    	
+    	/**
+    	**图片上传
+    	**/
+    	(function initDropZone(){
+    		var imgObj = [];
+    		function addImgDiv(url, fileSize, fileName){
+    			var img = {
+    				url:url,
+    				fileSize:fileSize,
+    				fileName:fileName
+    			}
+    			imgObj.push(img);
+    			$("#imgStr").val(JSON.stringify(imgObj));
+    		}
+    		
+    		var dropzone = new Dropzone("#dropzone", { // 需要有个容器来加载控件
+    			url : "sys/upload", // Set the url
+    			thumbnailWidth : 80,
+    			thumbnailHeight : 80,
+    			parallelUploads : 20,
+    			dictRemoveLinks: "x",
+    	        dictCancelUpload: "x",
+    			addRemoveLinks:true,
+    			uploadMultiple:false,
+    			dictRemoveFile:'移除图片',
+    			dictMaxFilesExceeded:'超出允许上传数量,不允许上传',
+    			dictInvalidInputType:"只允许上传图片文件",
+    			acceptedFiles:".png,.jpg,.gif,.jpeg,.bmp",
+    			dictInvalidFileType:"您上传的文件类型不是图片",
+    			maxFiles:20,
+    			maxFilesize: 1, //MB
+    			autoQueue : true // 自动上传
+    		});
+    		dropzone.on("addedfile",function(){
+    			dropzone.options.params = {scale:false,stretch:false,watermark:false};
+    		});
+    		dropzone.on("success", function(a, b) {
+    			addImgDiv(b.fileUrl, b.fileSize, b.fileName);
+    		});
+    		
+    		dropzone.on("error", function(a, b) {
+    			alert("上传出错！");
+    		});
+    	})();
+    	
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        
+        //表单验证
+        $("#postForm").validate({
+            rules: {
+            	url: {
+                    required: true,
+                    minlength: 2
+                },
+                rtpeId: {
+                    required: true
+                },
+                title: {
+                    minlength: 2
+                }
+            }
+        });
+        
+    });
+        
+    
+    function submitForm(index){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (json) {
+            //var data = $.parseJSON(json);
+            if (json.resultStatus) {
+                //成功
+                reloadGrid();
+              //closeAllPopWin();
+				layer.close(index); //如果设定了yes回调，需进行手工关闭
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    	
+    }
+</script>

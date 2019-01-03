@@ -1,0 +1,29 @@
+{
+	"id": "plugin.task.login",
+	"name": "登录注册送积分",
+	"desc": "登录注册送积分插件",
+	"logo": "logo.png",
+	"version": "1.0.0",
+	"status": "Disable",
+	"pluginType": "Task",
+	"platforms": ["PC",
+	"WAP"],
+	"pluginData": {
+		"DayLimit": {
+			"desc": "",
+			"val": "1"
+		},
+		"Points": {
+			"desc": "",
+			"val": "5"
+		},
+		"RegisterPoints" : {
+			"desc": "",
+			"val": "100"
+		},
+		"IntroduceRegisterPoints" : {
+			"desc": "",
+			"val": "100"
+		}
+	}
+}

@@ -1,0 +1,186 @@
+/*
+2016-3-4
+公众平台 - 消息发送
+*/
+.msglistbox {
+	width : 270px;
+	float : left;
+	margin: 10px;
+}
+.msglist {
+	margin-left: 10px;
+	margin-right: 10px;
+	border: 1px solid #8F9490;
+	height:100px;
+}
+.msglistbox .msglist{
+	margin-left: 0px;
+	margin-right: 0px;
+}
+.msglistpriheight{
+	height:150px;
+}
+.msglistcurrent {
+	border: 1px solid #8F9490;
+}
+.msglist .primdiv{
+	height:90%;margin:9px;background-color:#ececec;position:relative;background-size:contain;
+	    background-repeat: no-repeat;
+    background-position: center;
+}
+.msglist .currenttitlediv{
+	position:relative;width:100%; bottom:0;background:rgba(0,0,0,0.6)!important;
+}
+.msglist .backgrounddiv{
+	position:relative;width:100%; bottom:0;height:80%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.msglist .currenttitle {
+	color:#fff;padding:0 8px;text-align:left;line-height:28px;white-space:nowrap;
+}
+.msglist .seconddiv {
+	height:90%;margin:9px;position:relative;background-size:contain;
+}
+.seconddiv .backgrounddiv {
+	height:78px;width:78px;float:right; bottom:0;background-color:#ececec;;
+}
+.seconddiv .secondtitle {
+	padding:0 8px;text-align:left;line-height:28px;width:140px;word-break:break-all;    white-space: nowrap;text-overflow: ellipsis;
+    overflow: hidden;
+}
+.icon_appmsg_thumb {
+    background: url("../images/media_z2ac3d8.png") 0 -100px no-repeat;
+    width: 44px;
+    height: 34px;
+    vertical-align: middle;
+    display: inline-block;
+    line-height: 300px;
+    overflow: hidden;
+    position: relative;
+    top: 40px;
+}
+.icon_appmsg_thumb_small {
+    background: url("../images/media_z2ac3d8.png") 0 -144px no-repeat;
+    width: 32px;
+    height: 24px;
+    vertical-align: middle;
+    display: inline-block;
+    line-height: 300px;
+    overflow: hidden;
+        top: 25px;
+    position: relative;
+}
+.nodisplay{
+	display:none!important;
+}
+.addMsgPreA {
+	border:2px dotted #d9dadc;margin:0 9px;display:block;line-height:98px;height:92px;
+        overflow:hidden;  
+            position: relative;
+    padding: 20px;
+    cursor:pointer;
+}
+.addMsgPreA i{
+	    width: 35px;
+    height: 35px;
+    vertical-align: middle;
+    display: inline-block;
+        cursor: pointer;
+    line-height: 300px;
+    overflow: hidden;
+    background: url("../images/base_z2b638f.png") 0 -2915px no-repeat;
+}
+.appmsg_opr {
+    background-color: #f4f4f4;
+    border-top: 1px solid #e7e7eb;
+}
+.appmsg_opr ul {
+    overflow: hidden;
+}
+.appmsg_opr ul, ol {
+    padding-left: 0;
+    list-style-type: none;
+}
+.appmsg_opr_item {
+    float: left;
+    line-height: 44px;
+    height: 44px;
+}
+.size1of2 {
+    width: 50%;
+}
+.appmsg_opr_item a {
+    display: block;
+    border-right: 1px solid #e7e7eb;
+    text-align: center;
+    text-decoration: none;
+}
+.icon18_common.edit_gray {
+    background: url("../images/base_z2b638f.png") 0 -5527px no-repeat;
+}
+.icon18_common {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    display: inline-block;
+    line-height: 100px;
+    overflow: hidden;
+}
+.grid_item.no_extra {
+    float: none;
+    width: auto;
+    overflow: hidden;
+}
+.appmsg_opr_item a.no_extra {
+    border-right-width: 0;
+}
+.icon18_common.del_gray {
+    background: url("../images/base_z2b638f.png") 0 -4827px no-repeat;
+}
+.appmsg_mask{
+	width: 100%;
+    height: 100%;
+    background-color: rgba(76, 66, 66, 0.43);
+    position: absolute;
+    top: 0px;
+}
+.msglistbox .icon_card_selected{
+	    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -23px;
+    margin-left: -23px;
+    line-height: 999em;
+    overflow: hidden;
+    z-index: 1;
+}
+.icon_card_selected {
+    background: url("../images/base_z2b638f.png") 0 -6551px no-repeat;
+    width: 46px;
+    height: 46px;
+    vertical-align: middle;
+    display: inline-block;
+}
+.dialog_ft {
+    padding: 16px 0;
+    background-color: #f4f5f9;
+    position: fixed;
+    bottom: 00px;
+    width: 100%;
+}
+.dialog_ft {
+    margin: 0;
+    padding: 25px 0;
+    text-align: center;
+    border-top: 1px solid transparent;
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+}
+.dialog_ft .btn {
+    margin-left: .3em;
+    margin-right: .3em;
+}

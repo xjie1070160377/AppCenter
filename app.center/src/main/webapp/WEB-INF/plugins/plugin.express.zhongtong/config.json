@@ -1,0 +1,33 @@
+{
+	"id": "plugin.express.zhongtong",
+	"name": "中通快递",
+	"desc": "中通快递插件",
+	"logo": "logo.png",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Express",
+	"platforms": ["PC","WAP","MOBILE","WEIXIN"],
+	"pluginData": {
+		"Kuaidi100Code": {
+			"desc": "",
+			"val": "zhongtong"
+		},
+		"TaobaoCode": {
+			"desc": "",
+			"val": "ZTO"
+		},
+		"Width": {
+			"desc": "",
+			"val": "2300"
+		},
+		"Height": {
+			"desc": "",
+			"val": "1270"
+		},
+		"BackGroundImage": {
+			"desc": "",
+			"val": ""
+		}
+	}
+
+}

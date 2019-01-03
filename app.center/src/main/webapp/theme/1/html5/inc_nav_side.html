@@ -1,0 +1,41 @@
+<!-- 侧边栏 --> 
+<div class="nav nav-side">
+	<div class="logo"><img src="${session.themeRoot}/_files/img/logo.jpg" alt="" /></div>
+	<div class="top">
+		<a class="n-index" href="${ctxPath}/index.htx"><i class="iconfont">&#xe601;</i><span>首页</span></a>
+		<a class="n-special" href="${ctxPath}/specials"><i class="iconfont">&#xe60e;</i><span>专题</span></a>
+		<a class="n-tougao" href="${ctxPath}/tg-main.htx" target="_blank"><i class="iconfont">&#xe625;</i><span>投稿</span></a>
+		<a class="n-guestbook" href="${ctxPath}/widget/guestbook.htx" target="_self"><i class="iconfont">&#xe636;</i><span>留言簿</span></a>
+		<a class="downapp" href="${ctxPath}/app.htx" class="downapp"><i class="iconfont">&#xe602;</i><span>下载红客APP</span></a>
+			
+		<div class="dropdown-downapp">
+			<i class="iconfont">&#xe606;</i>
+			<div class="box">
+				<div class="logo">
+					<img src="${session.themeRoot}/_files/img/logo_06.png">
+				</div>
+				
+				<p class="title">红客</p>
+				<p class="subtitle">厚德博学，强军兴国</p>
+				<div class="qrcode">
+					<!--<img src="/static/fore/images/wxerm.png">-->
+					<img src="${session.themeRoot}/_files/img/wxerm.png">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="bottom">
+<!-- 		<a class="" href="myhomepage.html"><i class="iconfont">&#xe60d;</i><span>我的主页</span></a> -->
+<!-- 		<a class="" href="collection.html"><i class="iconfont">&#xe611;</i><span>我的收藏</span></a> -->
+<!-- 		<a class="" href="notice.html"><i class="iconfont">&#xe610;</i><span>提醒</span></a> -->
+<!-- 		<a class="" href="hongxin.html"><i class="iconfont">&#xe613;</i><span>红信</span></a> -->
+<!-- 		<a class="" href="javascript:"><i class="iconfont">&#xe612;</i><span>显示模式</span></a> -->
+		<a class="n-setting" href="${ctxPath}/my"><i class="iconfont">&#xe600;</i><span>设置</span></a>
+		<%if(Authenticated()==true){%>
+		<a href="${ctxPath}/logout"><i class="iconfont">&#xe604;</i><span>退出</span></a>
+		<%}%>
+		<%if(Authenticated()==false){%>
+		<a href="${ctxPath}/ulogin"><i class="iconfont">&#xe604;</i><span>登陆</span></a>
+		<%}%>
+	</div>		
+</div>

@@ -1,0 +1,32 @@
+{
+	"id": "plugin.express.tiantian",
+	"name": "天天快递",
+	"desc": "天天快递快递插件",
+	"logo": "logo.png",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Express",
+	"platforms": ["PC","WAP","MOBILE","WEIXIN"],
+	"pluginData": {
+		"Kuaidi100Code": {
+			"desc": "",
+			"val": "tiantian"
+		},
+		"TaobaoCode": {
+			"desc": "",
+			"val": "TTKDEX"
+		},
+		"Width": {
+			"desc": "",
+			"val": "2300"
+		},
+		"Height": {
+			"desc": "",
+			"val": "1270"
+		},
+		"BackGroundImage": {
+			"desc": "",
+			"val": ""
+		}
+	}
+}

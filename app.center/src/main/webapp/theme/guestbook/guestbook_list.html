@@ -1,0 +1,182 @@
+<%var style = {%>
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/base.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/globle.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/redmooc_topic.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/redmooc_page.css" />
+<%};%>
+
+<%include("shared/inc_head.html", {title:'信箱', style:style}){} %> 
+
+<style>
+	.page-title{padding-left: 10px;border-bottom: 2px solid #d9d9d9;height:50px;}
+	.page-title li a{font-size:14px;color:#333;}
+	.row-fluid .collections .collections-list .follow span{padding:0 8px;margin:0;border-left:none;}
+	.row-fluid .collections-list span em {font-style: italic;font-family: Georgia,"Times New Roman",Times,serif;font-weight: 400; color: #e74c3c;font-size:13px;}
+	.description a{color:#777;}
+	@media screen and (max-width: 768px){
+		.row-fluid .contentBox .page-title {padding-top: 12px;}
+		.t-serch{display:none;}
+		.row-fluid .contentBox .page-title li {padding: 15px 3%;}
+	}
+	.app .wrap-btn,.app .nav-shrink{display:none;}
+	.app .row-fluid .contentBox .page-title{margin-top:0;}
+</style>
+</head>	
+
+<body class="output p-guestbook-list <%if(isNotEmpty(session.token)){ %> app <%}%>">
+	
+	<%	include("shared/inc_nav_side.html"){} %>
+	<%	include("shared/inc_nav_user.html"){} %>
+	
+	<!-- 内容 -->
+	<div class="row-fluid clearfix">
+		<%include("shared/inc_left_cover.html"){} %>
+		
+		<div class="contentBox collections">
+			<!--<div class="page-title clearfix">
+				 <ul class="clearfix collections-nav navigation">
+					<li class="active"><a href="/widget/guestbook.htx?token=${session.token}">红客信箱</a></li>
+					<li class=""><a href="/widget/guestbook/my">我的信件</a></li>
+					<%if(isNotEmpty(guestbookId)){%>
+					<li class=""><a href="/widget/guestbook/manage">管理我的信箱</a></li>
+					<%}else{%>
+					<li class=""><a href="/widget/guestbook/add">开通信箱</a></li>
+					<%}%>
+					<li class="t-serch search">
+						<form id="searchForm" class="search-form" action="${ctxPath}/search.htx">
+							<input name="keyWord" type="text" class="search-keyword input-medium search-query" id="search-keyword" value="在这里搜索..."  onfocus="if(this.value=='在这里搜索...'){this.value='';}"  onblur="if(this.value==''){this.value='在这里搜索...';}" /> 
+							<a class="btn-searchForm"><i class="iconfont">&#xe608;</i></a>
+						</form>
+					</li>
+				</ul> 
+			</div>	-->
+			<a id="help"><i class="iconfont">&#xe615;</i></a>
+			<div class="help-box f-dn">
+				<div class="help-wrap">
+					<i class="iconfont i-close">&#xe61d;</i>
+					<div class="title">使用帮助</div>
+					<div class="content">
+						<dl>
+							<dt><i class="iconfont">&#xe728;</i>信箱列表</dt>
+							<dd>信箱列表显示了当前已开通的信箱列表，点击“进入信箱”，可以查看该信箱下的公开信件或该信箱发信件,你也可以点击收件箱开通自己的信箱，之后别人就可以在你的信箱中给你留言。</dd>
+						</dl>
+						<dl>
+							<dt><i class="iconfont">&#xe660;</i>已发信件</dt>
+							<dd>已发信件显示你已经发出的信件，包括已回复和未回复的信件，已发出的信件需要信箱管理员设置为公开显示，才会在信箱中显示。</dd>
+						</dl>
+						<dl>
+							<dt><i class="iconfont">&#xe7fa;</i>写信</dt>
+							<dd>你可以在信箱列表中进入某个信箱，给该信箱写信，或者点击底部的写信菜单手动输入信箱名称写信。如果该信箱设置了可以匿名，则你可以选择匿名写信。已经提交的信件需要该信箱管理员审核并确认显示之后，才会出现在该信箱的信件列表中。</dd>
+						</dl>
+						<dl>
+							<dt><i class="iconfont">&#xe65d;</i>收件箱</dt>
+							<dd>如果你只需要写信的功能 那么无需开通信箱。 如果开通了属于自己的信箱，则别人可以在你的信箱中留言。开通信箱之后，你就是该信箱的管理者，可以审核和回复别人给你信箱写的信件。</dd>
+						</dl>
+					</div>
+					<div class="f-tac"><a class="btn btn-info hide-help">隐藏帮助按钮</a></div>
+					
+				</div>
+			</div>
+			
+			<div class="project m-guestbookList active">
+				
+				
+			</div>
+			
+			<!-- Footer Start -->
+			<%include("shared/inc_footer.html"){} %>
+			<!-- Footer End -->
+		</div>
+	</div>
+<script src="${session.guestbook}/_js/jquery-2.1.4.min.js"></script>
+<script src="${session.guestbook}/_js/jquery-1.4.1.cookie.js"></script>
+<script src="${session.guestbook}/_js/lodash.min.js"" type="text/javascript" charset="utf-8"></script>	
+<script src="${session.guestbook}/_js/app.js"></script>
+<script id='template' type="text/html">
+<@ _.each(data, function(gb){ @>
+	<ul class="unstyled collections-list">
+		<li>
+			<a class="avatar" href="/widget/guestbook/msgList/{{gb.id}}"> <img src="{{themeRoot}}/_img/img_zhuanti.png" thumbnail="180*180" onerror="this.src='{{themeRoot}}/_img/img_zhuanti.png'"></a>
+				<div class="collections-info">
+				<h5><a href="/widget/guestbook/msgList/{{gb.id}}">{{gb.name}}</a></h5>
+				<div class="btn btn-success follow">
+					<a href="/widget/guestbook/msgList/{{gb.id}}"><span>进入信箱</span></a>
+				</div>
+				<p class="description f-lc2"><a href="/widget/guestbook/msgList/{{gb.id}}">{{gb.summary}}</a></p>
+				<p>
+					<a class="blue-link" href="#">{{gb.total}}封信件</a> · (<span id="">{{gb.replys}}</span>)个回复 · <span> 排名：<em>{{gb.ranking}}</em></span> 
+				</p>
+			</div>
+		</li>
+	</ul>
+<@ }) @>
+
+</script>
+<script>
+
+	
+	var page = 1,rows = 10;
+	
+	(function init(){
+		bindClick();
+		getData();
+	})();
+	
+	function bindClick(){
+		$(".btn-searchForm").on("click", function(){
+			var columnField = "LIKE_name",
+			keyWord = $("input[name='keyWord']").val();
+			getData({columnField:columnField, keyWord:keyWord});
+		});
+	}
+	
+	function getData(searchParam){
+		var url = '/widget/guestbook/listJson',
+		searchParam= _.extend({page : page,rows:rows}, searchParam);
+		$.post(url, searchParam , function(data){
+			if(data.resultStatus)
+			console.log(data);
+			page = data.page++;
+			render(data.rows);
+		},"json");
+		
+	}
+	
+	function render(data){
+		_.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
+		_.templateSettings.evaluate = /<@([\s\S]+?)@>/g;
+		var compiled = _.template($("#template").html());
+		var result = compiled({ 'data': data, 'themeRoot':"${session.guestbook}" });
+		$(".m-guestbookList").append(result);
+		$(".m-guestbookList").append(result);
+		$(".m-guestbookList").append(result);
+		$(".m-guestbookList").append(result);
+		$(".m-guestbookList").append(result);
+		$(".m-guestbookList").append(result);
+		$(".m-guestbookList").append(result);
+		$(".m-guestbookList").append(result);
+		$(".m-guestbookList").append(result);
+	}
+	if($.cookie("hide_help") == 1){
+		$("#help").hide(0);
+	}
+	
+	$(function(){
+		$("#help").on("click", function(){
+			$(".help-box").show();
+		});
+		$(".help-box").on("click", ".i-close", function(){
+			$(".help-box").hide(0);
+		});
+		$(".hide-help").on("click", function(){
+			$(".help-box").hide(0);
+			$("#help").hide(0);
+			$.cookie("hide_help", 1);
+		});
+	})
+
+</script>
+
+
+</body>
+</html>

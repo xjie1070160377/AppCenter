@@ -1,0 +1,99 @@
+<div class="col-sm-12">
+    <div class="ibox float-e-margins">
+        
+        <div class="ibox-content">
+        	<form id="postForm" method="post" class="form-horizontal" action="cms/adSlot/adSlot${entity.id == null ? 'Save' : 'Update'}">
+                    	<input type="hidden" name="oid" value="${entity.id}" >
+                <div class="form-group"><label class="col-sm-2 control-label" for="name">名称</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="广告版位名称"  id="name" name="name" value="${entity.name}"></div>
+                	<label class="col-sm-2 control-label" for="number">代码</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="广告版位代码"  id="number" name="number" value="${entity.number}"></div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group"><label class="col-sm-2 control-label" for="description">描述</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="广告版位描述"  id="description" name="description" value="${entity.description}"></div>
+               		<label class="col-sm-2 control-label" for="type">类型</label>
+                    <div class="col-sm-4">
+                    <select class="input-sm form-control input-s-sm inline" id="type" name="type">
+                         <option value="1" <% if(entity.type == 1){ %> selected="true"  <% } %>>文字</option>
+                         <option value="2" <% if(entity.type == 2){ %> selected="true"  <% } %>>图片</option>
+                         <option value="3" <% if(entity.type == 3){ %> selected="true"  <% } %>>FLASH</option>
+                         <option value="4" <% if(entity.type == 4){ %> selected="true"  <% } %>>代码</option>
+                     </select>
+<!--                     <input type="text" class="form-control" placeholder="广告版位类型"  id="type" name="type" value="${entity.type}"> -->
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group"><label class="col-sm-2 control-label" for="width">宽度</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="广告版位宽度"  id="width" name="width" value="${entity.width}"></div>
+                	<label class="col-sm-2 control-label" for="height">高度</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" placeholder="广告版位高度"  id="height" name="height" value="${entity.height}"></div>
+                </div>
+                <div class="hr-line-dashed"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+    	
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        
+        
+        
+        //表单验证
+        $("#postForm").validate({
+            rules: {
+            	name: {
+                    required: true,
+                    minlength: 2,
+                    maxlength:100
+                },
+                number : {
+                    maxlength:100
+                },
+                description : {
+                    maxlength:255
+                },
+                width: {
+                    required: true,
+                    number: true,
+                    maxlength:11
+                },
+                height: {
+                    required: true,
+                    number: true,
+                    maxlength:11
+                }
+            }
+        });
+        
+    });
+        
+    
+    function submitForm(index){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (json) {
+            //var data = $.parseJSON(json);
+            if (json.resultStatus) {
+                //成功
+                reloadGrid();
+              //closeAllPopWin();
+				layer.close(index); //如果设定了yes回调，需进行手工关闭
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    	
+    }
+</script>

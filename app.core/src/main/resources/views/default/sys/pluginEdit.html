@@ -1,0 +1,135 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1">${pluginInfo.name} - 插件参数设置</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-2">插件信息</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+                                   <!-- Tab开始 -->
+									<div class="col-sm-12">
+									    <div class="ibox float-e-margins">
+									        
+									        <div class="ibox-content">
+									            <form id="tabForm-1" method="post" class="form-horizontal" action="sys/pluginUpdate">
+													
+													<% for(param in pluginInfo.pluginData){ %>			
+														                                
+					                                <div class="form-group"><label class="col-sm-3 control-label" >${isEmpty(param.value.desc)?param.key:param.value.desc}</label>					
+					                                    <div class="col-sm-5"><input type="text" class="form-control" placeholder="" name="${param.key}" value="${param.value.val}"></div>
+					                                </div>
+					                                <div class="hr-line-dashed"></div>
+									                
+									                <% } %>
+									                
+									                <div class="form-group">
+									                    <div class="col-sm-4 col-sm-offset-4">
+									                    	<input type="hidden" name="pluginId" value="${pluginInfo.id}" >
+									                        <button onclick="submitForm();" title='提交保存' class="btn btn-primary" type="button">提交保存</button>
+									                        <button onclick="back();" title='返回' class="btn btn-primary" type="button">返回</button>									                        
+									                    </div>
+									                </div>
+									                
+									            </form>
+									        </div>
+									    </div>
+									</div>
+                                   <!-- Tab结束 -->
+                                </div>
+                            </div>
+                            <div id="tab-2" class="tab-pane">
+                                <div class="panel-body">
+                                   <!-- Tab开始 -->
+									<div class="col-sm-12">
+									    <div class="ibox float-e-margins">
+									        
+					                        <div class="ibox-content">
+													<form id="tabForm-2" method="post" class="form-horizontal" action="#">
+																		                                
+									                <div class="form-group"><label class="col-sm-2 control-label" for="description">插件标识</label>
+									                    <div class="col-sm-4">${pluginInfo.id}</div>
+									               		<label class="col-sm-2 control-label" for="type">支持平台</label>
+									                    <div class="col-sm-4">${pluginInfo.platforms}</div>
+									                </div>
+									                <div class="hr-line-dashed"></div>
+					                                
+									                <div class="form-group"><label class="col-sm-2 control-label" for="description">插件名称</label>
+									                    <div class="col-sm-4">${pluginInfo.name}</div>
+									               		<label class="col-sm-2 control-label" for="type">插件版本</label>
+									                    <div class="col-sm-4">${pluginInfo.version}</div>
+									                </div>
+									                <div class="hr-line-dashed"></div>
+					                                
+									                <div class="form-group"><label class="col-sm-2 control-label" for="description">插件类型</label>
+									                    <div class="col-sm-4">${pluginInfo.pluginType}</div>
+									               		<label class="col-sm-2 control-label" for="type">插件描述</label>
+									                    <div class="col-sm-4">${pluginInfo.desc}</div>
+									                </div>
+									                <div class="hr-line-dashed"></div>
+													
+													</form>
+					                        </div>
+									    </div>
+									</div>
+                                   <!-- Tab结束 -->
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+</div>
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+				
+				$("#tabForm-1").bind("submit", function() { submitForm(); return false; });
+                $("#tabForm-1 input").on("keydown", function(event) { if(event.keyCode==13){submitForm();} });
+				
+                //表单验证
+                $("#tabForm-1").validate({
+                    rules: {
+                    	transparent: {
+                            required: true,
+                            minlength: 1
+                        }
+                    }
+                });
+                
+			});
+
+            function submitForm(){
+            	if($("#tabForm-1").valid()==false){
+            		return;
+            	}
+            	var postData = $("#tabForm-1").serializeArray();
+    			$.post($("#tabForm-1").attr("action"), postData, function (json) {
+                    //var data = $.parseJSON(json);
+                    if (json.resultStatus) {
+                        //成功
+                    	layer.alert("保存成功");
+                    	back();
+                    } else {
+                    	//
+                    	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+                    }
+                }, "json");
+            	
+            }
+            
+            function back() {
+            	loadFrameContent('sys/pluginList');
+            }
+		</script>
+	
+<%}%>

@@ -1,0 +1,115 @@
+
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        
+                        <div class="ibox-content">
+                            <form id="postForm" method="post" class="form-horizontal" action="sys/sysMenuSave">
+                                
+                                <div class="form-group"><label class="col-sm-3 control-label" >菜单名</label>
+
+                                    <div class="col-sm-8"><input type="text" class="form-control" placeholder="菜单名称"  id="menuName" name="menuName" value="${entity.menuName}"></div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                
+                                <div class="form-group"><label class="col-sm-3 control-label" >菜单地址</label>
+
+                                    <div class="col-sm-8"><input type="text" class="form-control" placeholder="Url地址"  id="menuUrl" name="menuUrl" value="${entity.menuUrl}"></div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                
+                                <div class="form-group"><label class="col-sm-3 control-label">父菜单</label>
+                                    <div class="col-sm-8">
+	                                <select class="input-sm form-control input-s-sm inline" name="parentId">
+									<% for(item in parentMenus){ %>
+									    <option value="${item.id}" ${item.id==entity.parentId?"selected":""}>${item.menuName}</option>
+									<% } %>
+	                                </select>	                                
+
+									</div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                
+                                <div class="form-group"><label class="col-sm-3 control-label">弹开方式</label>
+                                    <div class="col-sm-8">
+                                    <#RadioTag mapData="${ { 框架加载:'frameContent',当前页面:'_self',新开页面:'_blank' \} }" defaultValue="${entity.urlTarget}" fieldName="urlTarget" />
+
+									</div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                
+                                <div class="form-group"><label class="col-sm-3 control-label">在导航显示</label>
+
+                                    <div class="col-sm-8">
+									<#RadioTag mapData="${ { 不显示:0,显示:1 \} }" defaultValue="${entity.navMenu}" fieldName="navMenu" />
+									</div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                
+				                <div class="form-group"><label class="col-sm-2 control-label" for="description">排序</label>
+				                    <div class="col-sm-4"><input type="text" class="form-control" placeholder=""  id="sort" name="sort" value="${entity.sort}"></div>
+				               		<label class="col-sm-2 control-label" for="type">图标CSS</label>
+				                    <div class="col-sm-4"><input type="text" class="form-control" placeholder=""  id="iconCls" name="iconCls" value="${entity.iconCls}"></div>
+				                </div>
+				                <div class="hr-line-dashed"></div>
+                                
+                                <input type="hidden" name="id" value="${entity.id}" >
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+    
+        <script type="text/javascript">
+        
+            $(document).ready(function () {
+            	
+                $('.i-checks').iCheck({
+                    checkboxClass: 'icheckbox_square-green',
+                    radioClass: 'iradio_square-green',
+                });
+                
+                $("#postForm").bind("submit", function() { submitForm(); return false; });
+                $("#postForm > input").bind("keydown", function() { if(event.keyCode==13){submitForm();} });
+                
+                //表单验证
+                $("#postForm").validate({
+                    rules: {
+                    	menuName: {
+                            required: true,
+                            minlength: 1
+                        },
+                        menuUrl: {
+                            required: true,
+                            minlength: 1
+                        },
+                        sort: {
+                            required: true,
+                            number: true
+                        }
+                    }
+                });
+                
+            });
+                
+            
+            function submitForm(){
+            	if($("#postForm").valid()==false){
+            		return;
+            	}
+            	var postData = $("#postForm").serializeArray();
+    			$.post($("#postForm").attr("action"), postData, function (json) {
+                    //var data = $.parseJSON(json);
+                    if (json.resultStatus) {
+                        //成功
+                        reloadGrid();
+                        closeAllPopWin();
+                    } else {
+                    	//
+                    	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+                    }
+                }, "json");
+            	
+            }
+        </script>
+        

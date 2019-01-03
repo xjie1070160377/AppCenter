@@ -1,0 +1,20 @@
+{
+	"id": "plugin.payment.receivePay",
+	"name": "货到付款",
+	"desc": "货到付款插件",
+	"logo": "logo.gif",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Payment",
+	"platforms": ["PC"],
+	"pluginData": {
+		"RedirectUrl": {
+			"desc": "",
+			"val": "/pay/receivePay"
+		}
+	},
+	"extendData": {
+		"no_recharge": true,
+		"no_third_party_payment": true
+	}
+}

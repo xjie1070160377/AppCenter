@@ -1,0 +1,507 @@
+/*
+2016-3-4
+公众平台
+*/
+div {
+    display: block;
+}
+.btn{padding:6px 50px;cursor:pointer;}
+
+.btn-primary{
+	background:#e74c3c;
+	color:#fff;
+	border:1px solid #fc0000;
+}
+.btn-primary:hover{
+	background:#f00000;
+}
+.btn-default{
+	background: #fff;
+    color: #000;
+    border: 1px solid #9C9292;
+}
+.btn-default:hover{
+	background:#DAD3D3;
+}
+.footer .body{display:none;}
+.footer .footer-font{display:block;}
+.clearfix:after{content:"";display:block;height:0;visibility:hidden;clear:both;}
+.clearfix{zoom:1;}
+.header .banner-publicPlatform {
+    background:#fff;
+}
+body{
+	background:#f3f4f5;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.header {
+    position: relative;
+    background-color: #fff;
+    border-top: 4px solid #e74c3c;
+    border-bottom: 1px solid #d9dadc;
+}
+.header .inner.wrap .logo {
+    float:left;
+    background:url(../images/logo_publicPlatform.png) no-repeat;
+    width:202px;
+    height:40px;
+    margin-top:10px;
+}
+
+.header .banner-publicPlatform .inner.wrap {
+    width: 1200px;
+    height:60px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.header .inner.wrap .account{
+	 display: inline-block;
+     height: 60px;
+}
+.header .inner.wrap .home i,.header .inner.wrap .sign-out i{
+	background:url(../images/page_index_z25b76d.png) no-repeat;
+	width:24px;
+	height:24px;
+	display:block;
+	float:left;
+    position: relative;
+    top: 16px;
+    margin-right:5px;
+}
+.header .inner.wrap .home i{
+    background-position: 0 -370px;
+}
+.header .inner.wrap .sign-out i{
+	background-position: 0 -403px;
+}
+ul.navbar-top-links.navbar-right li {
+    float: left;
+    height: 60px;
+    vertical-align: middle;
+}
+ul.navbar-top-links.navbar-right a.home, ul.navbar-top-links.navbar-right a.sign-out {
+    display: block;
+    height: 100%;
+    vertical-align: middle;
+    line-height: 60px;
+    padding-left:10px;
+    color:#555;
+    font-size:16px;
+}
+ul.navbar-top-links.navbar-right a.home{
+	margin-left:20px;
+}
+.header .account .row .type{
+	position:relative;
+	top:10px;
+	padding:0;
+}
+
+.header .account .row .status{
+	position:relative;
+	top:10px;
+}
+
+.header .account .row.username{
+	position:relative;
+	left:15px;
+	top:15px;
+	font-size: 14px;
+    font-weight: 600;
+    color: #666;
+}
+
+.header .account .row .type span{
+	margin-right:3px;
+}
+.header .account .label{
+	padding:.2em;
+	font-size:12px;
+}
+.header #user-photo{
+	width: 45px;
+    height: 45px;
+    background-color: #f0f0f0;
+    margin-bottom: -4px;
+    margin-right: 2px;
+}
+
+.main{
+	padding:0;
+	margin:35px auto;
+	width:1200px;
+}
+.info_box {
+    text-align: center;
+    padding:30px 0;
+    width:100%;
+}
+
+.info_box .left{
+	width:22%;
+	float:left;
+}
+.info_box .right{
+	width:78%;
+	float:right; 
+    box-shadow: -1px 0 0 0 #ddd;
+    border:none;
+    min-height:600px;
+}
+.info_box .right .right-box{
+	padding:0 40px;
+}
+
+.info_box .form_wrp {
+}
+.info_box .form {
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+}
+.frm_fieldset {
+}
+a img, fieldset {
+    border: 0;
+}
+.frm_fieldset .frm_control_group p{
+	line-height:22px;
+	height:22px;
+}
+fieldset, legend, textarea, input {
+    padding: 0;
+}
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, dl, dd, fieldset, textarea {
+    margin: 0;
+}
+.position{  
+	display:none;
+	padding: 10px; background: #f3f3f3;font-family:"Microsoft Yahei";
+}
+.position a{color:#459ae9;}
+.position i{display:inline-block;position:relative;top:3px;width:16px;height:16px;background:url(../images/home.png) no-repeat;}
+
+
+user agent stylesheetfieldset {
+    display: block;
+    -webkit-margin-start: 2px;
+    -webkit-margin-end: 2px;
+    -webkit-padding-before: 0.35em;
+    -webkit-padding-start: 0.75em;
+    -webkit-padding-end: 0.75em;
+    -webkit-padding-after: 0.625em;
+    border-image-source: initial;
+    border-image-slice: initial;
+    border-image-width: initial;
+    border-image-outset: initial;
+    border-image-repeat: initial;
+    min-width: -webkit-min-content;
+    border: 2px groove threedface;
+}
+.info_box .form_wrp .frm_title {
+    margin-bottom: 50px;
+}
+.icon_msg_mini.info {
+    background: url("/mpres/zh_CN/htmledition/comm_htmledition/style/base/base_z2b638f.png") 0 -1050px no-repeat;
+}
+.mini_tips i {
+    font-weight: 400;
+    font-style: normal;
+    margin-top: -3px;
+    margin-right: 3px;
+}
+.frm_control_group {
+    padding-bottom: 20px;
+}
+.frm_label {
+    margin-top: .3em;
+    font-size: 14px;
+    font-family:"Hiragino Sans GB", "Microsoft Yahei", "simsun";
+    color:#555;
+    font-weight:600;
+    padding-right:.5em;
+}
+.frm_controls {
+    display: block;
+    vertical-align: top;
+    float: none;
+    width: auto;
+    margin-top: 10px;
+}
+.frm_input_box {
+    display: inline-block;
+    position: relative;
+    height: 30px;
+    line-height: 30px;
+    vertical-align: middle;
+    width: 278px;
+    font-size: 14px;
+    padding: 0 10px;
+    border: 1px solid #e7e7eb;
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    border-radius: 0;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    background-color: #fff;
+}
+.frm_input {
+    height: 22px;
+    margin: 4px 0;
+}
+.frm_textarea {
+    height: 80px;
+    width: 620px;
+    background-color: transparent;
+    margin-top:10px;
+}
+.frm_input {
+    width: 100%;
+    background-color: transparent;
+    border: 0;
+    outline: 0;
+}
+.info_box .frm_input_box, .info_box .frm_msg, .info_box .frm_tips {
+    width: 600px;
+}
+.frm_tips, .frm_msg {
+    padding-top: 4px;
+    width: 300px;
+}
+.frm_tips {
+    color: #8d8d8d;
+}
+.info_box .tips_show {
+    overflow: hidden;
+    font-size: 15px;
+    font-family:"Hiragino Sans GB","Microsoft Yahei", "simhei", "simsun";
+}
+
+.menu_title {
+    position: relative;
+    padding: 0 35px 0;
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    line-height: 34px;
+    color: #8d8d8d;
+    text-align: left;
+}
+.info_box .tips_show p{
+	font-size:14px;
+	font-weight:600;
+	
+}
+.info_box .tips_show a.curr{
+	background:#e74c3c;
+	color:#fff;
+}
+.info_box .tips_show a.curr{
+	color:#fff;
+}
+.info_box .tips_show a{
+	text-align:left;
+	padding:10px 0 10px 60px;
+	display:block;
+	color: #333;
+	font-weight:400;
+	font-size:14px;
+}
+.info_box .tips_show p a:link,.info_box .tips_show p a:visited{
+	color:#555;
+}
+.info_box .tips_show p.curr a:link,.info_box .tips_show p.curr a:visited{
+	color:#fff;
+}
+
+.info_box .tips_show a > i{
+	margin-right:6px;
+}
+
+.notice .count .col{
+	height:100px;
+	border-radius:10px;
+}
+.notice .count .col > div{
+	width:100%;
+	height:100%;
+	border-radius:2px;
+}
+
+.notice .count .msg{
+	background-color: #7CBAE5;
+}
+.notice .count .new-fans{
+	background-color: #23c6c8;
+}
+.notice .count .total-fans{
+	background-color: #60D295;
+}
+.notice .count .col a {
+	display:block;
+	height:100%;
+	width:100%;
+	color:#fff;
+	font-size:16px;
+	font-family:"微软雅黑";
+	font-weight:600;
+}
+.notice .count .col a:hover{
+	text-decoration:none;
+}
+.notice .count .col a em{
+	font-size: 30px;
+    font-style: normal;
+    line-height: 30px;
+    position: relative;
+    top: -5px;
+}
+.notice .count .col a i{
+	width: 34px;
+    height: 34px;
+    display: inline-block;
+    margin-top:30px;
+}
+.notice .count .msg i{
+	background: url(../images/page_index_z25b76d.png) 0 0px no-repeat;
+}
+.notice .count .new-fans i{
+	background: url(../images/page_index_z25b76d.png) 0 -44px no-repeat;
+}
+.notice .count .total-fans i{
+	background: url(../images/page_index_z25b76d.png) 0 -88px no-repeat;
+}
+
+.notice .notice-box{
+	margin-top:15px;
+    border: 1px solid #e7e7eb;
+}
+.notice .notice-box .title{
+	padding: 0 20px;
+    background-color: #f4f5f9;
+    border-bottom: 1px solid #e7e7eb;
+    line-height: 40px;
+}
+.notice .notice-box .title h2{
+	text-align:left;
+	font-size: 15px;
+    font-weight: 500;
+    font-style: normal;
+    line-height:40px;
+    font-family:"微软雅黑"
+}
+.notice .mp_news_list li{
+	border-top:1px solid #e7e7eb;
+	
+}
+.notice .mp_news_list li a{
+	display: block;
+    padding-right: 20px;
+    padding-left: 20px;
+    color: #555;
+    text-decoration: none;
+    cursor: pointer;
+    line-height:40px;
+    text-align:left;
+}
+.notice .mp_news_list li a strong {
+    font-weight: 400;
+    font-family: "Hiragino Sans GB", "微软雅黑";
+    color: #333;
+    font-size: 14px;
+}
+.notice .mp_news_list li a .date{
+	float:right;
+}
+   
+ .processor_bar {
+    background-color: #fff;
+    background-image: none;
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    border-bottom:1px solid #e6e7ea;
+}
+.grid_line:after {
+    content: "\200B";
+    display: block;
+    height: 0;
+    clear: both;
+}
+.processor_bar .step {
+    background: transparent url(../images/bg_processor218877.png) no-repeat 0 0;
+    line-height: 44px;
+    text-align: center;
+}
+.size1of3 {
+    width: 32.5%;
+}
+.grid_item {
+    float: left;
+}
+.processor_bar .step.next {
+    background-position: 0 -88px;
+}
+.processor_bar .step.current {
+    background-color: #44b549;
+    background-image: none;
+}   
+.processor_bar h4 {
+    font-weight: 400;
+    font-style: normal;
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    line-height: 44px;
+    color:#777;
+}
+.processor_bar .step.current h4{
+	color:#fff;
+}
+.processor_bar .step.next h4 {
+    padding-left: 8px;
+}
+.info_box .form_wrp{
+	padding:0 80px ;
+}
+.col-lg-7.register{
+	border-right:1px solid #ddd;
+}
+.preview .form_wrp{
+	padding:5% 15%;
+	
+}
+.preview .form_wrp .alert-success{
+	margin:0;
+	padding:12px 0;
+	width: 20%;
+	text-align:center;
+	border-radius:0;
+	border:none;
+	background:none;
+	display:block;
+	float:left;
+}
+.preview .form_wrp .frm_control_group{
+	padding:3px;
+	margin:0;
+    border-left: 2px solid #E74C3C;
+    background:#f3f3f3;
+    margin-bottom:15px;
+}
+.preview  .frm_control_group .frm_controls{
+	width:80%;
+	padding:12px 0;
+	font-family:"Hiragino Sans GB", "Microsoft Yahei", "simsun";
+	font-size:14px;
+	display:block;
+	float:left;
+}
+.preview .form_wrp .frm_input_box{
+	border:none;
+}

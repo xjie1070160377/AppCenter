@@ -1,0 +1,77 @@
+<% layout("/share/mlayout.html"){%>
+
+        <div class="wrapper wrapper-content  animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>用户积分</h5>
+                        </div>
+                        <div class="ibox-content">
+							<div class="row">
+                                
+                                <div class="col-sm-3 m-b-xs">
+                                    
+                                    <a href="javascript:void(0);" id="btnQuery" class="btn btn-primary btn-sm">查询</a>
+                                    
+                                </div>
+                            </div>
+					
+                            <div class="jqGrid_wrapper">
+                                <table id="table_list"></table>
+                                <div id="pager_list"></div>
+                           </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                            
+		<script >
+			
+		$(document).ready(function () {
+			
+            $("#table_list").jqGrid({
+            	url: "points/user/page",
+                datatype: "json",
+                mtype:"POST",//注意用POST传递，否则会出现中文乱码
+                height: 450,
+                autowidth: true,
+                shrinkToFit: true,
+                rowNum: 10,
+                rowList: [10, 20, 30, 50],
+                colModel: [
+                    {label:"用户名称", classes : 'mshow', name: 'userName', index: 'user.userName', width: 60, align: "center"},
+                    {label:"会员等级", classes : 'mshow', name: 'levelName', index: 'level.levelName', width: 90, align: "center"},
+                    {label:"积分", classes : 'mshow',name: 'points', index:'points',width: 80, align: "center",stype:"int",sorttype: "int"}
+                ],
+                pager: "#pager_list",
+                viewrecords: true,
+                multiselect: true,
+                sortname: 'id', 
+				sortorder: "desc", 
+                caption: "管理用户列表",
+                loadtext: '正在加载...',
+                hidegrid: false
+            });
+      		//jQuery("#table_list").jqGrid('navGrid','#pager_list',{edit:true,add:true,del:true,view:true});
+      		jQuery("#table_list").jqGrid('navGrid','#pager_list',
+      			  {edit:false,add:false,del:false},{},{},{},
+      			  {multipleSearch:true}
+      			  );
+		});
+		
+	$("#btnQuery").click(function(){
+		$("#search_table_list").click();
+	});
+	
+		function reloadGrid() {
+			
+			$("#table_list").trigger('reloadGrid');
+		}
+
+		
+		</script>
+	
+<%}%>

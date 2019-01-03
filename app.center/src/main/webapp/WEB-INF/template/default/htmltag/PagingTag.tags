@@ -1,0 +1,77 @@
+<%
+var totalPage = @java.lang.Math.ceil(totalRows/pageSize);
+
+%>
+			<div class="row">
+				<div class="col-md-5 col-sm-12">
+					<div class="dataTables_info">显示${parseInt(currentPage) * parseInt(pageSize) - parseInt(pageSize)+1}到${parseInt(currentPage) * parseInt(pageSize)},共 ${totalRows} 记录</div>
+				</div>
+				<div class="col-md-7 col-sm-12">
+					<div class="dataTables_paginate paging_bootstrap">
+						<ul class="pagination" style="visibility: visible;">
+						
+						<% if(currentPage<=1){%>
+							<li class="prev disabled">
+							<a href="#" title="Prev">
+								<i	class="fa fa-angle-left"></i>
+							</a>
+							</li>
+						<% } else {%>
+							<li class="prev">
+							<a href="javascript:;" onclick="paging(this);" data-url="?page=${currentPage-1}&rows=${pageSize}" title="Prev">
+								<i	class="fa fa-angle-left"></i>
+							</a>
+							</li>
+						<% } %>
+							
+						<% for(var i=1;i<=totalPage;i++){ %>
+						
+							<% if(currentPage==i){%>
+							 <li class="active">
+								<a href="javascript:;" onclick="paging(this);" data-url="?page=${i}&rows=${pageSize}">${i}</a>
+							</li>
+							 <% } else {%>
+							 <li class="">
+								<a href="javascript:;" onclick="paging(this);" data-url="?page=${i}&rows=${pageSize}">${i}</a>
+							</li>
+							 <% } %>
+							
+						<% } %>
+							
+							<% if(currentPage>=totalPage){%>
+							<li class="next disabled">
+								<a href="#" title="Next">
+									<i	class="fa fa-angle-right"></i>
+								</a>
+							</li>
+							<% } else {%>
+							<li class="next">
+								<a href="javascript:;" onclick="paging(this);" data-url="?page=${currentPage+1}&rows=${pageSize}" title="Next">
+									<i	class="fa fa-angle-right"></i>
+								</a>
+							</li>
+							<% } %>
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+<script type="text/javascript">
+
+function paging(obj){
+	var url = $(obj).attr("data-url");
+	
+	<% if(isNotEmpty(paramFormId)){%>
+	url += "&" + $("#${paramFormId}").serialize();	
+	<% } %>
+	
+	window.location = url;
+}
+
+</script>
+
+
+
+
+
+		

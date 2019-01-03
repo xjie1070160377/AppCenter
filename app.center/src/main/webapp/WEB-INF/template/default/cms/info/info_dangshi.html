@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<link href="${ctxPath}/static/base/css/form.css" rel="stylesheet">
+	<style>
+legend {
+	font-size: 14px;
+	padding-bottom: 5px;
+	margin-bottom: 10px;
+}
+
+form {
+	border: 1px solid #e5e5e5;
+	padding: 10px;
+	margin: 10px;
+}
+
+#btn_dangshi {
+	position: absolute;
+	top: 7px;
+	right: 7px;
+	height: 30px;
+}
+
+</style>
+	<div class="col-sm-12">
+		<div class="ibox-title">
+			<h5>点击数设置</h5>
+		</div>
+
+		<div class="ibox float-e-margins">
+			<div class="ibox-content">
+				<form id="setting1Form"
+					onsubmit="return confirm('确认提交输入的设置，提交后不能回滚，确认设置？');"
+					action="cms/hit/setting1">
+					<fieldset class="c-fieldset">
+						<legend>党史日期</legend>
+
+						<div class="form-group input-daterange" id="datepicker">
+							<div class="col-sm-5">
+								<input type="text" id="publishDate" name="publishDate"
+									class="form-control" value="${date}" style="text-align: left" />
+									
+								<input  type="button" onclick="add()" value="添加党史"/>		
+							</div>
+						</div>
+						
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="${ctxPath}/static/base/js/plugins/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" src="${ctxPath}/static/base/js/dangshi.js"></script>
+<script type="text/javascript">
+$('#publishDate').datetimepicker({
+    language:  'zh-CN',
+    minView: "month",
+    pickTime:false,
+    format:'yyyy-mm-dd',
+    weekStart: 1,
+    todayBtn:  1,
+	autoclose: 1,
+	todayHighlight: 1,
+	startView: 2,
+	forceParse: 0,
+    showMeridian: 1
+});
+function add() {
+    var publishDate = $('#publishDate').val();
+    var strs = publishDate.split("-");
+    
+	loadFrameContent('cms/info/edite_ds?data=' + go(strs[1],strs[2]) );
+}
+</script>
+</html>

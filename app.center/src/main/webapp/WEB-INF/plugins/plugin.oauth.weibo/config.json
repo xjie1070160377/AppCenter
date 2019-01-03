@@ -1,0 +1,41 @@
+{
+	"id": "plugin.oauth.weibo",
+	"name": "新浪微博",
+	"desc": "oauth-weibo",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Oauth",
+	"platforms": [
+		"PC"
+	],
+	"pluginData": {
+		"AppKey": {
+			"desc": "",
+			"val": "422046873"
+		},
+		"AppSecret": {
+			"desc": "",
+			"val": "d87ede9dab4e970d8b06270df2118ac2"
+		},
+		"redirect_uri": {
+			"desc": "",
+			"val": "http://nudtdev.apiclub.cn"
+		},
+		"AuthorizeURL": {
+			"desc": "",
+			"val": "https://api.weibo.com/oauth2/authorize"
+		},
+		"accessTokenURL": {
+			"desc": "",
+			"val": "https://api.weibo.com/oauth2/access_token"
+		},
+		"users_show_uri": {
+			"desc": "",
+			"val": "https://api.weibo.com/2/users/show.json"
+		}
+	},
+	"extendData": {
+		"icon_default": "weibo1.png",
+		"icon_hover": "weibo2.png"
+	}
+}

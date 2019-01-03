@@ -1,0 +1,81 @@
+{
+	"id": "plugin.message.email",
+	"name": "电子邮件",
+	"desc": "消息插件-电子邮件",
+	"logo": "logo.png",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Message",
+	"platforms": [
+		"PC"
+	],
+	"pluginData": {
+		"smtp_server": {
+			"desc": "",
+			"val": "smtp.ym.163.com"
+		},
+		"smtp_port": {
+			"desc": "",
+			"val": "25"
+		},
+		"smtp_user": {
+			"desc": "",
+			"val": "service@lemeids.com"
+		},
+		"smtp_password": {
+			"desc": "",
+			"val": "lemeids123456"
+		},
+		"smtp_displayname": {
+			"desc": "邮件发送者名称",
+			"val": "乐美电商"
+		},
+		"template_code_bind": {
+			"desc": "验证码",
+			"val": "尊敬的用户:#userName#,验证码：#checkCode#，您正在进行邮件验证操作。"
+		},
+		"template_code_order_created": {
+			"desc": "订单创建",
+			"val": "尊敬的用户:#userName#，您的订单(#orderId#)已成功创建。"
+		},
+		"template_code_order_pay": {
+			"desc": "订单付款",
+			"val": "尊敬的用户:#userName#，您的订单(#orderId#)已成功付款#total#元。"
+		},
+		"template_code_order_shipping": {
+			"desc": "订单发货",
+			"val": "尊敬的用户:#userName#，您的订单(#orderId#)已经发货，物流公司为:#shippingCompany#,物流单号：#shippingNumber#。"
+		},
+		"template_code_order_refund": {
+			"desc": "订单退款",
+			"val": "尊敬的用户:#userName#，您的订单(#orderId#),已经退款，退款金额:#refundMoney#,请注意查收。"
+		},
+		"template_code_find_password": {
+			"desc": "重置密码",
+			"val": "尊敬的用户:#userName#，您已经成功重置密码。"
+		},
+		"template_code_shop_expired": {
+			"desc": "店铺过期",
+			"val": "尊敬的用户:#userName#，您申请的店铺:#shopName#即将过期，请联系管理员续期。"
+		},
+		"template_code_shop_success": {
+			"desc": "开店成功",
+			"val": "尊敬的用户:#userName#，您申请的店铺:#shopName#已经开通,有效期一年，请登录查看。"
+		},
+		"template_code_wallet_vcode": {
+			"desc": "钱包支出验证",
+			"val": "尊敬的用户:#userName#，验证码：#vCode#，您正在使用乐美钱包进行支付，请勿泄露给他人"
+		}
+	},
+	"extendData": {
+		"template_code_bind": 1,
+		"template_code_order_created": 1,
+		"template_code_order_pay": 1,
+		"template_code_order_shipping": 1,
+		"template_code_order_refund": 1,
+		"template_code_find_password": 1,
+		"template_code_shop_expired": 1,
+		"template_code_shop_success": 1,
+		"template_code_wallet_vcode": 1
+	}
+}

@@ -1,0 +1,418 @@
+<% layout("/share/mlayout.html"){%>
+<style>
+    .right_btn2 .layout{display: inline-block;width: 50px;}
+    .right_btn2 .layout .layout-grid{display:block;}
+    .right_btn2 .layout .layout-list{display:none;}
+    .right_btn2 .layout .fa{font-size: 20px;color: #a4acb8;position: relative;top: 3px;}
+    .right_btn2 .layout .fa:hover{color:#1ab394}
+    
+</style>
+<script src="${ctxPath}/static/base/fonts/iconfont/iconfont.js"></script>
+<script src="${ctxPath}/static/base/js/plugins/vue/vue.min.js"></script>
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>图片列表</h5>
+				</div>
+				<div class="ibox-content">
+                        
+                    <div class="ls_search">
+					    <!-- <div id="radio" class="ui-buttonset">
+					        <input type="radio" id="radioAll" class="ui-helper-hidden-accessible" />
+					        <label for="radioAll" class="ui-button ui-state-active" role="button" aria-disabled="false">
+					        	<span class="ui-button-text">所有</span>
+					        </label> 
+					        <input type="radio" id="radioToday" class="ui-helper-hidden-accessible" /> 
+					        <label for="radioToday" class="ui-button" role="button" aria-disabled="false">
+					        	<span class="ui-button-text">今日</span>
+					        </label> 
+					        <input type="radio" id="radioYesterday" class="ui-helper-hidden-accessible" /> 
+					        <label for="radioYesterday" class="ui-button" role="button" aria-disabled="false">
+					        	<span class="ui-button-text">昨日</span>
+					        </label> 
+					        <input type="radio" id="radioLast7Day" class="ui-helper-hidden-accessible" /> 
+					        <label for="radioLast7Day" class="ui-button" role="button" aria-disabled="false">
+					        	<span class="ui-button-text">最近7日</span>
+					        </label> 
+					        <input type="radio" id="radioLast30Day" checked="checked" class="ui-helper-hidden-accessible" /> 
+					        <label for="radioLast30Day" class="ui-state ui-button" role="button" aria-disabled="false">
+					        	<span class="ui-button-text">最近30日</span>
+					        </label>
+					    </div> -->
+					
+					    <div class="form-group">
+					        <!-- <span class="col input-daterange" id="datepicker">
+					        	<label class="start_txt" style="padding-top:5px">开始日期</label>
+					        </span>
+					        <div class="start_date">
+					            <span class="col input-daterange" id="datepicker">
+					            	<input type="text" style="text-align: left;width:100px;" name="startTime" id="startTime" placeholder="开始日期" value='${startTime !, dateFormat="yyyy-MM-dd"}' />
+					            </span>
+					        </div>
+					        <span class="col input-daterange" id="datepicker">
+					        	<label class="end_txt" style="padding-top:5px">结束日期</label>
+					        </span>
+					        <div class="end_date" style="margin-right:5px;">
+					            <span class="col input-daterange" id="datepicker">
+					            	<input type="text" style="text-align: left;width:100px;" name="endTime" id="endTime" placeholder="结束日期" value='${endTime !, dateFormat="yyyy-MM-dd"}' />
+					            </span>
+					        </div> -->
+					        
+					        <span class="col">
+					        	<label class="" style="padding:0 5px;padding-top:5px;">图片分类</label>
+					        </span> 
+					        <span class="col">
+						        <select name="typeId" id="typeId" class="input-sm form-control input-s-sm inline">
+						        	<option value="0">所有分类</option>
+									<%for(var type in typeList){%>
+									<option value="${type.id}">${type.name}</option>
+									<%}%>
+								</select>
+					        </span> 
+					        <span class="col">
+					        	<label class="" style="padding:0 5px;padding-top:5px;">图片标题</label>
+					        	<input type="hidden" name="columnFiled" id="columnFiled" value="LIKE_title" />
+					        </span> 
+					        <span class="col">
+					        	<input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-key" />
+					        </span> 
+					        <span class="col">
+						        <button type="button" class="search" onclick="queryGrid();">
+						        	<span class="col">搜索</span>
+						        </button>
+					        </span>
+					    </div>
+					
+					    <div class="right_btn2" style="width: 300px;">
+					        <a href="javascript:void(0);" onclick="add();" class="btn-primary">新增图片</a> 
+					        <a href="javascript:void(0);" onclick="batchAdd();" class="btn-primary">批量上传</a> 
+					        <a href="javascript:void(0);" onclick="dels();" class="btn-danger">批量删除图片</a>
+					        
+					        <div class="layout">
+					        	<div class="layout-grid">
+					        		<i class="fa fa-th-large" title="切换到列表模式"></i>
+					        	</div>
+					        	<div class="layout-list">
+					        		<i class="fa fa-th-list" title="切换到缩略图模式"></i>
+					        	</div>
+					        </div>
+					    </div>
+					</div>
+                        
+					<!-- 表格 -->
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+                     
+        <script src="${ctxPath}/static/base/js/plugins/bigic/jquey-bigic.js"></script>                    
+		<script type="text/javascript">
+			function GetDateStr(AddDayCount) { 
+				var dd = new Date(); 
+				dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+				var y = dd.getFullYear(); 
+				var m = dd.getMonth()+1;//获取当前月份的日期 
+				var d = dd.getDate(); 
+				return y+"-"+m+"-"+d; 
+			} 
+		
+			$(document).ready(function() {
+				
+				$('.ls_search #radio input').on('click',function(){
+					$('.ls_search #radio label').removeClass('ui-state-active');
+					$(this).next().addClass('ui-state-active');
+					var dateTab = $(this).attr("id");
+					var startDate = GetDateStr(0);
+						endDate = GetDateStr(1);
+					if(dateTab == 'radioYesterday'){
+						startDate = GetDateStr(-1);
+						endDate = GetDateStr(0);
+					} else if(dateTab == 'radioLast7Day'){
+						startDate = GetDateStr(-7);
+					} else if(dateTab == 'radioLast30Day'){
+						startDate = GetDateStr(-30);
+					}else if(dateTab == 'radioAll'){
+						startDate = "";
+						endDate = "";
+					}
+					
+					$('#startTime').val(startDate);	
+					$('#endTime').val(endDate);	
+					queryGrid();
+				});
+				$('#datepicker').datepicker({
+			 		language: 'zh-CN',
+			 		format : 'yyyy-mm-dd',
+			         keyboardNavigation: false,
+			         autoclose: true
+			     });
+				
+				$("#table_list").jqGrid({
+					url : "cms/cmsImage/cmsImageListJson",
+					postData : {typeId: $("#typeId").val(), startTime: $('#startTime').val(), endTime: $('#endTime').val()},
+					datatype : "json",
+	                mtype:"POST",
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 10,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "ID",
+						name : 'id',
+						index : 'id',
+						width : 60,
+						align : "center",
+						sorttype : "int"
+					}, {
+						label : "图片预览",
+						name : 'url',
+						index : 'url',
+						width : 90,
+						align : "center",
+						formatter: function (cellvalue, options, rowObject) {
+							var img = "<img style='width:50px;height=50px;' src='"+ rowObject.url +"' onerror=\"this.src='${ctxPath}/static/base/images/nopic.jpg'\" />";
+							return img;
+						}
+					}, {
+						label : "图片分类",
+						name : 'type',
+						index : 'type',
+						width : 90,
+						align : "center"
+					}, {
+						label : "标题",
+						name : 'title',
+						index : 'title',
+						width : 90,
+						align : "left"
+					}, {
+						label : "上传时间",
+						name : 'createTime',
+						index : 'createTime',
+						width : 90,
+						align : "center"
+					}, {
+						label : "图片尺寸",
+						name: 'imageSize',
+						width : 90,
+						align : "center",
+						formatter: function (cellvalue, options, rowObject) {
+							if(cellvalue){
+								console.log(cellvalue);
+								return cellvalue;
+							}else{
+								var img = new Image();
+								img.src = rowObject.url;
+								if(img.complete){
+									var imageSize = img.width + " x " + img.height;
+									return imageSize;
+								}else{
+									img.onload = function(){
+										var imageSize = img.width + " x " + img.height;
+										$("#table_list").jqGrid("setCell", options.rowId, "imageSize", imageSize);
+								    }
+								}
+							}
+						}
+					}, {
+						label : "操作",
+						name : 'op',
+						sortable : false,
+						width : 80,
+						align : "center",
+						formatter : function (cellvalue, options, rowObject) {
+							var html = "";
+							html += " <button class='btn btn-primary' type='button' title='编辑' onclick='edit(\"" + rowObject.id + "\");'><i class='fa fa-edit'>编辑</i></button>";
+							html += " <button class='btn btn-primary' type='button' title='删除' onclick='del(\"" + rowObject.id + "\");'><i class='fa fa-edit'>删除</i></button>";
+							return html;
+						}
+					} ],
+					pager : "#pager_list",
+					viewrecords : true,
+					multiselect : true,
+					sortname : 'id',
+					sortorder : "desc",
+					caption : "管理图片列表",
+					loadtext : '正在加载...',
+					gridComplete : function(){
+						$("#table_list img").bigic();
+					},
+					hidegrid : false
+				});
+				
+				function getNaturalWidthAndHeight(url, callback) {
+					var img = new Image();
+					img.src = url;
+					if(img.complete){
+					    callback(img.width, img.height);
+					}else{
+			            // 完全加载完毕的事件
+					    img.onload = function(){
+					    	callback(img.width, img.height);
+					    }
+			        }
+				}
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+			
+			function add() {
+				layer.open({
+					type : 1, //page层
+					area : [ '760px', '450px' ],
+					title : '新增图片',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('cms/cmsImage/cmsImageAdd'),
+				    btn: ['确定', '取消'],
+				    yes: function(index, layero){
+				    	submitForm(index);
+				    	//layer.close(index); //如果设定了yes回调，需进行手工关闭
+					  }
+				});
+			}
+			
+			function batchAdd(){
+				layer.open({
+					type : 1, //page层
+					area : [ '760px', '570px' ],
+					title : '批量上传图片',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('cms/cmsImage/batchAdd'),
+				    btn: ['确定', '取消'],
+				    yes: function(index, layero){
+				    	submitForm(index);
+					  }
+				});
+			}
+
+			function edit(id) {
+				layer.open({
+					type : 1, //page层
+					area : [ '760px', '450px' ],
+					title : '编辑图片',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('cms/cmsImage/cmsImageEdit?id=' + id),
+				    btn: ['确定', '取消'],
+				    yes: function(index, layero){
+				    	submitForm(index);
+				    	//layer.close(index); //如果设定了yes回调，需进行手工关闭
+					  }
+				});
+
+			}
+
+			function del(id) {
+				layer.confirm('确定删除该图片吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/cmsImage/cmsImageDel", {
+						id : id
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('删除成功.');
+						} else {//失败
+							layer.alert("删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function dels() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				var deleteByGrid = false;
+				if(ids.length == 0){
+					$(".image.selected").each(function(){
+						var id = $(this).attr("data-id");
+						if(id){
+							ids.push(id);
+							deleteByGrid = true;
+						}
+					});
+					
+				}
+				
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量删除的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量删除图片吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/cmsImage/cmsImageDels", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							layer.msg('批量删除成功.');
+							if(deleteByGrid){
+								vm.getmore(vm.typeId);
+							}else{
+								reloadGrid();
+							}
+						} else {//失败
+							layer.alert("批量删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+
+			function view(url){
+				console.log("view url=", url);
+				window.open(url);
+			}
+
+
+			function reloadGrid() {
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list"),
+			  		columnFiled = $("#columnFiled").val(),
+		            keyWord = $("#keyWord").val(),
+		            startTime = $("#startTime").val(),
+		            endTime = $("#endTime").val(),
+		  			typeId= $("#typeId").val();
+				
+	          	//增加提交参数
+	            var postData = { typeId:typeId, startTime : startTime, endTime : endTime, columnFiled : columnFiled, keyWord : keyWord};
+	            $("#table_list").jqGrid("setGridParam", { postData: postData});
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+				
+		  	}
+		  	
+		  	//切换显示布局
+		  	$(".layout > div").on("click", function(){
+		  		loadFrameContent('cms/cmsImage/cmsImageList?layout=0');
+		  	});
+		  	
+		  	
+		</script>
+	
+<%}%>

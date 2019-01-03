@@ -1,0 +1,80 @@
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+	<contextName>DevTool</contextName>
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+		<encoder>
+			<pattern>
+				%-4relative %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger [%L] - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="DEBUG"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/debug.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>logs/debug_%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+		<encoder>
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger [%L] - %msg%n	
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="INFO"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/info.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>logs/info_%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<encoder>
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{35} [%L] - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="ERROR"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/error.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>logs/error_%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<encoder>
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger [%L] - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<!-- <logger name="org.hibernate" level="OFF" /> -->	
+	<logger name="org.springframework" level="DEBUG" />
+	<logger name="org.hibernate" level="DEBUG" />
+
+	<root level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="DEBUG" />
+		<appender-ref ref="INFO" />
+		<appender-ref ref="ERROR" />
+	</root>
+</configuration>

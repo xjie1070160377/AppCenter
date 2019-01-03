@@ -1,0 +1,61 @@
+<%var style = {%>
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/base.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/globle.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/receiveBox.css" />
+</style>
+<%};%>
+
+<%include("shared/inc_head.html", {title:gb.name+"管理", style:style}){} %> 
+
+
+<body class="output p-guestbook-management <%if(isNotEmpty(session.token)){ %> app <%}%>">
+	
+
+<div class="row-fluid wrapper wrapper-content  animated fadeInRight row-fluid clearfix">
+	<div class="contentBox">
+		
+		<ul class="article-list thumbnails">
+			<%var msgPageList = MessagePage({userId:userId, pageSize:20});%>
+			<% for(msg in msgPageList){ %>
+			<li class="clearfix ${msg.isRead == 1 ? 'read' : 'unRead' }">
+				<div>
+					<p class="info-top">
+						<span class="author">${msg.username}</span><em>.</em>
+						<span class="publishTime">${msg.createTime, dateFormat="yyyy-MM-dd : HH:mm"}</span>
+					</p>
+					<h4 class="title">
+	                	<a href="${ctxPath}/widget/guestbook/message/form/?_id=${msg._id}" title="${msg.title}" target="_blank"><%var title = Substring(msg.title, 20, "...");%>${title}</a></h4>
+					<p class="info-bottom">
+						<%if(msg.isVisibile == 1){%>
+						<label class="show">已公开</label>
+						<%}else{%>
+						<label class="hidden">未公开</label>
+						<%}%>
+						
+						<%if(msg.isReply == 1){%>
+						<label class="replyed">已回复</label>
+						<%}else{%>
+						<label class="unReplyed">未回复</label>
+						<%}%>
+						
+						<%if(msg.isTop == 1){%>
+						<label class="top">已置顶</label>
+						<%}else{%>
+						<!--<label class="unTop">未置顶</label>  -->
+						<%}%>
+					</p>	
+				</div>
+			</li>
+			<%}%>
+			
+		</ul>
+		<%include("shared/inc_page.html",{pagedList:msgPageList}){}; %>	
+	</div>
+	<%include("shared/inc_footer.html"){} %>	
+</div>
+	
+<script type="text/javascript" src="${session.guestbook}/_js/jquery-2.1.4.min.js"></script>	
+</body>	
+	
+
+

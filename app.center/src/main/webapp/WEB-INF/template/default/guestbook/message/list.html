@@ -1,0 +1,204 @@
+<% layout("/share/mlayout.html"){%>
+<style>
+	.f-toe{text-overflow: ellipsis;overflow: hidden;}
+	i.state0, i.state1,i.state-1{width:6px;height:6px;display:inline-block;margin-right:3px;background-color:#ccc;border-radius:100%;}
+	i.state0{background-color:#f8ac59;}
+	i.state1{background-color:#1ab394;}
+	.ui-jqgrid tr.ui-row-ltr td.f-toe{white-space: nowrap;}
+</style>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>信件列表</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2">
+	                        <div class="input-group">
+	                            <input type="hidden" class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled" value="LIKE_title"/>
+		                        <input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control"> 
+		                        <span class="input-group-btn">
+		                            <button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();"> 搜索</button> 
+		                        </span>
+	                        </div>
+                        </div>
+                        <div class="col-sm-3 text-right">
+                             
+                        </div>
+                    </div>
+
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$("#table_list").jqGrid({
+					url : "guestbook/message/listJson",
+					datatype : "json",
+	                mtype:"POST",
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 10,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "ID",
+						classes : 'mshow',
+						name : '_id',
+						index : '_id',
+						width : 40,
+						align : "center",
+						sorttype : "int"
+					}, {
+						label : "发表时间",
+						classes : 'mshow',
+						name : 'createTime',
+						index : 'createTime',
+						width : 40,
+						align : "center"
+					}, {
+						label : "用户姓名",
+						classes : 'mshow',
+						name : 'username',
+						index : 'username',
+						width : 25,
+						align : "center"
+					}, {
+						label : "标题",
+						name : 'title',
+						index : 'title',
+						width : 75,
+						align : "center"
+					}, {
+						label : "内容",
+						classes: "f-toe",
+						name : 'text',
+						index : 'text',
+						width : 95,
+						align : "center"
+					}, {
+						label : "所属信箱",
+						name : 'guestbook',
+						index : 'guestbook',
+						width : 30,
+						align : "center"
+					}, {
+						label : "信件分类",
+						classes : 'mshow',
+						name : 'guestbookType',
+						index : 'guestbookType',
+						width : 25,
+						align : "center"
+					},{
+						label : "回复状态",
+						name : 'isReply',
+						index : 'isReply',
+						width : 25,
+						align : "center",
+						formatter: replyFmt
+					},{
+						label : "状态",
+						name : 'state',
+						index : 'state',
+						width : 25,
+						align : "center",
+						formatter: stateFmt
+					}, {
+						label : "操作",
+						classes : 'mshow',
+						name : 'op',
+						sortable : false,
+						width : 50,
+						align : "center",
+						formatter : oprationFmt
+					} ],
+					pager : "#pager_list",
+					viewrecords : true,
+					multiselect : true,
+					sortname : 'createTime',
+					sortorder : "desc",
+					caption : "管理信件列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += "<button class='btn btn-primary' type='button' onclick='edit(\""+ rowObject._id + "\");'><i class='fa fa-edit'></i>&nbsp;审核</button>";
+				html += "<button class='btn btn-primary' style='margin-left:8px' onclick='del(\""+ rowObject._id + "\");'><i class='fa fa-remove'></i>&nbsp;移除</button>";
+				return html;
+			}
+			function stateFmt(cellvalue, options, rowObject){
+				var html = '<i class="state0"></i>未审核';
+				if(rowObject.state=='已审核'){
+					html = '<i class="state1"></i>已审核';
+				}else if(rowObject.state=='禁用'){
+					html = '<i class="state-1"></i>禁用';
+				}
+				return html;
+			}
+			
+			function replyFmt(cellvalue, options, rowObject){
+				var html = '<i class="state0"></i>未回复';
+				if(rowObject.isReply=='1'){
+					html = '<i class="state1"></i>已回复';
+				}
+				return html;
+			}
+			
+			function edit(id) {
+				loadFrameContent('guestbook/message/edit?_id=' + id);
+			}
+			
+			function del(id) {
+				$.post("guestbook/message/remove", {_id:id}, function(data){
+					console.log(data);
+					if(data.resultStatus){
+						reloadGrid()
+					}else{
+						console.log(data.resultMsg);
+					}
+				}, "json");
+			}
+			
+			function reloadGrid() {
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list");
+		  		var columnFiled = $("#columnFiled").val();
+	            var keyWord = $("#keyWord").val();
+				
+	          //增加提交参数
+	            var postData = { columnFiled : columnFiled, keyWord : keyWord};
+	            $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  		
+		  	}
+		</script>
+	
+<%}%>

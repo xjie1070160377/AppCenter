@@ -1,0 +1,49 @@
+{
+	"id": "plugin.oauth.qq",
+	"name": "QQ",
+	"desc": "oauth-qq",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Oauth",
+	"platforms": [
+		"PC"
+	],
+	"pluginData": {
+		"AppId": {
+			"desc": "",
+			"val": ""
+		},
+		"AppKey": {
+			"desc": "",
+			"val": ""
+		},
+		"ValidateContent": {
+			"desc": "",
+			"val": ""
+		},
+		"redirect_uri": {
+			"desc": "",
+			"val": ""
+		},
+		"AuthorizeURL": {
+			"desc": "",
+			"val": "https://graph.qq.com/oauth2.0/authorize"
+		},
+		"accessTokenURL": {
+			"desc": "",
+			"val": "https://graph.qq.com/oauth2.0/token"
+		},
+		"getOpenIDURL": {
+			"desc": "",
+			"val": "https://graph.qq.com/oauth2.0/me"
+		},
+		"getUserInfoURL": {
+			"desc": "",
+			"val": "https://graph.qq.com/user/get_user_info"
+		}
+	},
+	"extendData": {
+		"icon_default": "qq1.png",
+		"icon_hover": "qq2.png"
+	}
+}

@@ -1,0 +1,52 @@
+{
+	"id": "plugin.payment.weixin",
+	"name": "微信支付",
+	"desc": "微信内支付JSAPI插件",
+	"logo": "logo.png",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Payment",
+	"platforms": ["WEIXIN"],
+	"pluginData": {
+		"AppId": {
+			"desc": "",
+			"val": "wx6779fd2191207cdf"
+		},
+		"AppSecret": {
+			"desc": "",
+			"val": "8931ce82533b6634094e905f9a001cd1"
+		},
+		"Key": {
+			"desc": "",
+			"val": "27533b7d39f9e6acc2180cf33cfed0e8"
+		},
+		"MCHID": {
+			"desc": "",
+			"val": "1310904001"
+		},
+		"UnifiedorderUrl":{
+			"desc": "",
+			"val": "https://api.mch.weixin.qq.com/pay/unifiedorder"
+		},
+		"RefundUrl":{
+			"desc": "",
+			"val": "https://api.mch.weixin.qq.com/secapi/pay/refund"
+		},
+		"TransfersUrl":{
+			"desc": "",
+			"val": "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers"
+		},
+		"OrderQueryUrl":{
+			"desc": "",
+			"val": "https://api.mch.weixin.qq.com/pay/orderquery"
+		},
+		"CertPath": {
+			"desc": "",
+			"val": "apiclient_cert.p12"
+		},
+		"createIp": {
+			"desc": "",
+			"val": "139.196.30.8"
+		}
+	}
+}

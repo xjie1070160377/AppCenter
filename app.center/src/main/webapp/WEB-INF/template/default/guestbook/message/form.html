@@ -1,0 +1,126 @@
+<style>
+h3.u-message-tt{
+    color: #1ab394;
+    font-weight: 700;
+    font-family: "microsoft yahei";
+    margin-bottom:16px;
+    padding-bottom:16px;
+    border-bottom:1px dashed #1ab394;
+}
+	
+</style>
+
+<div class="col-sm-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <form id="postForm" method="post" class="form-horizontal" action="guestbook/message/${oprt}">
+                
+                <div class="col-sm-10 col-md-offset-2" style="padding:0 6px;"> <h3 class="u-message-tt offset-md-2">信件内容<%if(entity.sourceId != null){%> （转发） <%}%></h3></div>
+                
+                <input type="hidden" name="_id" value="${entity._id}"/>
+                <div class="form-group" style="margin-top:30px;margin-bottom:30px;">
+                	<label class="col-sm-2 control-label" for="title">标题</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" readonly="readonly" id="title" value="${entity.title!}"></div>
+                    <label class="col-sm-2 control-label" for="title">状态</label>
+                    <div class="col-sm-4">
+                    	<input type="text" id="state" class="form-control" readonly="readonly" value="${entity.state!}"/>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-top:30px;margin-bottom:30px;">
+                	<label class="col-sm-2 control-label" for="username">用户姓名</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" readonly="readonly" id="username" value="${entity.username!}"></div>
+                	<label class="col-sm-2 control-label" for="createTime">发表时间</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" readonly="readonly" id="createTime" value="${entity.createTime!}"></div>
+                </div>
+                
+                <div class="form-group" style="margin-top:30px;margin-bottom:30px;">
+                	<label class="col-sm-2 control-label" for="email">邮箱</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" readonly="readonly" id="email" value="${entity.email!}"></div>
+                	<label class="col-sm-2 control-label" for="ip">IP地址</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" readonly="readonly" id="ip" value="${entity.ip!}"></div>
+                </div>
+                
+                <div class="form-group" style="margin-top:30px;margin-bottom:30px;">
+                	<label class="col-sm-2 control-label" for="guestbook">所属信箱</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" readonly="readonly" id="guestbook" value="${entity.guestbook!}"></div>
+                	<label class="col-sm-2 control-label" for="guestbookType">信件类型</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" readonly="readonly" id="guestbookType" value="${entity.guestbookType!}"></div>
+                </div>
+                <div class="form-group" style="margin-top:30px;margin-bottom:30px;">
+                	<label class="col-sm-2 control-label" for="text">信件内容</label>
+                    <div class="col-sm-10">
+                    	<textarea class="form-control" style="height:200px;padding:8px;line-height:2;resize:none" readonly="readonly">${entity.text!}</textarea>
+                    </div>
+                </div>
+                <%if(entity.sourceId != null){%>
+                <div class="col-sm-10 col-md-offset-2" style="padding:0 6px;"> <h3 class="u-message-tt offset-md-2">原始信件内容</h3></div>
+                <div class="form-group" style="margin-top:30px;margin-bottom:30px;">
+                	<label class="col-sm-2 control-label" for="username">转发自</label>
+                    <div class="col-sm-4"><input type="text" class="form-control" readonly="readonly" id="username" value="${entity.sourceUserName!}"></div>
+                </div>
+                <div class="form-group" style="margin-top:30px;margin-bottom:30px;">
+                	<label class="col-sm-2 control-label" for="text">原始信件内容</label>
+                    <div class="col-sm-10">
+                    	<textarea class="form-control" style="height:200px;padding:8px;line-height:2;resize:none" readonly="readonly">${entity.sourceText!}</textarea>
+                    </div>
+                </div>
+                <%}%>
+                
+               <div class="col-sm-10 col-md-offset-2" style="padding:0 6px;"> <h3 class="u-message-tt offset-md-2">回复内容</h3></div>
+               
+                <div class="form-group" style="margin-top:30px;margin-bottom:30px;">
+                	<label class="col-sm-2 control-label" for="text">回复内容</label>
+                    <div class="col-sm-10">
+                    	<textarea type="text" id="text" class="form-control" name="text" style="height:200px;padding:8px;line-height:2;resize:none">${isNotEmpty(reply)? reply.text:''}</textarea>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:30px;margin-bottom:30px;">
+                	<label class="col-sm-2 control-label" for="isVisibile">是否前台显示</label>
+                    <div class="col-sm-4"><#RadioTag mapData="${ { 是:1,否:0 \} }" defaultValue="${entity.isVisibile}" fieldName="isVisibile" /></div>
+                	<label class="col-sm-2 control-label" for="isTop">是否置顶</label>
+                    <div class="col-sm-4"> <#RadioTag mapData="${ { 是:1,否:0 \} }" defaultValue="${entity.isTop}" fieldName="isTop" /></div>
+                </div>
+                 	
+                <div class="form-group">
+                    <div class="col-sm-4 col-sm-offset-2">
+                    	<input type="hidden" name="oid" value="${entity._id}" >
+                        <button onclick="submitForm();" title='提交保存' class="btn btn-primary" type="button">提交保存</button>
+                        <button onclick="back()" title='返回' class="btn btn-primary" type="button">返回</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+    });
+        
+    
+    function submitForm(){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (data) {
+            if (data.resultStatus) {
+                back();
+            } else {
+            	layer.alert("失败了："+ data.resultMsg, {icon: 2});
+            }
+        }, "json");
+    	
+    }
+    
+    function back(){
+    	loadFrameContent('guestbook/message/list');
+    }
+</script>

@@ -1,0 +1,287 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight wrapper-rolelist">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>角色列表</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+                        <select class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled">
+                            <option value="LIKE_roleName">角色名称</option>
+                        </select>
+                        
+                        </div>
+                        <div class="col-sm-2">
+                        <div class="input-group">
+                        <input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control" onkeydown="javascript:if(event.keyCode==13){queryGrid();}"> 
+                        <span class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();"> 搜索</button> 
+                        </span>
+                        </div>
+                        </div>
+                        <div class="col-sm-5">
+                        
+                        </div>
+                        <div class="col-sm-3 text-right">
+                            
+                            <a href="javascript:void(0);" onclick="add();" title='新增角色' class="btn btn-primary btn-sm">新增角色</a>
+                            <a href="javascript:void(0);" onclick="reloadPermission();" title='配置立即生效' class="btn btn-primary btn-sm">刷新权限配置</a>
+                            
+                        </div>
+                    </div>
+
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$("#table_list").jqGrid({
+					url : "sys/sysRoleListJson",
+					datatype : "json",
+					mtype : "POST",
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 10,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "ID",
+						classes : 'mshow',
+						name : 'id',
+						index : 'id',
+						width : 60,
+						align : "center",
+						sorttype : "int"
+					}, {
+						label : "角色名称",
+						classes : 'mshow',
+						name : 'roleName',
+						index : 'roleName',
+						width : 90,
+						align : "left"
+					},{
+						label : "状态",
+						name : 'status',
+						index : 'status',
+						width : 80,
+						align : "center",
+						formatter : 'select',
+						editoptions : {
+							value : "0:禁用;1:启用"
+						}
+					}, {
+						label : "创建时间",
+						name : 'createTime',
+						index : 'createTime',
+						width : 80,
+						align : "center",
+						sorttype : "date",
+						formatter : dateTimeFmt
+					},{
+						label : "操作",
+						classes : 'mshow',
+						name : 'op',
+						sortable : false,
+						width : 200,
+						align : "center",
+						formatter : oprationFmt
+					} ],
+					pager : "#pager_list",
+					viewrecords : true,
+					multiselect : true,
+					sortname : 'id',
+					sortorder : "desc",
+					caption : "角色列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += "<button class='btn btn-primary' title='菜单授权' type='button' onclick='auth("+ rowObject.id + ");'><i class='iconfont icon-shouquan'></i>菜单授权</button>";
+				html += "<button class='btn btn-primary' title='栏目授权' type='button' onclick='authNode("+ rowObject.id + ");'><i class='iconfont icon-shouquan'></i>栏目授权</button>";
+				html += "<button class='btn btn-primary' title='文章授权' type='button' onclick='authInfo("+ rowObject.id + ");'><i class='iconfont icon-shouquan'></i>文章授权</button>";
+				html += " <button class='btn btn-primary' title='编辑' type='button' onclick='edit("+ rowObject.id + ");'><i class='fa fa-edit'></i>编辑</button>";
+				html += " <button class='btn btn-primary' title='删除' type='button' onclick='del(" + rowObject.id + ");'><i class='fa fa-remove'></i>删除</button>";
+				return html;
+			}
+
+
+			function add() {
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '400px' ],
+					title : '新增角色',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('sys/sysRoleAdd'),
+				    btn: ['确定', '取消'],
+				    yes: function(index, layero){
+				    	submitForm(index);
+					}
+				});
+			}
+
+			function edit(id) {
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '400px' ],
+					title : '修改角色',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('sys/sysRoleEdit?roleId=' + id),
+				    btn: ['确定', '取消'],
+				    yes: function(index, layero){
+				    	submitForm(index);
+					}
+				});
+
+			}
+
+			function del(id) {
+				layer.confirm('确定删除该角色吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("sys/sysRoleDel", {
+						roleId : id
+					}, function(json) {
+						if (json == true) {//成功
+							reloadGrid();
+							layer.msg('删除成功.');
+						} else {//失败
+							layer.alert("删除失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function reloadPermission() {
+				layer.confirm('现在立即刷新所有在线用户的权限配置吗?', {
+					btn : [ '确定', '取消' ]
+				//按钮
+				}, function() {
+					$.post("sys/reloadPermission", function(json) {
+						if (json.resultStatus == true) {//成功
+							layer.msg('刷新成功.');
+						} else {//失败
+							layer.alert("刷新失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+
+			function reloadGrid() {
+
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list");
+		  		var columnFiled = $("#columnFiled").val();
+	            var keyWord = $("#keyWord").val();
+				
+	          //增加提交参数
+	            var postData = { columnFiled : columnFiled, keyWord : keyWord};
+	            $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  		
+		  		
+		  	}
+		  	
+		  	function auth(id) {
+				var index = layer.open({
+					type : 1, //page层
+					area : [ '660px', ($(window).height() - 50) +'px'],
+					title : '角色授权',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					maxmin: true,
+					full:function(){
+						//alert(index);
+						//全屏了
+						
+					},
+					min:function(){
+						//最小化了
+					},
+					restore:function(){
+						//还原了
+					}, 
+					content : $("#popWin").load('sys/roleResourceRelSet?roleId=' + id),
+				    btn: ['授权', '取消'],
+				    yes: function(index, layero){
+				    	submitForm(index);
+					}
+				});
+						  		
+		  	}
+		  	
+		  	function authNode(id) {
+				var index = layer.open({
+					type : 1, //page层
+					area : [ '660px', ($(window).height() - 50) +'px'],
+					title : '角色栏目授权',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					maxmin: true,
+					content : $("#popWin").load('cms/node/roleResourceRelSet?type=node&roleId=' + id),
+				    btn: ['授权', '取消'],
+				    yes: function(index, layero){
+				    	submitForm(index);
+					}
+				});
+		  	}
+		  	
+		  	function authInfo(id) {
+				var index = layer.open({
+					type : 1, //page层
+					area : [ '660px', ($(window).height() - 50) +'px'],
+					title : '角色文章授权',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					maxmin: true,
+					content : $("#popWin").load('cms/node/roleResourceRelSet?type=info&roleId=' + id),
+				    btn: ['授权', '取消'],
+				    yes: function(index, layero){
+				    	submitInfoForm(index);
+					}
+				});
+						  		
+		  	}
+		  	
+		</script>
+	
+<%}%>

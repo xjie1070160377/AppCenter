@@ -1,0 +1,137 @@
+<div class="col-sm-12">
+    <div class="ibox float-e-margins">
+        
+        <div class="ibox-content">
+            <form id="postForm" method="post" class="form-horizontal" action="cms/cmsImage/cmsImage${entity.id == null ? 'Save' : 'Update'}">
+                <input type="hidden" name="oid" value="${entity.id}" >
+                <input type="hidden" name="fileSize" id="fileSize" value="${entity.fileSize}" />
+                <input type="hidden" name="title" id="title" value="${entity.title}" />
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="title">图片地址：</label>
+                	<div class="col-sm-10">
+                		<input class="form-control" name="url" id="url" value="${entity.url}" placeholder="图片地址"/>
+                		<div id="dropzone" style="display:none;"></div>
+						<div style="position: absolute;right: 15px; top: 0;">
+							<span class="btn btn-success fileinput-button imgselectfile-btn dz-clickable" style="padding: 5px 10px;font-size: 12px;border-radius: 2px;height: 30px;"> 
+								<i class="glyphicon glyphicon-plus"></i> <span title="直接上传图片">选择图片</span>
+							</span>
+						</div>
+							
+						<div id="img-preview">
+							<img style="width: 80px;height: 80px;margin-top: 10px; margin-bottom: -10px;" alt="请上传图片" src="${entity.url}" alt="" />
+						</div>		
+                	</div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="title">图片分类：</label>
+                	<div class="col-sm-10">
+						<select name="typeId" id="typeId" class="input-sm form-control input-s-sm inline">
+						<%for(var type in typeList){%>
+							<option value="${type.id}" "${isNotEmpty(entity.cmsImageType) && entity.cmsImageType == type.id ? selected='selected' :}">${type.name}</option>
+						<%}%>
+						</select>
+					</div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+    	
+    	/**
+    	**图片上传
+    	**/
+    	(function initDropZone(){
+    		
+    		function addImgDiv(url, fileSize, fileName){
+    			$("#url").val(url);
+    			$("#fileSize").val(fileSize);
+    			$("#title").val(fileName);
+    			$("#img-preview img").attr("src", url);
+    		}
+    		
+    		var dropzone = new Dropzone("#dropzone", { // 需要有个容器来加载控件
+    			url : "sys/upload", // Set the url
+    			thumbnailWidth : 80,
+    			thumbnailHeight : 80,
+    			parallelUploads : 20,
+    			addRemoveLinks:false,
+    			dictRemoveFile:'取消上传',
+    			dictMaxFilesExceeded:'超出允许上传数量,不允许上传',
+    			dictInvalidInputType:"只允许上传图片文件",
+    			dictInvalidFileType:"您上传的文件类型不是图片",
+    			acceptedFiles:".png,.jpg,.gif,.jpeg,.bmp",
+    			maxFiles:1,
+    			autoQueue : true, // 自动上传
+    			clickable : ".imgselectfile-btn" // 定义点击按钮， 点击后弹出文件选择框
+    		});
+    		dropzone.on("addedfile",function(){
+    			dropzone.options.params = {imgWidth:100,imgHeight:100,scale:true,stretch:false,watermark:false};
+    		});
+    		dropzone.on("success", function(a, b) {
+    			console.log("success,url=", b);
+    			addImgDiv(b.fileUrl, b.fileSize, b.fileName);
+    			setTimeout(function(){
+    				dropzone.removeAllFiles(true);
+                }, 1200);
+    		});
+    		
+    		dropzone.on("error", function(a, b) {
+    			setTimeout(function(){
+    				dropzone.removeAllFiles(true);
+                }, 1200);
+    		});
+    	})();
+    	
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        
+        //表单验证
+        $("#postForm").validate({
+            rules: {
+            	url: {
+                    required: true,
+                    minlength: 2
+                },
+                rtpeId: {
+                    required: true
+                },
+                title: {
+                    minlength: 2
+                }
+            }
+        });
+        
+    });
+        
+    
+    function submitForm(index){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (json) {
+            //var data = $.parseJSON(json);
+            if (json.resultStatus) {
+                //成功
+                reloadGrid();
+              //closeAllPopWin();
+				layer.close(index); //如果设定了yes回调，需进行手工关闭
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    	
+    }
+</script>

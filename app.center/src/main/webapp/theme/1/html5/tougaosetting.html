@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name='apple-touch-fullscreen' content='yes'>
+		<meta content="fullscreen=yes,preventMove=no" name="ML-Config">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="format-detection" content="telephone=no,email=no,address=no" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/tougao.css"/>
+		<title>设置</title>
+		<style>
+			
+		</style>
+	</head>
+	<body class="tougao setting p-tougaosetting">
+		<div class="wrapper">
+			
+			<%include("tg_header.html"){} %>
+			
+			<div class="main">
+				<%if(isNotEmpty(contribute) && isNotEmpty(contribute.id)){%>
+				<form action="bingding.htx" id="form_tougao" method="post">
+				<%}else{%>
+				<form action="save_bingding.htx" id="form_tougao" method="post">
+				<%}%>
+					<input type="hidden" name="nextUrl" value="update.htx">
+					<input type="hidden" name="oid" value="${contribute.id}">
+					<div class="title">
+						<img src="${session.themeRoot}/_files/img/setting_bg01.jpg"/>
+					</div>
+					<table border="" cellspacing="" cellpadding="">
+						<tr>
+							<td class="td-label">您的姓名</td>
+							<td class="td-display"><input type="text" name="name" required  value="${contribute.name}" autocomplete="off"/></td>
+						</tr>
+						<tr>
+							<td class="td-label">工作单位</td>
+							<td class="td-display"><input type="text" name="company" minlength="2" maxlength="50" required  value="${contribute.company}" autocomplete="off"/></td>
+						</tr>
+						<tr>
+							<td class="td-label">联系方式</td>
+							<td class="td-display"><input type="tel" name="mobileno"   value="${contribute.mobileno}" autocomplete="off" maxlength="11"/></td>
+						</tr>
+						<tr>
+							<td class="td-label">真实姓名</td>
+							<td class="td-display"><input type="text" name="realName" required minlength="2"  value="${contribute.realName}" autocomplete="off"/></td>
+						</tr>
+						<tr>
+							<td class="td-label">工商银行卡号</td>
+							<td class="td-display"><input type="text" name="cardNo" required value="${contribute.cardNo}" autocomplete="off" minlength="2" maxlength="30"/></td>
+						</tr>
+						<tr>
+							<td class="td-label">电子邮箱</td>
+							<td class="td-display"><input type="email" name="email" required value="${contribute.email}" autocomplete="off" maxlength="50"/></td>
+						</tr>
+					</table>
+					
+					<div class="submit-box">
+						<a class="submit btn" id="submit">提交</a>
+						<a href="javascript:" class="reset btn" id="reset">重置</a>
+					</div>
+					
+					
+				</form>
+				
+				
+			</div>
+			<div class="bottom"><img src="${session.themeRoot}/_files/img/setting_bg.jpg"/></div>
+
+		</div>
+		<script src="${session.themeRoot}/_files/js/plugins/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="${session.themeRoot}/_files/js/plugins/jquery.validate.js" type="text/javascript" charset="utf-8"></script>
+		<script src="${session.themeRoot}/_files/js/plugins/jquery.validation_zh_CN.js" type="text/javascript" charset="utf-8"></script>
+		<script src="${session.themeRoot}/_files/js/tougao.js" type="text/javascript" charset="utf-8"></script>
+	</body>
+</html>

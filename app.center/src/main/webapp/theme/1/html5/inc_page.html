@@ -1,0 +1,87 @@
+<%var page = pagedList.number +1;%>
+<div class="paged">
+<script> 
+var userAgentInfo = navigator.userAgent;  
+var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");  
+var flag = true;  
+for (var v = 0; v < Agents.length; v++) {  
+    if (userAgentInfo.indexOf(Agents[v]) > 0) { flag = false; break; }  
+}  
+
+if(flag == true){//pc
+	var start = ${page}-4;
+	if(start<1){
+		start = 1;
+	}
+	var end = start + 8;
+	if(end>${pagedList.totalPages}){
+		end = ${pagedList.totalPages};
+	}
+	if(end<1){
+		end = 1;
+	}
+	if(end-start<8){
+		start = end - 8;
+	}
+	if(start < 1){
+		start = 1;
+	}
+}else{//phone
+	var start = ${page};
+	if(start<1){
+		start = 1;
+	}
+	var end = start + 2;
+	if(end>${pagedList.totalPages}){
+		end = ${pagedList.totalPages};
+	}
+	if(end<1){
+		end = 1;
+	}
+	if(end-start<2){
+		start = end - 2;
+	}
+	if(start < 1){
+		start = 1;
+	}
+}
+if(${pagedList.totalPages} > 1 ){
+var firstPageHtml = '<a class="page">首页</a>';
+if(${page} > 1){
+	firstPageHtml = '<a href="?page=1" class="page">首页</a>';
+}
+document.write( firstPageHtml );
+var prePageHtml = '<a href="?page=${page-1}" class="page-a" >上一页</a>';
+if(${page} <= 1){
+	prePageHtml = '<a href="?page=${page-1}" style="display:none;" class="page-a" >上一页</a>';
+}
+
+document.write( prePageHtml );
+
+for(var p = start; p <= end; p++){
+	var html = "";
+	if(${page} == p){
+		html = '<a class="page-curr">'+p+'</a>';
+	}else{
+		html = '<a href="?page='+p+'" class="page-a">'+p+'</a>';
+	}
+	document.write( html );
+}
+var endpagehtml = '<a class="page" >末页</a>';
+if(${page} < ${pagedList.totalPages}){
+	var html = '<a href="?page=${page+1}" class="page-a">下一页</a>';
+	document.write( html );
+	
+	var endpagehtml = '<a href="?page=${pagedList.totalPages}" class="page" >末页</a>';
+}
+document.write( endpagehtml );
+
+}else if(${pagedList.totalElements} == 0){
+	document.write( "<div class=\"no_content\">暂无资料</div>" );
+}
+
+</script>
+
+
+<div style="clear:both;"></div>
+</div>

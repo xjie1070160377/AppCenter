@@ -1,0 +1,256 @@
+<%include("inc_head.html"){} %> 
+<title>会员中心_红客移动客户端</title>
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_info.css" />
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_setting.css" />
+<link rel="stylesheet" type="text/css" href="${session.themeRoot}/_files/css/redmooc_complete.css" />
+<script language="javascript" type="text/javascript" src="${session.themeRoot}/_files/js/jquery.js"></script>
+<script type="text/javascript" src="${ctxPath}/static/base/js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="${ctxPath}/static/base/js/jquery.validation_zh_CN.js"></script>
+
+</head>
+
+<script type="text/javascript">
+$(function() {
+	$("#validForm").validate({
+		rules: {
+			confirm_password: {
+				required: true,
+				equalTo: "#rawPassword"
+			}
+		}
+	});
+	$("#submit-password").click(function() {
+		if ($("#rawPassword").val() == '') {
+			alert("新密码不能空！");
+			return false;
+		}
+		if($("#validForm").valid()){
+			$("#validForm").submit();
+		}
+		return false;
+	});
+	
+	
+	
+});
+	//图片上传预览    IE是用了滤镜。
+	function previewImage(file) {
+		console.log(file.files);
+		var MAXWIDTH = 260;
+		var MAXHEIGHT = 180;
+		var div = document.getElementById('preview');
+		if (file.files && file.files[0]) {
+			div.innerHTML = '<img id=imghead>';
+			var img = document.getElementById('imghead');
+			img.onload = function() {
+				var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT,
+						img.offsetWidth, img.offsetHeight);
+				img.width = rect.width;
+				img.height = rect.height;
+				//           img.style.marginLeft = rect.left+'px';
+				img.style.marginTop = rect.top + 'px';
+			}
+			var reader = new FileReader();
+			reader.onload = function(evt) {
+				img.src = evt.target.result;
+			}
+			reader.readAsDataURL(file.files[0]);
+		} else //兼容IE
+		{
+			var sFilter = 'filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src="';
+			file.select();
+			var src = document.selection.createRange().text;
+			div.innerHTML = '<img id=imghead>';
+			var img = document.getElementById('imghead');
+			img.filters.item('DXImageTransform.Microsoft.AlphaImageLoader').src = src;
+			var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth,
+					img.offsetHeight);
+			status = ('rect:' + rect.top + ',' + rect.left + ',' + rect.width
+					+ ',' + rect.height);
+			div.innerHTML = "<div id=divhead style='width:"+rect.width+"px;height:"+rect.height+"px;margin-top:"+rect.top+"px;"+sFilter+src+"\"'></div>";
+		}
+	}
+	function clacImgZoomParam(maxWidth, maxHeight, width, height) {
+		var param = {
+			top : 0,
+			left : 0,
+			width : width,
+			height : height
+		};
+		if (width > maxWidth || height > maxHeight) {
+			rateWidth = width / maxWidth;
+			rateHeight = height / maxHeight;
+
+			if (rateWidth > rateHeight) {
+				param.width = maxWidth;
+				param.height = Math.round(height / rateWidth);
+			} else {
+				param.width = Math.round(width / rateHeight);
+				param.height = maxHeight;
+			}
+		}
+		param.left = Math.round((maxWidth - param.width) / 2);
+		/*       param.top = Math.round((maxHeight - param.height) / 2); */
+		return param;
+	}
+</script>
+
+<style>
+label.error {
+	color: #F00;
+	padding: 5px 30px;
+	background: url('images/msg_bg.png') no-repeat scroll 10px -45px
+		transparent;
+}
+</style>
+<body class="output p-setting">
+	<!-- 侧边栏 -->
+	<%include("inc_nav_side.html"){} %>
+	<%include("inc_nav_user.html"){} %>
+	
+	<!-- Main Start -->
+	<div class="container">
+		<div class="setting">
+			<h2 class="page-title">
+				<i class="iconfont1">&#xe600;</i> 设置
+			</h2>
+			<ul class="nav nav-tabs">
+				<li class="active">
+					<a data-href="#Infrastructure" data-toggle="tab">基础设置</a>
+				</li>
+				<li><a data-href="#MyInfo" data-toggle="tab">个人信息</a></li>
+				<li><a data-href="#MyPwd" data-toggle="tab">修改密码</a></li>
+				<!-- <li><a data-href="#Other" data-toggle="tab">其他</a></li>
+				<li><a data-href="#Blacklist" data-toggle="tab">黑名单</a></li>
+				<li><a data-href="#Exceptional" data-toggle="tab">打赏设置</a></li> -->
+			</ul>
+			<div class="tab-content">
+				<!-- 基础设置 -->
+				<div class="tab-pane active" id="Infrastructure">
+					<form class="sttings" action="${ctxPath}/my/changeExt" method="post">
+						<input type="hidden" name="nextUrl" value="${ctxPath}/my"/>
+	                	<input type="hidden" name="successUrl" value="theme/1/html5/sys_operation_success.html" />
+	                	<input type="hidden" name="errorUrl" value="theme/1/html5/sys_operation_error.html" />
+						<div class="control-group">
+							<h4>呢称和电子邮件</h4>
+							<label class="control-label">用户名</label> 
+							<input class="input-xlarge" type="text" disabled="disabled" name="userName" value="${userExt.userName!}" />
+							<label class="control-label">呢称</label> 
+							<input placeholder="2-15字符，中英文、数字和下划线" class="input-xlarge" type="text" name="nickName" value="${userExt.nickName!}" />
+							<label class="control-label">电子邮件</label> 
+							<input placeholder="电子邮件" class="input-xlarge" type="text" name="email" value="${userExt.email!}" />
+<!-- 							<label class="control-label">电子邮件</label> -->
+<!-- 							<div data-js-module="email-check"> -->
+<!-- 								<div class="input-append"> -->
+<!-- 									<input class="input-xlarge" type="text" name="email" value="${userExt.email!}"/> -->
+<!-- 									<button class="btn btn-large emmail-confirmation" type="button">发送</button> -->
+<!-- 									<img style="padding-top:20px;padding-left:10px;" class="loader-tiny email-loader hide" src="${session.themeRoot}/_files/img/tiny.gif" alt="Tiny" /> -->
+<!-- 								</div> -->
+<!-- 								<br /> -->
+<!-- 								<span class="email-notice"> <i class="iconfont">&#xe614;</i>输入您的常用邮箱并点击发送按钮, 我们会发给您一封邮件以确认您的邮箱地址 </span> -->
+<!-- 							</div> -->
+<!-- 							<label class="control-label">绑定手机号码</label> -->
+<!-- 							<div data-js-module="sms-verification"> -->
+<!-- 								<div class="input-append"> -->
+<!-- 									<button class="btn btn-success verify-mobile" id="bindPhoneNumber">点击绑定手机号</button> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+						</div>
+						<button class="ladda-button submit-button" data-size="m" data-color="blue" data-method="get" data-style="slide-left">
+							<span class="ladda-label">保存</span>
+						</button>						
+					</form>
+					
+				</div>
+				<!-- 个人信息 -->
+				<div class="tab-pane" id="MyInfo">
+					<form class="settings" action="${ctxPath}/my/changePhoto" method="post" enctype="multipart/form-data">
+						<input type="hidden" name="nextUrl" value="${ctxPath}/my.htx"/>
+	                	<input type="hidden" name="successUrl" value="theme/1/html5/sys_operation_success.html" />
+	                	<input type="hidden" name="errorUrl" value="theme/1/html5/sys_operation_error.html" />
+						<div class="control-group">
+							<label class="control-label">头像</label>
+							<div class="avatar" id="preview">
+								<img id="imghead" src="<%if(isNotEmpty(userExt.avatarUrl)){%>${ShowFileUrl(userExt.avatarUrl)}<%}%>"  alt="admin" onerror="this.src='${session.themeRoot}/_files/img/default.jpg'" />
+							</div>
+							<div class="btn-group change-avatar open">
+								<a class="btn_p dropdown-toggle" data-toggle="dropdown" href="#">
+									更改头像<i class="iconfontmin">&#xe609;</i>
+								</a>
+								<ul class="dropdown-menu arrow-top">
+									<li class="upload-button">
+										<a href="" class="upload-avatar">
+											<i class="iconfont">&#xe60c;</i> 
+											<input class="btn-link btn-large hidden-field" type="file" name="file" id="user_upload_avatar" onchange="previewImage(this)">上传头像</input>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<label class="control-label">注册时间</label> 
+						<input class="input-xlarge" type="text" value="${user.createTime!,'yyyy-MM-dd hh:mm:ss'}" readOnly="true" /> 
+						<label class="control-label">最后登录</label> 
+						<input	class="input-xlarge" type="text" value="" readOnly="true" /> 
+						<label class="control-label">注册ip</label>
+						<input class="input-xlarge" type="text" value="" readOnly="true" /> 
+						<label class="control-label">上次登录ip</label>
+						<input class="input-xlarge" type="text" value="" readOnly="true" /> 
+						<label class="control-label">登录次数:</label>
+						<button type="submit" class="ladda-button submit-button" data-size="m" data-color="blue" data-method="get" data-style="slide-left">
+							<span class="ladda-label">保存</span>
+						</button>
+					</form>
+					
+				</div>
+				<!-- 修改密码 -->
+				<div class="tab-pane" id="MyPwd">
+					<form class="settings" id="validForm" action="${ctxPath}/my/changePwd" method="post">
+						<input type="hidden" name="nextUrl" value="${ctxPath}/my.htx"/>
+	                	<input type="hidden" name="successUrl" value="theme/1/html5/sys_operation_success.html" />
+	                	<input type="hidden" name="errorUrl" value="theme/1/html5/sys_operation_error.html" />
+	                	
+						<label class="control-label">当前密码</label> 
+						<input type="password" class="input-xlarge" name="oldPwd" required/> 
+						<label class="control-label">新密码</label> 
+						<input id="rawPassword" class="input-xlarge" type="password" name="newPwd" required /> 
+						<label class="control-label">确认密码</label> 
+						<input type="password" class="input-xlarge" name="reNewPwd" id="confirm_password" required/>
+						<button type="submit" id="submit-password" class="ladda-button submit-button" data-size="m" data-color="blue" data-method="get" data-style="slide-left">
+							<span class="ladda-label">保存</span>
+						</button>
+					</form>
+					
+				</div>
+				
+	<div id="modal-1463379561089"
+		class="modal setting-modal sms-bind-modal hide fade in" tabindex="-1"
+		aria-labelledby="身份验证  Modal" aria-hidden="false" style="display:none;">
+		<div class="modal-header">
+			<button type="button" class="close">
+				<span aria-hidden="true">×</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<h4>绑定手机</h4>
+			<div class="sms-binding">
+				<div class="choose_phone clearfix">
+					<a class="selector btn dropdown-toggle" data-toggle="dropdown"
+						data-iso-code="CN"> +86<span class="caret"></span>
+					</a>
+					<!-- <ul class="nation_code dropdown-menu" role="ment"></ul> -->
+					<input type="text" placeholder="请输入手机号码" />
+					<button class="btn btn-large btn-success" type="button">发送验证码</button>
+				</div>
+				<div class="get-captcha clearfix">
+					<input type="text" placeholder="请输入收到的短信验证码" />
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-large btn-info">完成验证</button>
+		</div>
+	</div>
+	
+</body>
+<script data-main="${session.themeRoot}/_files/js/app" src="${session.themeRoot}/_files/js/require.js"></script>
+</html>

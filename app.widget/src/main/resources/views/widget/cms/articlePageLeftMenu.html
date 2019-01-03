@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+		<meta http-equiv="x-ua-compatible" content="ie=7" />
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/common.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/mui.min.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/xidada_list.css"/>
+		<title>${node.name}</title>
+	</head>
+	<body class="p-xidada">
+		<div class="mui-action-menu"></div>
+		<!-- 侧滑导航根容器 -->
+		<div class="mui-off-canvas-wrap mui-draggable">
+		    <!-- 主页面容器 -->
+		    <div class="mui-inner-wrap">
+		        <!-- 菜单容器 -->
+			    <aside class="mui-off-canvas-left m-menu">
+			        <div class="mui-scroll-wrapper">
+			           <div class="mui-scroll">
+				            <ul>
+				            	<li class="active">
+				            		<a href="javascript:void(0);" onclick="loadData(${cateId},1,1);">全部</a>
+				            	</li>
+				            	<% for(row in nodes){ %>
+				            	<li>
+				            		<a href="javascript:void(0);" onclick="loadData(${row.id},1,0);">${row.name}</a>
+				            	</li>
+				            	<% } %>
+				            	
+				            </ul>
+			            </div>
+			        </div>
+			    </aside>
+			    <!-- 主页面标题 -->
+			    <!--<header class="mui-bar mui-bar-nav">
+			        <a class="mui-icon mui-action-menu mui-icon-bars mui-pull-left"></a>
+			        <h1 class="mui-title">标题</h1>
+			    </header>-->
+		        <!-- 主页面内容容器 -->
+			    <div class="mui-content mui-scroll-wrapper m-content">
+			        <div class="mui-scroll">
+			        <!-- 主界面具体展示内容 -->
+			       	   <div id="listview"></div>
+			        </div>
+			    </div>  
+		  </div>
+		</div>
+		<script src="${ctxPath}/static/widget/js/jquery-2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="${ctxPath}/static/widget/js/template.js" type="text/javascript" charset="utf-8"></script>
+		<script src="${ctxPath}/static/widget/js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script id="template" type="text/html">
+			<ul class="f-cb">
+				{{each result.data as item i}}
+				<li class="item f-cb" onclick="showDetail({{item.articleId}});">
+					<div class="u-img f-fl">
+						<a href="javascript:void(0);" onclick="showDetail({{item.articleId}});">
+							<img src="{{item.image}}"/>
+						</a>
+					</div>	
+					<div class="text f-cb f-fl">
+						<div class="f-lc2 u-tt">
+							<a href="javascript:void(0);" onclick="showDetail({{item.articleId}});">{{item.title}}</a>
+						</div>
+						<div class="u-bott">
+							<div class="publishTime">
+								<!-- <i class="iconfont icon-clock"></i><span>{{item.dates}}</span> -->
+							</div>
+							<div class="views">
+								<i class="iconfont icon-eye"></i><span>{{item.browsers}}</span>
+							</div>
+						</div>
+					</div>
+				</li>
+				{{/each}}
+			</ul>
+		</script>
+		
+		<script type="text/javascript">
+			 //主界面‘显示侧滑菜单’按钮的点击事件
+			document.querySelector('.mui-action-menu').addEventListener('click', function() {
+				mui('.mui-off-canvas-wrap').offCanvas('toggle');
+			});
+			mui('.mui-scroll-wrapper').scroll({
+				deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+			});
+			
+			
+			//获取json数据
+			$(function(){
+				
+				var cateId = "${cateId}";				
+				var pageNumber = "${pageNumber}";
+				var showDescendants = "${showDescendants}";
+				
+				loadData(cateId, pageNumber, showDescendants);
+				
+			});
+			
+			function loadData(cateId, pageNumber, showDescendants){
+				var token = "${token}";
+				var isSpecial = "${isSpecial}";
+				var pageSize = "${pageSize}";
+				$.post("${ctxPath}/m-articlePage.htx", {token:token, cateId:cateId, isSpecial:isSpecial, pageSize:pageSize, pageNumber:pageNumber, showDescendants:showDescendants}, function(data){
+					render(data);
+				}, "json");
+			}
+			
+			
+			function render(data){
+				if(data.msg_code==0){
+					var html = template('template', data);
+					console.log(html);
+					document.getElementById('listview').innerHTML = html;					
+				}
+				
+			};
+			
+			function showDetail(articleId){
+				
+				location.href="articleDetail?token=${token}&articleId="+articleId;
+				
+			}
+			
+			$(function(){
+				bindEvent();
+			})
+			
+			function bindEvent(){
+				//菜单切换样式
+				$(".m-menu li").click(function(){
+					$(this).addClass("active").siblings().removeClass("active");
+				});
+			}
+			
+		</script>
+	</body>
+</html>

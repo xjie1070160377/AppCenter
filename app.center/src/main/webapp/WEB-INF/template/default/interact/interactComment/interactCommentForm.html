@@ -1,0 +1,100 @@
+<div class="col-sm-12">
+    <div class="ibox float-e-margins">
+        
+        <div class="ibox-content">
+            <form id="postForm" method="post" class="form-horizontal" action="interact/interactComment/interactComment${oprt}">
+            	<input type="hidden" class="form-control" placeholder="文章ID"  id="fid" name="fid" value="${entity.fid}">
+            	<input type="hidden" class="form-control" placeholder="文章类型"  id="ftype" name="ftype" value="${entity.ftype}">
+            	<input type="hidden" class="form-control" placeholder="用户ID"  id="userId" name="userId" value="${entity.userId}">
+            	<input type="hidden" class="form-control" placeholder="审核人ID"  id="auditUserId" name="auditUserId" value="${entity.auditUserId}">
+                
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="infoTitle">文章标题</label>
+                    <div class="col-sm-10"><input type="text" class="form-control" placeholder="文章标题" readonly="readonly" maxlength="20" id="infoTitle" name="infoTitle" value="${entity.infoTitle}"></div>
+                </div>
+                <div class="form-group">
+	            	<label class="col-sm-2 control-label" for="userName">用户名称</label>
+	                <div class="col-sm-4"><input type="text" class="form-control" placeholder="用户名称"  readonly="readonly" id="userName" name="userName" value="${entity.userName}"></div>
+                	<label class="col-sm-2 control-label" for="createTime">评论时间</label>
+	                <div class="col-sm-4"><input type="text" class="form-control" placeholder="评论时间"  readonly="readonly" id="createTime" name="createTime" value='${entity.createTime !, dateFormat="yyyy-MM-dd HH:mm:ss"}'></div>
+	            </div>
+                <div class="form-group">
+	            	<label class="col-sm-2 control-label" for="state">评论状态</label>
+	                <div class="col-sm-4">
+	                	<#RadioTag mapData="${ { 已审核:1,未审核:0 \} }" defaultValue="${entity.state}" fieldName="state" disabled="disabled"/>
+                	</div>
+	            	<label class="col-sm-2 control-label" for="ip">评论IP</label>
+	                <div class="col-sm-4"><input type="text" class="form-control" placeholder="评论IP"  readonly="readonly" id="ip" name="ip" value="${entity.ip}"></div>
+	            </div>
+                <div class="form-group">
+	            	<label class="col-sm-2 control-label" for="auditUserName">审核人名称</label>
+	                <div class="col-sm-4"><input type="text" class="form-control" placeholder="审核人名称"  readonly="readonly" id="auditUserName" name="auditUserName" value="${entity.auditUserName}"></div>
+                	<label class="col-sm-2 control-label" for="auditTime">审核时间</label>
+	                <div class="col-sm-4"><input type="text" class="form-control" placeholder="审核时间"  readonly="readonly" id="auditTime" name="auditTime" value='${entity.auditTime !, dateFormat="yyyy-MM-dd HH:mm:ss"}'></div>
+	            </div>
+               
+<!--                 <div class="hr-line-dashed"></div> -->
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="content">评论内容</label>
+                    <div class="col-sm-10">
+                    	<textarea class="form-control" placeholder="评论内容" style="height:100px;" readonly="readonly" 
+							id="content" name="content" >${entity.content}</textarea>
+                    </div>
+                </div>
+<!--                 <div class="hr-line-dashed"></div> -->
+                
+                <div class="form-group">
+                    <div class="col-sm-4 col-sm-offset-4">
+                    	<input type="hidden" name="oid" value="${entity._id}" >
+                        <button onclick="submitForm();" title='提交保存' class="btn btn-primary" type="button">提交保存</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+    	
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        
+        
+        
+        //表单验证
+        $("#postForm").validate({
+            rules: {
+            	name: {
+                    required: true,
+                    minlength: 2
+                }
+            }
+        });
+        
+    });
+        
+    
+    function submitForm(){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (json) {
+            //var data = $.parseJSON(json);
+            if (json.resultStatus) {
+                //成功
+                reloadGrid();
+                closeAllPopWin();
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    	
+    }
+</script>

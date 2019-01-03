@@ -1,0 +1,104 @@
+<% layout("/share/mlayout.html"){%>
+
+        <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        
+                        <div class="ibox-content">
+                           
+                            <div class="jqGrid_wrapper">
+                                <table id="treegrid2"></table>
+                                <div id="pager_list"></div>
+                           </div>
+      
+                        </div>
+                    </div>
+                </div>
+                            
+    <!-- DROPZONE -->
+    <!-- DROPZONE -->
+    <link href="${ctxPath}/static/base/css/plugins/dropzone/basic.css" rel="stylesheet">
+    <link href="${ctxPath}/static/base/css/plugins/dropzone/dropzone.css" rel="stylesheet">
+    <script src="${ctxPath}/static/base/js/plugins/dropzone/dropzone.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$(document).ready(function(){
+			var topicjson={
+			   "response": [
+			          {
+			              "id": "1",
+			              "elementName": "Grouping",
+			              level:"0", parent:"", isLeaf:false, expanded:false, loaded:true
+			          },
+			          {
+			              "id": "1_1",
+			              "elementName": "Simple Grouping",
+			              level:"1", parent:"1", isLeaf:true, expanded:false, loaded:true
+			          },
+			          {
+			              "id": "1_2",
+			              "elementName": "May be some other grouping",
+			              level:"1", parent:"1", isLeaf:true, expanded:false, loaded:true
+			          },
+			          {
+			              "id": "2",
+			              "elementName": "CustomFormater",
+			              level:"0", parent:"", isLeaf:false, expanded:true, loaded:true
+			          },
+			          {
+			              "id": "2_1",
+			              "elementName": "Image Formatter",
+			              level:"1", parent:"2", isLeaf:true, expanded:false, loaded:true
+			          },
+			          {
+			              "id": "2_2",
+			              "elementName": "Anchor Formatter",
+			              level:"1", parent:"2", isLeaf:false, expanded:false, loaded:true
+			          },
+			          {
+			              "id": "2_2_2",
+			              "elementName": "Anchor Formatter",
+			              level:"2", parent:"2_2", isLeaf:true, expanded:false, loaded:true
+			          }
+			      ]
+			   },
+			   grid;
+			// $('<table id="list2"></table>').appendTo('#topics');
+			var lastsel;
+			grid = jQuery("#treegrid2");
+			grid.jqGrid({
+			   datastr: topicjson,
+			   datatype: "jsonstring",
+			   height: "auto",
+			   loadui: "disable",
+			   colNames: ["id","Items","url"],
+			   colModel: [
+			       {name: "id",width:200, hidden:false, key:true},
+			       {name: "elementName", editable:true,width:250, resizable: false},
+			       {name: "url",width:1, editable:true,hidden:true}
+			   ],
+			   treeGrid: true,
+			   treeGridModel: "adjacency",
+			   ExpandColumn: "id",
+			   treeIcons: {leaf:'ui-icon-document-b'},
+			   caption: "jqGrid Demos",
+			   //autowidth: true,
+			   rowNum: 10000,
+			   //ExpandColClick: true,
+			   jsonReader: {
+			       repeatitems: false,
+			       root: "response"
+			   },
+			   onSelectRow: function(id){ 
+			    if(id && id!==lastsel){ 
+			    grid.jqGrid('restoreRow',lastsel); 
+			    grid.jqGrid('editRow',id,true); 
+			    lastsel=id; 
+			    } 
+			   }
+			});
+			});
+   });
+
+</script>
+	
+<%}%>

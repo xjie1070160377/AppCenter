@@ -1,0 +1,345 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>评论列表</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+                        <select class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled">
+                            <option value="LIKE_userName">评论用户</option>
+                            <option value="LIKE_content">评论内容</option>
+                            <option value="EQ_ftype">评论类型</option>
+                        </select>
+                        
+                        </div>
+                        <div class="col-sm-2">
+                        <div class="input-group">
+                        <input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control"> 
+                        <span class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();"> 搜索</button> 
+                        </span>
+                        </div>
+                        </div>
+                        <div class="col-sm-5">
+                        
+                        </div>
+                        <div class="col-sm-3 text-right">
+                            
+<!--                                     <a href="javascript:void(0);" onclick="add();" class="btn btn-primary btn-sm">新增评论</a> -->
+                            <a href="javascript:void(0);" title='批量删除评论' onclick="dels();" class="btn btn-primary btn-sm">批量删除评论</a>
+                            <a href="javascript:void(0);" title='批量审核' onclick="audits();" class="btn btn-primary btn-sm">批量审核</a>
+                            <a href="javascript:void(0);" title='批量反审核' onclick="antiAudits();" class="btn btn-primary btn-sm">批量反审核</a>
+                            
+                        </div>
+                    </div>
+
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$("#table_list").jqGrid({
+					url : "interact/interactComment/interactCommentListJson",
+					datatype : "json",
+	                mtype:"POST",
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 10,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "ID",
+						classes : 'mshow',
+						name : 'commentId',
+						index : 'commentId',
+						width : 30,
+						align : "center",
+						sorttype : "int"
+					}, {
+						label : "信息",
+						classes : 'mshow',
+						name : 'ftypeText',
+						index : 'ftype',
+						width : 120,
+						align : "left",
+						formatter : markTypeFmt
+					}, {
+						label : "用户",
+						classes : 'mshow',
+						name : 'userName',
+						index : 'userName',
+						width : 50,
+						align : "left"
+					}, {
+						label : "状态",
+						name : 'state',
+						index : 'state',
+						width : 30,
+						align : "center",
+						formatter : commentStateFmt
+					}, {
+						label : "评论内容",
+						classes : 'mshow',
+						name : 'content',
+						index : 'content',
+						width : 150,
+						align : "left"
+					}, {
+						label : "IP",
+						name : 'ip',
+						index : 'ip',
+						width : 60,
+						align : "center"
+					}, {
+						label : "时间",
+						name : 'createTime',
+						index : 'createTime',
+						width : 80,
+						align : "center",
+						sorttype : "date",
+						formatter : dateTimeFmt
+					}, {
+						label : "操作",
+						classes : 'mshow',
+						name : 'op',
+						sortable : false,
+						width : 120,
+						align : "center",
+						formatter : oprationFmt
+					} ],
+					pager : "#pager_list",
+					viewrecords : true,
+					multiselect : true,
+					sortname : 'createTime',
+					sortorder : "desc",
+					caption : "管理评论列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+			function markTypeFmt(cellvalue, options, rowObject ){
+				//return cellvalue + "("+rowObject.ftype+")";
+				return rowObject.infoTitle + " [" + cellvalue + "]";
+			}
+			function commentStateFmt(cellvalue, options, rowObject ){
+				var stateName = "";
+				if(rowObject.state == 1){
+					stateName = "已审核";
+				}else {
+					stateName = "未审核";
+				}
+				return stateName;
+			}
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				var state = rowObject.state;
+				if(state == 1){//未审核
+					html += "<button class='btn btn-primary' type='button' onclick='antiAudit(\""+ rowObject.id + "\");'><i class='fa fa-edit'></i>&nbsp;反审核</button>";
+				}else{//已审核
+					html += "<button class='btn btn-primary' type='button' onclick='audit(\""+ rowObject.id + "\");'><i class='fa fa-edit'></i>&nbsp;审核</button>";
+				}
+				if(rowObject.ftype=='Feedback'){
+					html += " <button class='btn btn-primary' type='button' onclick='reply(\"" + rowObject.id + "\");'><i class='fa fa-edit'></i>&nbsp;回复</button>";
+				}
+				//html += "<button class='btn btn-primary' type='button' onclick='edit(\""+ rowObject.id + "\");'><i class='fa fa-edit'></i>&nbsp;编辑</button>";
+				html += " <button class='btn btn-primary' type='button' onclick='del(\"" + rowObject.id + "\");'><i class='fa fa-remove'></i>&nbsp;删除</button>";
+				return html;
+			}
+
+			function add() {
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '470px' ],
+					title : '修改评论',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('interact/interactComment/interactCommentAdd')
+				});
+			}
+
+			function edit(id) {
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '470px' ],
+					title : '修改评论',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('interact/interactComment/interactCommentEdit?id=' + id)
+				});
+			}
+			function reply(id){
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '470px' ],
+					title : '反馈回复',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('interact/interactComment/interactCommentReplyForm?id=' + id)
+				});
+			}
+			//审核
+			function audit(id) {
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '470px' ],
+					title : '评论审核',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('interact/interactComment/interactCommentAuditForm?id=' + id)
+				});
+			}
+			//反审核
+			function antiAudit(id) {
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '470px' ],
+					title : '评论反审核',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('interact/interactComment/interactCommentAntiAuditForm?id=' + id)
+				});
+			}
+
+			function del(id) {
+				layer.confirm('确定删除该评论吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("interact/interactComment/interactCommentDel", {
+						id : id
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('删除成功.');
+						} else {//失败
+							layer.alert("删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+
+			function audits() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量审核的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量审核评论吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("interact/interactComment/interactCommentAudits", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('批量审核成功.');
+						} else {//失败
+							layer.alert("批量审核失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+
+			function antiAudits() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量反审核的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量反审核评论吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("interact/interactComment/interactCommentAntiAudits", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('批量反审核成功.');
+						} else {//失败
+							layer.alert("批量反审核失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function dels() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量删除的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量删除评论吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("interact/interactComment/interactCommentDels", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('批量删除成功.');
+						} else {//失败
+							layer.alert("批量删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+
+			function reloadGrid() {
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list");
+		  		var columnFiled = $("#columnFiled").val();
+	            var keyWord = $("#keyWord").val();
+				
+	          //增加提交参数
+	            var postData = { columnFiled : columnFiled, keyWord : keyWord};
+	            $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  		
+		  		
+		  	}
+		</script>
+	
+<%}%>

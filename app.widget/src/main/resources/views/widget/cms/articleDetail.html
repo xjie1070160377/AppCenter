@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+		<meta http-equiv="x-ua-compatible" content="ie=7" />
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/common.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/movie_detail.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxPath}/static/widget/css/jquery.sinaEmotion.css" />
+		<title>${articleInfo.title} 详情</title>
+		
+		<style type="text/css">
+		
+		</style>
+	</head>
+	<body class="p-moviedetail">
+	   
+		<div class="title">${articleInfo.title}</div>
+		<div class="author">${articleInfo.author}</div>
+		<div class="time">
+			<span><i class="iconfont">&#xe608;</i>${articleInfo.dates}</span>
+			<span><i class="iconfont">&#xe612;</i>${articleInfo.browsers}</span>
+		</div>
+		
+        <div class="content">
+        	${articleInfo.content}
+        </div>
+        
+        <div id="comment" class="comment">
+        	<div class="comm_title">评论</div>
+        	<ul id="comm_content" class="comm_content">
+        		
+        	</ul>
+        </div>
+        
+		<div class="foot">
+			<div class="left" id="ping"><i class="iconfont">&#xe614;</i><span>添加你的评论</span></div>
+			<div class="right">
+				<a href="javascript:;" class="shou" style="padding-top: 15px;"><i class="iconfont" style="font-size:20px;">&#xe613;</i><sup id="shouCount"></sup></a>
+				<a href="javascript:;" class="zan" style="padding-top: 15px;"><i class="iconfont" style="font-size:18px;">&#xe616;</i><sup id="zanCount"></sup></a>
+				<a href="#comment" style="padding-top: 18px;"><i class="iconfont" >&#xe60f;</i><sup id="commentCount"></sup></a>
+			</div>
+		</div>
+		<div class="tank">
+			<div class="bg"></div>
+			<div class="con">
+				<h2>发表评论</h2>
+				<textarea class="Input_text" id="content" name="content" maxlength="208" placeholder="请谨慎评论，共建文明校园" style="height:80px"></textarea>
+				<div class="faceDiv"> </div>
+				<div class="Input_Foot">					
+					<a href="javascript:void(0);" class="postBtn">发表</a>
+				</div>
+			</div>
+		</div>
+        
+		<script src="${ctxPath}/static/widget/js/jquery-2.0.0.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="${ctxPath}/static/widget/js/template.js" type="text/javascript" charset="utf-8"></script>
+		<script src="${ctxPath}/static/base/js/plugins/layer/layer.js"></script>
+		
+		<script id="template" type="text/html">
+
+				{{each result as item i}}
+
+        		<li>
+        			<a href="javascript:void(0);">
+        				<span><img src="${ctxPath}/static/widget/img/widget_dface.png" alt="" /></span>
+        				<h3>{{item.creator}}</h3>
+        				<em>{{item.creationDate}}</em>
+        			</a>
+        			<p>{{item.text}}</p>
+        		</li>
+
+				{{/each}}
+
+		</script>
+		
+		<script type="text/javascript">
+			var token = "${token}";
+			var articleId = "${articleInfo.articleId}";
+			var pageSize = "10";
+			
+			$(function(){
+				loadComment(1);
+			});
+			
+			function loadComment(pageNumber){
+				$.post("${ctxPath}/m-article-commentPage.htx", {token:token, articleId:articleId, pageSize:pageSize, pageNumber:pageNumber}, function(data){
+					commentCount(data.total_size);
+					render(data);
+				}, "json");
+				
+			}
+			
+			
+			
+			function render(data){
+				if(data.msg_code==0){
+					var html = template('template', data);
+					document.getElementById('comm_content').innerHTML = html;					
+				}
+			};
+			
+			function commentCount(num){
+				if(num && num > 0){
+					$("#commentCount").text(num);
+					$("#commentCount").show();
+				}else{
+					$("#commentCount").text("");
+					$("#commentCount").hide();
+				}
+				
+				
+			}
+			
+			//点赞收藏
+			var is = true;
+			$(".zan").on("click",function(){
+				if(is){
+					//成功
+					ping('.zan i','&#xe616;','#ff5500',false)
+				}else{
+					ping('.zan i','&#xe616;','#a7a7a7',true)
+				}	
+			});
+			$(".shou").on("click",function(){
+				if(is){
+					ping('.shou i','&#xe613;','#ff5500',false)
+				}else{
+					ping('.shou i','&#xe613;','#a7a7a7',true)
+				}
+				
+			});
+			
+			function ping(Elements,str,color,Is){
+			$(Elements).html(str).css('color',color)
+			is = Is;
+			}
+			
+			$('#ping').on('click',function(){
+				$('.tank').show();
+			});
+			
+			$('.tank .postBtn ,.bg').on('click',function(){
+				var content = $("#content").val();
+				postComment(content);
+				
+			});
+			
+			
+
+			function postComment(content){
+				$.post("${ctxPath}/m-article-comment.htx", {token: token, articleId: articleId, type:1, text: content}, function(data){
+					if(data.msg_code==0){
+						//评论成功
+						layer.msg("评论成功");
+						loadComment(1);
+					}else{
+						layer.alert("评论失败");
+					}
+					
+					$('.tank').hide();
+					
+				}, "json");
+				
+			}
+			
+		</script>
+		
+		
+		
+	</body>
+</html>

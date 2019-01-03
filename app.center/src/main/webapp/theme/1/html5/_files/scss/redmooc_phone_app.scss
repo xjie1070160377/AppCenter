@@ -1,0 +1,279 @@
+
+/*variables*/
+//color
+$red1 : #e74c3c;
+$green: #49BE38;
+$green1:#68bb23;
+$sidebarbg:#68bb23;
+//width
+$iphone4:320px;
+$iphone6:375px;
+$iphone6s:414px;
+$mobile:768px;
+$pc_xs:1024px;
+$pc_sm:1281px;
+$pc_md:1441px;
+$pc_lg:1600px;
+
+
+.iconfont_ios {
+    font-family: "iconfont" !important;
+    font-size: 36px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.iconfont_app {
+    font-family: "iconfont" !important;
+    font-size: 30px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.iconfont_guanzhu {
+    font-family: "iconfont" !important;
+    font-size: 20px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.line {
+    position: relative;
+    display: inline-block;
+    height: 2px;
+    padding: 0px;
+    overflow: hidden;
+    background-color: #d5d5d5;
+}
+
+.app-download{
+	color:white;
+	
+	.download-content{
+		padding:100px 0;
+		background:#f8f8f8;
+		text-align:center;
+		
+		.page-left{
+			padding-top:50px;
+			margin-right:80px;
+			display:inline-block;
+			vertical-align:top;
+			
+			.title{
+				padding-bottom:50px;
+				margin-bottom:60px;
+				border-bottom:1px solid #e6e6e6;
+				
+				img{
+					width:252px;
+				}
+			}
+			
+			
+			
+			.download{
+				margin-bottom:35px;
+				overflow:hidden;
+				
+				.download-btn{
+					float:none;
+					width: 384px;
+					
+					li{
+						margin-bottom:20px;
+						width: 47.5%;
+						padding-right:5%;
+						float: left;
+					}
+					
+					li .btn-success:hover{
+						background:#6bd95b;
+						border:1px solid #6bd95b;
+					}
+					
+					li .btn-info:hover{
+						background:#3dbcf5;
+						border:1px solid #3dbcf5;
+					}
+					
+					.btn{
+						position:relative;
+						width:180px;
+						height:58px;
+						padding:0;
+						padding-left:64px;
+						font-size:20px;
+						text-align:left;
+						line-height:58px;
+						box-sizing:border-box;
+						
+						i{
+							position:absolute;
+							left:20px;
+						}
+					}
+				}
+				
+				.qrcode-app{
+					width:100%;
+					border:1px solid #d9d9d9;
+				    box-sizing: border-box;
+				}
+			}
+			.share{
+				margin:0;
+				font-size:16px;
+				
+				i{
+					margin:0 4px;
+					font-size:20px;
+				}
+					
+				li:first-child{
+					margin-right:10px;
+				}
+					
+				li{
+					display:inline-block;
+					vertical-align:midele;
+				}
+			}
+		}
+		
+		.app-img{
+			width:470px;
+			display:inline-block;
+			
+			img{
+				width:450px;
+			}
+		}
+	}
+	
+	.app-info{
+		border-top:1px solid #e6e6e6;
+		
+		.about-app{
+			width:720px;
+			padding:50px 30px 30px;
+			margin:75px auto 120px;
+			border:1px solid #e6e6e6;
+			background:#f8f8f8;
+			text-align:center;
+			font-size:18px;
+			
+			h1{
+				font-size:28px;
+				color:#333333;
+			}
+			
+			.line{
+				width:42px;
+				display:inline-block;
+				margin:15px auto 25px;
+				border-bottom:2px solid #e78170;
+			}
+			
+			p{
+				margin-bottom:30px;
+				line-height:27px;
+				color: #555555;
+			}
+		}
+		
+		ul{
+			width:782px;
+			margin:0 auto;
+			
+			li{
+				width:388px;
+				display:inline-block;
+				margin-bottom:120px;
+			}
+			
+			.text-left{
+				float:left;
+			}
+			
+			.pull-left{
+				margin-right:25px;
+				float:left;
+			}
+			
+			img{
+				width:123px;
+			}
+			
+			div{
+				display:inline-block;
+				text-align:center;
+			}
+			
+			h3{
+				margin-top:20px;
+				font-size:24px;
+				color: #555555;
+			}
+			
+			p{
+				font-size:18px;
+				color:#333333;
+			}
+		}
+	}
+}
+
+@media screen and (max-width: $mobile){
+	.app-download {
+			.download-content {
+			.page-left {margin-right:0px;
+				.download {
+					.qrcode-app{
+						display:none;
+						width: 80%;margin: 0 10%;
+					}
+					.download-btn{
+						float:none;
+						margin-right:0px;
+						li{display: block;width: 100%;}
+					}
+				}
+				
+				.title {
+					img{width:144px;}
+					padding-bottom:32px;
+					margin-bottom:32px;
+				}
+			}
+			.app-img{display:none;}
+		}
+		.app-info{padding:0 18px;
+			.about-app{
+				width:auto; padding:20px 20px 10px;
+				margin-bottom: 60px;
+	    		font-size: 16px;
+    		}
+			
+			ul{width:auto;
+				.pull-left{float:none;}
+			}
+			
+			ul li{width:auto;
+				margin-bottom:36px;
+				text-align:center;
+				overflow:hidden;
+				img{
+					width:106px;
+					margin:0;
+				}
+			}
+		}
+	}
+}

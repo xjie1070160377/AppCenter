@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>管理员后台维护工具</title>
+		
+    <link href="${ctxPath}/static/base/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath}/static/base/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="${ctxPath}/static/base/css/animate.css" rel="stylesheet">
+    <link href="${ctxPath}/static/base/css/style.css" rel="stylesheet">
+    
+    <script src="${ctxPath}/static/base/js/jquery-2.1.1.js"></script>
+    <script src="${ctxPath}/static/base/js/bootstrap.min.js"></script>
+    
+    <script src="${ctxPath}/static/base/js/plugins/layer/layer.js"></script>
+               
+	<script type="text/javascript">
+		$(document).ready(function() {
+			
+			layer.config({
+				shift: 1, //默认动画风格
+				skin: 'layui-layer-molv', //默认皮肤
+					extend: 'extend/layer.ext.js'
+			});
+
+		});
+
+		function startForward() {
+			
+			layer.confirm('确定开始转发吗?', {
+				btn : [ '提交', '取消' ]
+			//按钮
+			}, function() {
+				$.post("forward", {
+					restApi : $("#restApi").val(), auth : $("#auth").val(), status:1, fromAddr:$("#fromAddr").val(), toAddr:$("#toAddr").val()
+				}, function(json) {
+					if (json.resultStatus == true) {//成功
+						layer.msg('提交成功.');
+					} else {//失败
+						layer.alert("提交失败."+ json.resultMsg, {icon: 2});
+					}
+				}, 'json');
+			});
+		}
+		
+	function stopForward() {
+			
+			layer.confirm('确定停止转发吗?', {
+				btn : [ '提交', '取消' ]
+			//按钮
+			}, function() {
+				$.post("forward", {
+					restApi : $("#restApi").val(), auth : $("#auth").val(), status:0
+				}, function(json) {
+					if (json.resultStatus == true) {//成功
+						layer.msg('提交成功.');
+					} else {//失败
+						layer.alert("提交失败."+ json.resultMsg, {icon: 2});
+					}
+				}, 'json');
+			});
+		}
+        
+	function forwardSummary() {
+		
+		$.post("forwardSummary", {
+			restApi : $("#restApi").val(), auth : $("#auth").val()
+		}, function(json) {
+			if (json.resultStatus == true) {//成功
+				//layer.msg(json.resultMsg);
+				$("#noticeMsg").text(json.resultMsg);
+			} else {//失败
+				layer.alert("提交失败."+ json.resultMsg, {icon: 2});
+			}
+		}, 'json');
+		
+	}
+	
+	</script>
+	
+</head>
+
+<body class="gray-bg">
+
+<div class="wrapper wrapper-content">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1">端口转发</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+                                <!-- Tab开始 -->
+									<div class="col-sm-12">
+									    <div class="ibox float-e-margins">
+									        
+									        <div class="ibox-content">
+                            					<form method="post" class="form-horizontal" action="#">
+					                                <div class="form-group"><label class="col-sm-3 control-label" >主程序REST接口</label>					
+					                                    <div class="col-sm-8">
+					                                    <input type="text" class="form-control" id="restApi" name="restApi" value="http://172.16.128.80:8000">
+					                                    </div>
+					                                </div>
+					                                <div class="hr-line-dashed"></div>
+					                                
+					                                <div class="form-group"><label class="col-sm-3 control-label" >接口密钥</label>					
+					                                    <div class="col-sm-8">
+					                                    <input type="text" class="form-control" id="auth" name="auth" value="nudt652183">
+					                                    </div>
+					                                </div>
+					                                <div class="hr-line-dashed"></div>
+					                                
+					                                <div class="form-group form-inline"><label class="col-sm-3 control-label" >转发参数</label>					
+					                                    <div class="col-sm-8 ">
+					                                    <input type="text" class="form-control" id="fromAddr" name="fromAddr" value=":8001" style="width: 200px;">
+					                                     To 
+					                                    <input type="text" class="form-control" id="toAddr" name="toAddr" value="172.16.128.83:22" style="width: 200px;">
+					                                    </div>
+					                                </div>
+					                                <div class="hr-line-dashed"></div>
+									                
+									                <div class="form-group">
+									                    <div class="col-sm-4 col-sm-offset-4">
+									                        <button onclick="forwardSummary();" title='查看服务' class="btn btn-primary" type="button">查看服务</button>
+									                        <button onclick="startForward();" title='启动转发' class="btn btn-primary" type="button">启动转发</button>
+									                        <button onclick="stopForward();" title='停止转发' class="btn btn-primary" type="button">停止转发</button>
+									                        									                        
+									                    </div>
+									                </div>
+									                
+												</form>
+												
+												<div>
+												
+												<div id="noticeMsg"></div>
+												
+									        </div>
+									    </div>
+									</div>
+
+                                   <!-- Tab结束 -->
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+</div>
+
+	
+
+</body>
+
+</html>
+

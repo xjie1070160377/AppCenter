@@ -1,0 +1,58 @@
+<% layout("/share/mlayout.html"){%>
+
+<style>
+	.modal-body{padding:10px 15px;}
+	.flow-container > ul{border:2px solid #eee;padding:0;overflow:hidden;padding:8px;}
+	.timeline, .detail,.time, .from, .operate, .to, .opinion{display:inline-block;}
+	.flow .from{margin:0 10px;}
+	.flow .to{margin-left:10px;}
+	.flow .from,.flow  .to{font-weight:700;color:#555;}
+	.flow .time{line-height:80px;font-family: Arial, "Microsoft YaHei";}
+	.flow{display:block;position:relative;padding-left:60px;line-height:80px;text-align:center;}
+	.flow .timeline{position:absolute;width:60px;left:0;height:100%;line-height:80px;}
+	.flow .detail{display:block;line-height:30px;border-bottom:1px solid #ddd;text-align:left;}
+	.flow:last-child .detail{border:none;}
+	.flow .timeline i{font-size:16px;color:#1c84c6;background:#fff}
+	.verticle-line{position: absolute;width: 1px; height: 100%; background: #1c84c6; left: 30px;z-index: -1;top: 40px;}
+	.flow .operate{padding:0 25px;position:relative;margin:0 10px;height:10px;}
+	.flow .operate:before{content:"";height:0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 16px solid #1ab394; z-index: -2; position: absolute; right: -4px;top: 1px;}
+	.flow .operate:after{content:"";height:0px;display:block;position: absolute;top: 50%;width: 100%; left: 0; z-index: -1;border-top:1px dashed #1ab394; transform: scale(1,0.8);}
+	.flow .operate.rejection:after{border-color:#ed5565;}
+	.flow .operate .btn{padding:2px 5px;border-radius:10px;font-size:12px;-moz-box-shadow: 0 15px 30px 0 rgba(255,255,255,.25) inset, 0 2px 7px 0 rgba(0,0,0,.2); -webkit-box-shadow: 0 15px 30px 0 rgba(255,255,255,.25) inset, 0 2px 7px 0 rgba(0,0,0,.2);  box-shadow: 0 15px 30px 0 rgba(255,255,255,.25) inset, 0 2px 7px 0 rgba(0,0,0,.2);}
+	.flow .opinion{line-height:30px;color: #ec9010;position:relative;top:-12px;}
+</style>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+		<div class="modal-body">
+			<!-- <h4>审核流程</h4> -->
+			<div class="flow-container">
+				<ul>
+					<%for(log in logList){%>
+					<li class="flow">
+						<div class="timeline">
+							<i class="fa fa-clock-o"></i>
+							<%if(logList.~size > 1){%>
+							<div class="verticle-line"></div>
+							<%}%>
+						</div>
+						<div class="detail">
+							<div class="time">${log.time} :</div>
+							<div class="from">${log.from}</div>
+							<div class="operate">
+								<!-- <a href="" class="btn btn-sm ${log.rejection == false ? 'btn-primary' : 'btn-danger'}">审核${log.rejection == false ? '通过' : '拒绝'}</a> -->
+							</div>
+							<div class="to">${log.to}</div>
+							<%if(isNotEmpty(log.opinion)){%>
+								<div class="opinion">审核意见：${log.opinion}</div>
+							<%}%>
+						</div>
+					</li>
+					<%}%>
+				</ul>
+			</div>
+		<div>
+
+</div>
+<%}%>
+

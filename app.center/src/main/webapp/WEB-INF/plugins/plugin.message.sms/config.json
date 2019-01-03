@@ -1,0 +1,77 @@
+{
+	"id": "plugin.message.sms",
+	"name": "手机号码",
+	"desc": "消息插件-手机短信",
+	"logo": "logo.png",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Message",
+	"platforms": [
+		"PC"
+	],
+	"pluginData": {
+		"sms_url": {
+			"desc": "",
+			"val": "http://gw.api.taobao.com/router/rest"
+		},
+		"sms_appkey": {
+			"desc": "",
+			"val": "23583598"
+		},
+		"sms_secret": {
+			"desc": "",
+			"val": "8a939cdce10aca0eaf4113cf17284793"
+		},
+		"sms_free_sign_name": {
+			"desc": "短信签名",
+			"val": "乐美电商"
+		},
+		"template_code_bind": {
+			"desc": "验证码",
+			"val": "SMS_37710201"
+		},
+		"template_code_order_created": {
+			"desc": "订单创建",
+			"val": "SMS_36185320"
+		},
+		"template_code_order_pay": {
+			"desc": "订单付款",
+			"val": "SMS_36210285"
+		},
+		"template_code_order_shipping": {
+			"desc": "订单发货",
+			"val": "SMS_36220275"
+		},
+		"template_code_order_refund": {
+			"desc": "订单退款",
+			"val": "SMS_36280276"
+		},
+		"template_code_find_password": {
+			"desc": "重置密码",
+			"val": "SMS_36255274"
+		},
+		"template_code_shop_expired": {
+			"desc": "店铺过期",
+			"val": "SMS_36170274"
+		},
+		"template_code_shop_success": {
+			"desc": "开店成功",
+			"val": "SMS_36245298"
+		},
+		"template_code_wallet_vcode": {
+			"desc": "钱包支出验证",
+			"val": "SMS_36275341"
+		}
+	},
+	"extendData": {
+		"template_code_bind": 1,
+		"template_code_order_created": 1,
+		"template_code_order_pay": 1,
+		"template_code_order_shipping": 1,
+		"template_code_order_refund": 1,
+		"template_code_find_password": 1,
+		"template_code_shop_expired": 1,
+		"template_code_shop_success": 1,
+		"template_code_wallet_vcode": 1
+	}
+}

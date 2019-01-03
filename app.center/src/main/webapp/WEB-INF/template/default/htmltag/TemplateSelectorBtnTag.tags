@@ -1,0 +1,48 @@
+<button type="button" class="btn btn-sm btn-primary" id="${id}"> 选择</button>
+<div id="${id}_templateTreeDiv" style="display:none;">
+	<input type="hidden" id="${id}_id"/>
+	<input type="hidden" id="${id}_text"/>
+	<div id="${id}_templateTree">${id}</div>
+</div>                       
+		
+<script type="text/javascript">
+	$("#${id}").click(function(){
+		layer.open({
+			type : 1, //page层
+			area : [ '360px', '450px' ],
+			title : '模板选择',
+			shade : 0.6, //遮罩透明度
+			moveType : 1, //拖拽风格，0是默认，1是传统拖动
+			shift : -1, //0-6的动画形式，-1不开启
+			content : $("#${id}_templateTreeDiv"),
+			btn: ['确定', '取消'],
+			yes: function(index, layero){
+			    //do something
+		    	var text = "/"+$("#${id}_text").val();
+		    	if(text){
+		    		var  func=eval(${callback});
+		    		new func(text);
+		    		layer.close(index); //如果设定了yes回调，需进行手工关闭
+		    	}else{
+		    		layer.alert("请先选择节点");
+		    	}
+			    
+			  }
+		});
+	});
+	
+	
+	$("#${id}_templateTree").jstree({
+        "core" : {
+			'data' : {
+				"url" : "cms/selector/templateTreeJson?template=${defaultValue}",
+				"dataType" : "json"
+			}}, 
+        "themes": { "theme": "default", "dots": false, "icons": true },
+        "plugins": ["themes", "ui"]
+    }).
+    bind("select_node.jstree",  function(e,data){
+    	$("#${id}_id").val(data.node.id);
+    	$("#${id}_text").val(data.node.text);
+    });
+</script>

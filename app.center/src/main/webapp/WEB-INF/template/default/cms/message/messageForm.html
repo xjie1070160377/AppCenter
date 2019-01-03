@@ -1,0 +1,107 @@
+<link href="${ctxPath}/static/base/css/form.css" rel="stylesheet">
+
+<script type="text/javascript">
+	window.UEDITOR_HOME_URL = "${ctxPath}/static/base/js/plugins/ueditor/";
+
+</script>
+<script type="text/javascript" src="${ctxPath}/static/base/js/plugins/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="${ctxPath}/static/base/js/plugins/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript" src="${ctxPath}/static/base/js/plugins/ueditor/lang/zh-cn/zh-cn.js"></script>
+<style type="text/css">
+.info-content-box{height:auto;border:none;}
+@-moz-document url-prefix(){
+	.edui-default .edui-editor-toolbarbox{ position:relative!important;left:0!important;top:0!important;}
+}
+
+</style>
+
+
+
+<div class="col-sm-12">
+    <div class="ibox float-e-margins">
+        
+        <div class="ibox-content">
+            <form id="postForm" method="post" class="form-horizontal" action="cms/message/message${entity.id == null ? 'Save' : 'Update'}">
+                    	<input type="hidden" name="oid" value="${entity.id}" >
+                
+                <div class="form-group">
+                	<label class="col-sm-2 control-label" for="title">标题</label>
+                    <div class="col-sm-10"><input type="text" class="form-control" placeholder="标题" maxlength="20" id="title" name="title" value="${entity.title}"></div>
+                </div>
+                
+                <div class="col-sm-12">
+                	<textarea class="form-control info-content-box" placeholder="内容" id="content" name="content">${entity.content}</textarea>
+				  	<script type="text/javascript">
+						  $(document).ready(function(){
+							  var initialFrameHeight = 130;
+							    var editor_clobs_text = UE.getEditor('content',{
+						       		 initialFrameHeight:initialFrameHeight,
+						       		toolbars: window.UEDITOR_CONFIG.toolbars_Basic,
+							      	imageUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_image",
+							     	wordImageUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_image",
+							      	fileUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+							     	videoUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+							     	audioUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+							     	catcherUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+							      	imageManagerUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file",
+							      	getMovieUrl:"${ctxPath}/${SYS_ADMIN_PATH}/sys/upload_file"
+							    });
+						  });
+						  
+					  	</script>
+				</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+    	
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        
+        
+        
+        //表单验证
+        $("#postForm").validate({
+            rules: {
+            	title: {
+                    required: true,
+                    minlength: 2
+                }
+            }
+        });
+        
+    });
+        
+    
+    function submitForm(index){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var content = $("#content").val();
+    	if(!content){
+    		layer.alert("消息内容不能为空", {icon: 2});
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (json) {
+            //var data = $.parseJSON(json);
+            if (json.resultStatus) {
+                //成功
+                reloadGrid();
+              //closeAllPopWin();
+				layer.close(index); //如果设定了yes回调，需进行手工关闭
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    	
+    }
+</script>

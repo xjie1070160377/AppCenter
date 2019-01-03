@@ -1,0 +1,254 @@
+.login{margin:0 auto;text-align:center}.content{width:100%;margin:0 auto;padding:125px 0 50px;text-align:center}.content .logo1 img{width:225px}.content .title{margin:70px 20px 50px;border-bottom:1px solid #eeeeee;color:#b1b1b1}.content .title span{position:relative;top:10px;padding:0 30px;background:#ffffff}.content .title span a{font-size:18px;font-weight:100}.content .input-login{width:300px;margin:0px auto 20px;font-weight:normal;line-height:34px;overflow:hidden}.content .input-login span{float:left;display:inline-block;width:34px;height:34px;border-radius:4px 0 0 4px;min-width:16px;padding:4px 0px;text-align:center;border:1px solid #ccc}.content .input-login span i{font-size:16px}.content .input-login input{float:left;display:inline-block;width:253px;height:34px;padding:4px 5px;font-size:14px;border-radius:0px 4px 4px 0px;border:1px solid #ccc;border-left:none;box-shadow:inset 0 0 0 100px #fff}.content .input-login input:focus{border-color:#66afe9;outline:0;-webkit-box-shadow:inset 0 0px 0px 100px #fff,0 0 8px rgba(102,175,233,0.6);box-shadow:inset 0 0px 0px 100px #fff,0 0 8px rgba(102,175,233,0.6)}.content .btn1{width:300px;height:46px;background:#049cdb;border:none;color:#ffffff;font-size:18px;font-family:"microsoft yahei"}
+@media screen and (max-width:640px){
+	.login .content{padding-top: 20%;}
+}
+.login .download{text-align:left;margin-top:8px;background:url(../img/down_app_btn.png) no-repeat;background-size:contain;}
+.login .download a{color:#d94641;}
+
+
+/* ===============================================
+	新的登陆页样式	by:linewi    @2017-4-24
+=============================================== */
+
+.login .header{
+	position:relative;
+	background-color:#DD403B;
+	height:550px;
+	overflow:hidden;
+}
+.login .header .header-container{
+	width:1000px;
+	margin:0 auto;
+}
+.login .header-left,
+.login .header-right{
+	display:block;
+	float:left;
+	width:450px;
+	height:550px;
+}
+.login .header-left{
+	padding:0;
+	padding-left:70px;
+}
+.login .header-right{
+	padding-left:0;
+	padding-top:50px;
+}
+
+.login .header .logo-l,
+.login .header .logo-r{
+	display:inline-block;
+	width:120px;
+	height:120px;
+	padding:0 15px;
+}
+.login .header .logo-r{
+	width:149px;
+	height:120px;
+}
+.login .header .logo-text{
+	width:100%;
+	box-sizing: border-box;
+    padding:10px 95px 10px 70px;
+}
+
+.login-form .input-login{
+	width:300px;
+	margin:0px auto 15px;
+	font-weight:normal;
+	line-height:34px;
+	overflow:hidden
+}
+.login-form .input-login span{
+	float:left;
+	display:inline-block;
+	background: #fff;
+	width:34px;
+	height:32px;
+	border-radius:4px 0 0 4px;
+	min-width:16px;
+	padding:4px 0px;
+	text-align:center;
+	border:1px solid #ccc
+}
+.login-form .input-login span i {
+	font-size:16px;
+}
+
+.login-form .input-login input {
+	float:left;
+	display:inline-block;
+	width:232px;
+	height:32px;
+	padding:4px 5px;
+	font-size:14px;
+	border-radius:0 4px 4px 0;
+	border:1px solid #ccc;
+	border-left:none;
+	box-shadow:inset 0 0 0 100px #fff;
+}
+
+.login-form .input-login input:focus {
+	border-color:#66afe9;
+	outline:0;
+	-webkit-box-shadow:inset 0 0 0 100px #fff,0 0 8px rgba(102,175,233,0.6);
+	box-shadow:inset 0 0 0 100px #fff,0 0 8px rgba(102,175,233,0.6);
+}
+
+.login-form .btn1 {
+	width:280px;
+	margin-left:-20px;
+	cursor:pointer;
+	height:40px;
+	background:none;
+	border:2px solid #f5dc0e;
+	color:#ffffff;
+	font-size:18px;
+	font-family:"microsoft yahei";
+}
+
+.login .qrcode{
+	width:300px;
+	padding: 18px 0 0 75px;
+}
+.login .qrcode .android,
+.login .qrcode .ios{
+	width:100px;
+	display:block;
+	float:left;
+	padding:0 20px;
+}
+.login .qrcode p{
+	font-weight:700;
+	color:#fff;
+}
+
+.login-banner{
+	border-bottom:1px solid #ddd;
+}
+.login-banner-box{
+	width:960px;
+	margin:0 auto;
+	padding:40px 90px;
+	padding-right:100px;
+	box-sizing:border-box;
+}
+.login-banner_2{
+	position:relative;
+}
+.login-banner_2 .top{
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	height:680px;
+	background:#f9f9f9;
+	border-bottom:1px solid #ddd;
+	z-index:-1;
+}
+.login-banner_2 .content{
+	width:900px;
+	margin:0 auto;
+	padding-top:50px;
+}
+
+.login-tg{
+	padding-top:40px;
+	background:#f9f9f9;
+}
+
+.login-tg .tg-title{
+	text-align:center;
+	margin-bottom:30px;
+}
+.login-tg .tg-title img{
+	display:inline-block;
+	width:253px;
+	height:auto;
+}
+
+.login-tg .tg-tips{
+	margin:0 auto;
+	width:829px;
+	position:relative;
+}
+.login-tg .tg-tips img{
+	width:829px;
+	height:auto;
+}
+.login-tg .tg-bottom{
+	text-align:center;
+}
+.login-tg .tg-bottom img{
+	display:inline-block;
+	width:998px;
+	height:auto;
+}
+.btn-tg{
+	display: block;
+    position: absolute;
+    bottom: 35px;
+    right: 95px;
+    background: rgba(255,255,255,0.7);
+    padding: 5px;
+}
+.btn-tg a{
+    color: #d03030;
+    font-weight: 700;
+    width: 4em;
+    white-space: normal;
+    display: block;
+    line-height: 1;
+    font-size: 15px;
+    text-shadow: 1px 1px #fff;
+}
+@media screen and (max-width:768px){
+	
+	.login .header-left{
+		display:none;
+	}
+	.login-banner-box{
+		width:100%;
+		padding:5vw 10vw;
+	}
+	.login-banner_2 .content{
+		width:100%;
+	}
+	.login-tg .tg-tips,.login-tg .tg-tips img{
+		width:100%;
+	}
+	
+	.login-tg .tg-tips{
+		padding-left:10px;
+		box-sizing:border-box;
+	}
+	.login-tg .tg-title img{
+		width:50vw;
+	}
+	.btn-tg{
+	    bottom: 3.6vw;
+    	right: 7.2vw;
+	}
+	.btn-tg a{
+	    font-size:13px;
+	}
+	.login-tg .tg-bottom img{
+		width:100%;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

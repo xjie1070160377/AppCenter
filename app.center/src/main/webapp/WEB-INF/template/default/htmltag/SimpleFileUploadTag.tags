@@ -1,0 +1,275 @@
+
+<div id="${id}_div" class="simpleFileUpload-box">
+
+<div class="col-lg-12 form-group">
+	<div class="form-group text-left col-sm-2">
+		<span class="btn btn-success fileinput-button imgselectfile-btn"> <i
+			class="glyphicon glyphicon-plus"></i> <span title="直接上传文件">选择文件</span>
+		</span>
+		
+	</div>
+	<% if (isNotEmpty(isImg) && isImg == "true"){ %>
+		<div class="form-group col-sm-4">
+			<% if (isNotEmpty(width)){ %>
+				<label class="col-sm-2 control-label" for="${id}_width">宽</label>
+		        <div class="col-sm-4"><input type="text" class="form-control" placeholder="宽度"  id="${id}_width" name="${id}_width" value="${width}" size="8"></div>
+	        <%}%>
+	        <% if (isNotEmpty(height)){ %>
+		    	<label class="col-sm-2 control-label" for="${id}_height">高</label>
+		        <div class="col-sm-4"><input type="text" class="form-control" placeholder="高度"  id="${id}_height" name="${id}_height" value="${height}" size="8"></div>
+	        <%}%>
+	    </div>
+	    <div class="form-group col-sm-4">
+	    	<% if (isNotEmpty(scale)){ %>
+		    	<label class="checkbox-inline i-checks col-sm-3">
+					<input type="checkbox" name="scale" id="${id}_scale" value="1" checked> 压缩 
+				</label>	
+			<%}%>
+			<% if (isNotEmpty(stretch)){ %>
+				<label class="checkbox-inline i-checks col-sm-3">
+					<input type="checkbox" name="stretch" id="${id}_stretch" value="1" > 拉伸
+				</label>
+			<%}%>
+			
+			<% if (isNotEmpty(watermark)){ %>
+				<label class="checkbox-inline i-checks col-sm-3">
+					<input type="checkbox" name="watermark" id="${id}_watermark" value="1" > 水印
+				</label>
+			<%}%>
+	    </div>
+    <%}%>
+    
+	<div class="form-group col-sm-2">
+		<a id="${id}_btnCrop" class="btn btn-success btn-bitbucket" title="上传并裁剪">
+            <i class="fa fa-cut"></i>
+        </a>
+	</div>
+    
+</div>
+
+<div class="col-lg-12 form-group image-preview">
+	<div class="<% if (isNotEmpty(isPreview) && isPreview == "true"){ %>col-sm-7<%}else{%>col-sm-12<%}%>" <% if (isNotEmpty(isHiddenUrl) && isHiddenUrl == "true"){ %> style="display:none;" <%}%>>
+		<input type="text" class="form-control" placeholder="${placeholder}" readonly="readonly" value="${defaultValue}" id="${id}" name="${id}" >
+	</div>
+	
+	<div class="col-sm-5">
+		<div id="${id}_imgPreviewDiv" class="simpleFileUpload-imgPreviewDiv" style="display: none;">
+			<img id="${id}_imgPreview" style="cursor:pointer;max-width: 300px;max-height: 300px;" onclick="refreshImg(this);" title="点击刷新" src="${ctxPath}${defaultValue}">
+		</div>
+	</div>
+</div>	
+
+<div id="${id}_dropZoneDiv"></div>
+<div id="${id}_CropDiv"></div>
+<div id="${id}_CropDiv_preview-template" style="display:none;"></div>
+
+<div id="actions" class="row">
+	
+	<div class="col-lg-12">
+		<div class="table table-striped files" id="${id}_previews">
+			<div id="${id}_template" class="file-row">
+				<div>
+					<span class="preview"><img data-dz-thumbnail /></span>
+				</div>
+				<div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+					<div class="progress-bar progress-bar-success" style="width: 0%;" data-dz-uploadprogress></div>
+				</div>
+				<strong class="error text-danger" data-dz-errormessage></strong>
+			</div>
+		</div>
+	</div>	
+</div>	
+</div>
+<script type="text/javascript">
+	$('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green',
+    }); 
+        
+		//图片上传
+    	//定义文件选择后的模板
+		var previewNode = document.querySelector("#${id}_template");
+		previewNode.id = "";
+		var previewTemplate = previewNode.parentNode.innerHTML;
+		previewNode.parentNode.removeChild(previewNode);
+		var uploadUrl = "sys/upload";
+		<% if (isNotEmpty(uploadUrl)){ %>
+			uploadUrl = "${uploadUrl}";
+		<%}else if (isNotEmpty(isImg) && isImg == "true"){ %>
+			uploadUrl = "sys/uploadImage";
+		<%}%>
+		var ${id}_Dropzone = new Dropzone("#${id}_dropZoneDiv", { // 需要有个容器来加载控件
+			url : uploadUrl, // Set the url
+			thumbnailWidth : 80,
+			thumbnailHeight : 80,
+			parallelUploads : 20,
+			maxFiles:1,
+			addRemoveLinks:false,
+			dictRemoveFile:'取消上传',
+			dictMaxFilesExceeded:'超出允许上传数量,不允许上传',
+			dictInvalidInputType:"只允许上传图片文件",
+			<% if (isNotEmpty(acceptedFiles)){ %>acceptedFiles:"<% if (isNotEmpty(acceptedFiles)){ %>${acceptedFiles}<%}else{%>*<%}%>",<%}%>
+			//maxFiles:1,
+			previewTemplate : previewTemplate,
+			autoQueue : true, // 自动上传
+			previewsContainer : "#${id}_previews", // 定义预览模版
+			clickable : "#${id}_div .imgselectfile-btn" // 定义点击按钮， 点击后弹出文件选择框
+		});
+		${id}_Dropzone.on("addedfile",function(){
+			<% if (isNotEmpty(isPreview) && isPreview == "true"){ %>
+				$("#${id}_imgPreviewDiv").css("display", "none");
+			<%}%>
+			<% if (isNotEmpty(isImg) && isImg == "true"){ %>
+				var params = {};
+				if($("#${id}_width").length>0){
+					params.width = $("#${id}_width").val();
+				}else{
+					params.width = 0;
+				}
+				if($("#${id}_height").length>0){
+					params.height = $("#${id}_height").val();
+				}else{
+					params.height = 0;
+				}
+				if($("#${id}_scale").length>0){
+					params.scale = $('#${id}_scale').is(':checked');
+				}
+				if($("#${id}_stretch").length>0){
+					params.stretch = $('#${id}_stretch').is(':checked');
+				}
+				if($("#${id}_watermark").length>0){
+					params.watermark = $('#${id}_watermark').is(':checked');
+				}
+				<% if (isNotEmpty(multiSize) && multiSize == "1"){ %>params.multiSize = 1;<%}%>
+				<% if (isNotEmpty(thumbnail)){ %>params.thumbnail = ${thumbnail};<%}%>
+				${id}_Dropzone.options.params = params;
+			<%}%>
+		});
+		${id}_Dropzone.on("success", function(a, b) {
+			$("#${id}").val(b.fileUrl);
+			$("#${id}_imgPreview").attr("src", "${ctxPath}" + b.fileUrl);
+			setTimeout(function(){
+				${id}_Dropzone.removeAllFiles(true);
+				<% if (isNotEmpty(isPreview) && isPreview == "true"){ %>
+					$("#${id}_imgPreviewDiv").css("display", "");
+				<%}%>
+            }, 1200);
+		});
+		${id}_Dropzone.on("error", function(a, b) {
+			setTimeout(function(){
+				${id}_Dropzone.removeAllFiles(true);
+            }, 1200);
+		});
+		<% if (isNotEmpty(isPreview) && isPreview == "true"){ %>
+			if("${defaultValue}"){
+				$("#${id}_imgPreviewDiv").css("display", "");
+			}
+		<%}%>
+		
+
+		var ${id}_CropDiv = new Dropzone("#${id}_CropDiv", { // 需要有个容器来加载控件
+			url : uploadUrl, // Set the url
+			thumbnailWidth : 80,
+			thumbnailHeight : 80,
+			parallelUploads : 20,
+			maxFiles:100,
+			addRemoveLinks:false,
+			dictRemoveFile:'取消上传',
+			dictMaxFilesExceeded:'超出允许上传数量,不允许上传',
+			dictInvalidInputType:"只允许上传图片文件",
+			<% if (isNotEmpty(acceptedFiles)){ %>acceptedFiles:"<% if (isNotEmpty(acceptedFiles)){ %>${acceptedFiles}<%}else{%>*<%}%>",<%}%>
+			//maxFiles:1,
+			previewTemplate : document.querySelector('#${id}_CropDiv_preview-template').parentNode.innerHTML,
+			autoQueue : true, // 自动上传
+			previewsContainer : "#${id}_CropDiv_preview-template", // 定义预览模版
+			clickable : "#${id}_btnCrop" // 定义点击按钮， 点击后弹出文件选择框
+		});
+		
+		
+		
+		${id}_CropDiv.on("success", function(file, result) {
+			//alert(result.fileUrl);
+			
+			imagCrop("${id}",result.fileUrl, $("#${id}_width").val(), $("#${id}_height").val());
+		});
+		
+		${id}_CropDiv.on("error", function(file, result) {
+			alert("upload error："+result);
+			
+			setTimeout(function(){
+				${id}_CropDiv.removeAllFiles(true);
+            }, 1200);
+		});
+		
+		
+		function getImageParam(){
+			var params = {};
+			if($("#${id}_width").length>0){
+				params.width = $("#${id}_width").val();
+			}else{
+				params.width = 0;
+			}
+			if($("#${id}_height").length>0){
+				params.height = $("#${id}_height").val();
+			}else{
+				params.height = 0;
+			}
+			if($("#${id}_scale").length>0){
+				params.scale = $('#${id}_scale').is(':checked');
+			}
+			if($("#${id}_stretch").length>0){
+				params.stretch = $('#${id}_stretch').is(':checked');
+			}
+			if($("#${id}_watermark").length>0){
+				params.watermark = $('#${id}_watermark').is(':checked');
+			}
+			<% if (isNotEmpty(multiSize) && multiSize == "1"){ %>params.multiSize = 1;<%}%>
+			<% if (isNotEmpty(thumbnail)){ %>params.thumbnail = ${thumbnail};<%}%>
+				
+			return params;	
+		
+		}
+		
+		function imagCrop(pId, fileUrl, limitW, limitH) {
+			//alert("imagCrop："+pId);
+			var params = getImageParam();
+			params.fileUrl = fileUrl;
+			params.cropWidth = limitW;
+			params.cropHeight = limitH;
+			var index = layer.open({
+				type : 1, //page层
+				area : [ '800px', ($(window).height() - 30) +'px'],
+				title : '图片裁剪',
+				shade : 0.6, //遮罩透明度
+				moveType : 1, //拖拽风格，0是默认，1是传统拖动
+				shift : -1, //0-6的动画形式，-1不开启
+				content : $("#popWin").load('sys/imageCrop', params),
+			    btn: ['完成', '取消'],
+			    yes: function(index, layero){
+			    	startCrop({index: index, pId: pId}, cropSuccess);
+				},
+				cancel:function(index){
+					showSelector(false);
+				}
+			});
+			
+			layer.full(index);		  		
+	  	}
+	  	
+	  	function cropSuccess(json){
+	  		//alert(json.fileUrl);
+			
+	  		$("#"+json.pId).val(json.fileUrl);
+	  		//alert("裁剪成功");
+			$("#"+json.pId+"_imgPreview").attr("src", "${ctxPath}" + json.fileUrl+"?rnd="+Math.random());
+			<% if (isNotEmpty(isPreview) && isPreview == "true"){ %>
+			$("#"+json.pId+"_imgPreviewDiv").css("display", "");
+			<%}%>
+
+	  	}
+	  	
+	  	function refreshImg(obj){
+	  		$(obj).attr("src", $(obj).attr("src")+"?"+Math.random());
+	  	}
+		  	
+</script>

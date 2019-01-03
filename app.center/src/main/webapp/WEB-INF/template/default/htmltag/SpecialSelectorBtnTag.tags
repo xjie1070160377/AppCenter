@@ -1,0 +1,60 @@
+<button type="button" class="btn btn-sm btn-primary" id="${id}"> 选择</button>
+<div id="${id}_specialDuallistBoxDiv" style="display:none;">
+	<div class="col-sm-12">
+	<select multiple="multiple" size="20" id="${id}_specialId">
+	</select>
+	</div>
+</div>                       
+		
+<script type="text/javascript">
+	$("#${id}").click(function(){
+		layer.open({
+			type : 1, //page层
+			area : [ '650px', '450px' ],
+			title : '栏目选择',
+			shade : 0.6, //遮罩透明度
+			moveType : 1, //拖拽风格，0是默认，1是传统拖动
+			shift : -1, //0-6的动画形式，-1不开启
+			content : $("#${id}_specialDuallistBoxDiv"),
+			btn: ['确定', '取消'],
+			yes: function(index, layero){
+				var idList = new Array();
+				$("#${id}_specialId option:selected").each(function(){
+		            var map = {};
+		            map.id = $(this).val();
+		            map.text = $(this).text(); 
+		            idList.push(map);
+		        });
+			    var  func=eval(${callback});
+	    		new func(idList);
+			    layer.close(index); //如果设定了yes回调，需进行手工关闭
+			  }
+		});
+	});
+	
+	$("#${id}_specialId option").remove();
+	$.post("cms/selector/findSpecialList", {infoId : '${infoId}'}, function(data){
+		for(var i = 0; i < data.length; i++){
+			if(data[i].selected){
+				$("#${id}_specialId").append("<option value='"+data[i].id+"' selected='selected' >"+data[i].text+"</option>");
+			}else{
+				$("#${id}_specialId").append("<option value='"+data[i].id+"' >"+data[i].text+"</option>");
+			}
+			
+		}
+		$('select[id="${id}_specialId"]').bootstrapDualListbox('refresh');
+	},'json');
+
+	$('select[id="${id}_specialId"]').bootstrapDualListbox({
+  			btnCenter : true,
+  			filterTextClear:'显示全部',
+  			infoText:'总共{0}条',
+  			infoTextFiltered:'<span class="label label-warning">筛选</span> {0} / {1}',
+  			infoTextEmpty:'没有数据',
+			nonSelectedListLabel : '可选专题',
+			selectedListLabel : '已选专题',
+			moveOnSelect : false,
+			filterPlaceHolder : '请输入专题名称查询',
+			infoShow : false
+		});
+</script>

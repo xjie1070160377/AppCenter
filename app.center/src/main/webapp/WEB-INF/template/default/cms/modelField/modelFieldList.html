@@ -1,0 +1,365 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>模型字段列表 - ${model.name }</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12">
+							<input type="hidden" id="queryType" value="${queryType}"/>
+	                        <ul class="nav nav-tabs">
+	                        	<% for(type in types){ %>
+								    <li ${queryType == type ? 'class="active"' : ''} data-status="${type}"><a data-toggle="tab" href="#">${I18nMessage("model.type." + type)}</a></li>
+								<% } %>
+	                        </ul>
+                        </div>
+					</div>
+                    <div class="row">
+                    	<div class="col-sm-12">
+                    		<a href="javascript:void(0);" onclick="add();" class="btn btn-primary btn-sm">新增</a>
+                    		<a href="javascript:void(0);" onclick="editRow();" class="btn btn-primary btn-sm">编辑</a>
+                    		<a href="javascript:void(0);" onclick="predefined();" class="btn btn-primary btn-sm">系统字段</a>
+                    		<a href="javascript:void(0);" onclick="disable();" class="btn btn-primary btn-sm">禁用</a>
+                    		<a href="javascript:void(0);" onclick="enable();" class="btn btn-primary btn-sm">启用</a>
+                    		<a href="javascript:void(0);" onclick="moveUp();" class="btn btn-primary btn-sm">上移</a>
+                    		<a href="javascript:void(0);" onclick="moveDown();" class="btn btn-primary btn-sm">下移</a>
+                    		<a href="javascript:void(0);" onclick="submit();" class="btn btn-primary btn-sm">保存</a>
+                    		<a href="javascript:void(0);" onclick="delRows();" class="btn btn-primary btn-sm">批量删除</a>
+                    		<a href="javascript:void(0);" onclick="returnBack();" class="btn btn-primary btn-sm">返回</a>
+                    	</div>
+                    </div>
+
+            		<form id="postForm">
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+					</div>
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$("#table_list").jqGrid({
+					url : "cms/modelField/modelFieldListJson",
+					datatype : "json",
+	                mtype:"POST",
+					postData : { modelId: '${modelId}'},
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 50,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "ID",
+						name : 'id',
+						index : 'id',
+						width : 30,
+						align : "center",
+						sorttype : "int"
+					}, {
+						label : "字段代码",
+						name : 'name',
+						index : 'name',
+						width : 90,
+						formatter : nameFmt
+					}, {
+						label : "字段名称",
+						name : 'label',
+						index : 'label',
+						width : 90,
+						formatter : labelFmt
+					}, {
+						label : "一行两列",
+						name : 'dblColumn',
+						index : 'dblColumn',
+						width : 60,
+						align : "center",
+						formatter : dblColumnFmt
+					}, {
+						label : "状态",
+						name : 'disabled',
+						index : 'disabled',
+						width : 60,
+						align : "center",
+						formatter : disabledFmt
+					}, {
+						label : "调用代码",
+						name : 'isCustom',
+						index : 'isCustom',
+						width : 90,
+						formatter : customFmt
+					}, {
+						label : "操作",
+						name : 'op',
+						sortable : false,
+						width : 80,
+						align : "center",
+						formatter : oprationFmt
+					} ],
+					pager : "false",
+					viewrecords : true,
+					multiselect : true,
+					jsonReader: {
+					  repeatitems: false,
+					  root: "rows"
+					},
+					sortname : 'id',
+					sortorder : "desc",
+					caption : "模型字段列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+	            
+	            $('.nav-tabs li').click(function() {
+            		var idStr = this.id;
+            		var type = $(this).attr('data-status');
+    				loadFrameContent('cms/model/modelList?queryType=' + type);
+            	})
+			});
+
+			function nameFmt(cellvalue, options, rowObject) {
+				var html = "";
+				var disableHtml = '';
+				if(rowObject.isPredefined != null && rowObject.isPredefined) {
+					disableHtml = " readonly=\"readonly\" class=\"disable\"";
+				}
+				html += "<input name='id' value='"+rowObject.id+"' type='hidden'/>";
+				html += "<input name='name' value='"+rowObject.name+"' style='width:120px;' maxlength='40' type='text' "+disableHtml+"/>";
+				return html;
+			} 
+
+			function labelFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += "<input name='label' value='"+rowObject.label+"' style='width:120px;' maxlength='40' type='text'/>";
+				return html;
+			} 
+
+			function dblColumnFmt(cellvalue, options, rowObject) {
+				var html = "";
+				var checked = "";
+				var checkVal = false;
+				if(rowObject.dblColumn != null && rowObject.dblColumn) {
+					checked = "checked='checked'";
+					checkVal = true;
+				}
+				html += "<input id=\"_chk_dblColumn"+ rowObject.id + "\" name=\"dblColumn\" value=\""+checkVal+"\" type=\"hidden\"/>";
+				html += "<input onclick=\"$('#_chk_dblColumn"+ rowObject.id + "').val(this.checked);\" type=\"checkbox\" "+checked+"/>";
+				return html;
+			}
+
+			function customFmt(cellvalue, options, rowObject) {
+				var html = "";
+				if(rowObject.isCustom && rowObject.isClob) {
+					html = "clobs['"+rowObject.name+"']";
+				} else if(rowObject.isCustom && !rowObject.isClob) {
+					html = "customs['"+rowObject.name+"']";
+				}
+				return html;
+			} 
+			
+			function disabledFmt(cellvalue, options, rowObject) {
+				var html = "";
+				if(rowObject.disabled != null && rowObject.disabled) {
+					html += " <button class='btn btn-danger btn-circle' type='button' title='禁用'><i class='fa fa-ban'></i></button>";
+				} else {
+					html += " <button class='btn btn-primary btn-circle' type='button' title='启用'><i class='fa fa-play'></i></button>";
+				}
+				return html;
+			} 
+
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += "<button class='btn btn-primary' type='button' onclick='edit("+ rowObject.id + ");'><i class='fa fa-edit'></i>&nbsp;编辑</button>";
+				html += " <button class='btn btn-primary' type='button' onclick='del(" + rowObject.id + ");'><i class='fa fa-remove'></i>&nbsp;删除</button>";
+				return html;
+			}
+
+			function add() {
+				loadFrameContent('cms/modelField/modelFieldAdd?modelId=${modelId}');
+			}
+
+			function edit(id) {
+				loadFrameContent('cms/modelField/modelFieldEdit?modelId=${modelId}&id=' + id);
+			}
+			
+			function editRow() {
+				var id = getGridId();
+				edit(id);
+			}
+			
+			function predefined() {
+				loadFrameContent('cms/modelField/predefinedList?modelId=${modelId}');
+			}
+			
+			function moveUp() {
+				var id = getGridId();
+				var thisTr = $("#table_list #" + id);
+				var prevTr = $("#table_list #" + id).prev("tr");
+				var prevId = prevTr.attr("id");
+				if(!isNaN(prevId)) {
+					thisTr.insertBefore(prevTr);
+				}
+			}
+			
+			function moveDown() {
+				var id = getGridId();
+				var thisTr = $("#table_list #" + id);
+				var nextTr = $("#table_list #" + id).next("tr");
+				var nextId = nextTr.attr("id");
+				if(!isNaN(nextId)) {
+					thisTr.insertAfter(nextTr);
+				}
+			}
+			
+			function submit() {
+		    	var postData = $("#postForm").serializeArray();
+				$.post("cms/modelField/batchUpdate", postData, function(json) {
+					if (json.resultStatus == true) {//成功
+						reloadGrid();
+						layer.msg('保存成功.');
+					} else {//失败
+						layer.alert("保存失败." + json.resultMsg, {icon: 2});
+					}
+				}, 'json');
+			}
+			
+			function disable() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量禁用的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量禁用模型字段吗?', {
+					btn : [ '禁用', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/modelField/disable", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('批量禁用成功.');
+						} else {//失败
+							layer.alert("批量禁用失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function enable() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量启用的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量启用模型字段吗?', {
+					btn : [ '启用', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/modelField/enable", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('批量启用成功.');
+						} else {//失败
+							layer.alert("批量启用失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+
+			function returnBack() {
+				loadFrameContent('cms/model/modelList?queryType=${queryType}');
+			}
+			
+			function getGridId() {
+				var id = $('#table_list').jqGrid('getGridParam','selrow');
+				if(id == null) {
+					layer.alert("请选择数据！", {icon: 2});
+					return false;
+				}
+				return id;
+			}
+
+			function del(id) {
+				layer.confirm('确定删除该模型字段吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/modelField/modelFieldDel", {
+						ids : id
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('删除成功.');
+						} else {//失败
+							layer.alert("删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function delRows() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				
+				if (ids.length == 0){
+		               layer.alert("没有选择要批量删除的数据.", {icon: 2});
+		               return;
+		           }
+				
+				layer.confirm('确定批量删除模型字段吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("cms/modelField/modelFieldDel", {
+						ids : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('批量删除成功.');
+						} else {//失败
+							layer.alert("批量删除失败.请先清除下属数据.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function reloadGrid() {
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list");
+		  		var modelId = $("#modelId").val();
+				
+	          //增加提交参数
+	            var postData = { modelId : modelId};
+	            $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  		
+		  		
+		  	}
+		</script>
+	
+<%}%>

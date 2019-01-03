@@ -1,0 +1,141 @@
+<% layout("/share/mlayout.html"){%>
+
+        <div class="wrapper wrapper-content  animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>来源管理</h5>
+                        </div>
+                        <div class="ibox-content">
+							<div class="row">
+                                
+                                <div class="col-sm-3 m-b-xs">
+                                    
+                                    <a href="javascript:void(0);" id="btnAdd" title='新增来源' class="btn btn-primary btn-sm">新增来源</a>
+                                    <a href="javascript:void(0);" id="btnQuery" title='查询' class="btn btn-primary btn-sm">查询</a>
+                                    
+                                </div>
+                            </div>
+					
+                            <div class="jqGrid_wrapper">
+                                <table id="table_list"></table>
+                                <div id="pager_list"></div>
+                           </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                            
+		<script >
+			
+		$(document).ready(function () {
+			
+            $("#table_list").jqGrid({
+            	url: "cms/source/page",
+                datatype: "json",
+                mtype:"POST",//注意用POST传递，否则会出现中文乱码
+                height: 450,
+                autowidth: true,
+                shrinkToFit: true,
+                rowNum: 10,
+                rowList: [10, 20, 30],
+                colModel: [
+                    {label:"来源代号", classes : 'mshow', name: 'id', index: 'id', width: 60, sorttype: "int",stype:"int", align: "center"},
+                    {label:"来源名称", classes : 'mshow', name: 'name', index: 'name', width: 90, align: "center"},
+                    //{label:"图片地址", name: 'image', index: 'image', width: 100,searchoptions:{sopt:['eq','ne', 'cn', 'nc']}},
+                    {label:"来源地址", name: 'url', width: 80, align: "center",searchoptions:{sopt:['eq','ne', 'cn', 'nc']}},
+                    {label:"操作", classes : 'mshow', name:'op', width: 60, align: "center", formatter: oprationFmt,search:false,sortable:false}
+                ],
+                pager: "#pager_list",
+                viewrecords: true,
+                multiselect: true,
+                sortname: 'id', 
+				sortorder: "desc", 
+                caption: "管理用户列表",
+                loadtext: '正在加载...',
+                hidegrid: false
+            });
+      		//jQuery("#table_list").jqGrid('navGrid','#pager_list',{edit:true,add:true,del:true,view:true});
+      		jQuery("#table_list").jqGrid('navGrid','#pager_list',
+      			  {edit:false,add:false,del:false},{},{},{},
+      			  {multipleSearch:true}
+      			  );
+		});
+		
+		function oprationFmt(cellvalue, options, rowObject ){
+			var html = "";
+			html += "<button class='btn btn-primary btn-opt' title='编辑' type='button' onclick='edit("+ rowObject.id +");'><i class='fa fa-edit'></i>编辑</button>";
+			html += " <button class='btn btn-primary btn-opt' title='删除' type='button' onclick='del("+ rowObject.id +");'><i class='fa fa-remove'></i>删除</button>";
+			return html;
+		}
+		
+	$("#btnQuery").click(function(){
+		$("#search_table_list").click();
+	});
+		
+		$("#btnAdd").click(function(){
+			layer.open({
+			    type: 1, //page层
+			    area: ['660px', '500px'],
+			    title: '新增来源',
+			    shade: 0.6, //遮罩透明度
+			    moveType: 1, //拖拽风格，0是默认，1是传统拖动
+			    shift: -1, //0-6的动画形式，-1不开启
+			    content: $("#popWin").load('cms/source/form'),
+			    btn: ['确定', '取消'],
+			    yes: function(index, layero){
+			    	submitForm(index);
+			    	//layer.close(index); //如果设定了yes回调，需进行手工关闭
+				  }
+			});   
+		});
+	
+		function edit(id) {
+			layer.open({
+			    type: 1, //page层
+			    area: ['660px', '500px'],
+			    title: '修改用户',
+			    shade: 0.6, //遮罩透明度
+			    moveType: 1, //拖拽风格，0是默认，1是传统拖动
+			    shift: -1, //0-6的动画形式，-1不开启
+			    content: $("#popWin").load('cms/source/form?id='+id),
+			    btn: ['确定', '取消'],
+			    yes: function(index, layero){
+			    	submitForm(index);
+			    	//layer.close(index); //如果设定了yes回调，需进行手工关闭
+				  }
+			});   
+			
+		}
+		
+		
+		function del(id) {
+			layer.confirm('确定删除该来源吗?', {
+				btn : [ '删除', '取消' ]
+			//按钮
+			}, function() {
+				$.post("cms/source/del", {
+					id : id
+				}, function(json) {
+					if (json == true) {//成功
+						reloadGrid();
+						layer.msg('删除成功.');
+					} else {//失败
+						layer.alert("删除失败.", {icon: 2});
+					}
+				}, 'json');
+			});
+		}
+		
+		function reloadGrid() {
+			
+			$("#table_list").trigger('reloadGrid');
+		}
+
+		
+		</script>
+	
+<%}%>

@@ -1,0 +1,313 @@
+<% layout("/share/mlayout.html"){%>
+<style>
+	.pace-done #page-wrapper, .pace-done .footer {
+	    -webkit-transition: all 0s;
+	    -moz-transition: all 0s;
+	    -o-transition: all 0s;
+	    transition: all 0s;
+	}
+	#specialTitle {
+	    display:inline-block;
+	    height: 30px;
+	    border:none;
+	    outline:none;
+	    padding:0 8px;
+	}
+	#dropdown_usernames{
+		display:none;
+		position: absolute;
+	    background: #fff;
+	    z-index: 99;
+	    width: 95%;
+	    box-shadow: 0 3px 6px #ccc;
+	    list-style:none;
+	    padding:0 8px;
+	}
+	#dropdown_usernames li {
+	    padding: 8px 0;
+	    border-bottom: 1px dashed #ddd;
+	    list-style:none;
+	}
+	#dropdown_usernames li:last-child{
+		border:none;
+	}
+	.userContainer{border:1px solid #ccc;}
+	.userContainer span{
+	    display: none;
+	    height: 30px;
+	    line-height: 30px;
+	    padding: 0 8px;
+	}
+	.userContainer .icon-close{
+		background:url("/static/base/js/plugins/layer/skin/default/icon.png");
+		background-position: 0 -40px;
+    	cursor: pointer;
+        position: relative;
+    	width: 16px;
+    	height: 16px;
+    	display:inline-block;
+    	margin-left:8px;
+	}
+	
+	
+</style>
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>专题文章排序</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                    	<div class="col-sm-4 m-b-xs">
+	                    	<label class="control-label">文档标题</label>
+	                       	<input style="width:200px;display:inline;" type="text" name="title" id="title" placeholder="文档标题" class="input-sm-2 form-control"> 
+	                        <a class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();"> 搜索</a> 
+                   		</div>
+                    </div>
+                    <div class="row">
+	                    	<div class="col-sm-12">
+	                    		<a href="javascript:void(0);" title='上移' onclick="moveUp();" class="btn btn-primary btn-sm">上移</a>
+	                    		<a href="javascript:void(0);" title='下移' onclick="moveDown();" class="btn btn-primary btn-sm">下移</a>
+	                    		<a href="javascript:void(0);" title='保存' onclick="submit();" class="btn btn-primary btn-sm">保存</a>
+	                    		<a href="javascript:void(0);" title='置顶' onclick="setTop();" class="btn btn-primary btn-sm">置顶</a>
+	                    	</div>
+	                    </div>
+	                    <form id="postForm">
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+		<script type="text/javascript">
+			
+			$(document).ready(function() {
+
+           		$("#table_list").jqGrid({
+   					url : "cms/special/specialInfoListJson?specialId=${specialId}",
+   					postData : { },
+   					datatype : "json",
+   	                mtype:"POST",
+   					height : 450,
+   					autowidth : true,
+   					shrinkToFit : true,
+   					rowNum : 10,
+   					rowList : [ 10, 20, 30 ],
+   					colModel : [ {
+   						label : "ID",
+   						classes : 'mshow',
+   						name : 'infoId',
+   						index : 'infoId',
+   						width : 30,
+   						align : "center",
+   						sortable : false
+   					}, {
+   						label : "标题",
+   						classes : 'mshow',
+   						name : 'title',
+   						index : 'title',
+   						width : 150,
+   						align : "left",
+   						formatter : titleFmt,
+   						sortable : false
+   					}, {
+   						label : "发布时间",
+   						name : 'publishdate',
+   						index : 'publishdate',
+   						width : 60,
+   						align : "left",
+   						sortable : false,
+   						formatter : publishDateFmt
+   					}, {
+   						label : "点击量",
+   						name : 'views',
+   						index : 'views',
+   						width : 30,
+   						align : "right",
+   						sortable : false
+   					}, {
+   						label : "状态",
+   						name : 'status',
+   						index : 'status',
+   						width : 30,
+   						align : "left",
+   						formatter : statusFmt,
+   						sortable : false
+   					}, {
+   						label : "pId",
+   						name : 'index',
+   						index : 'index',
+   						width : 40,
+   						hidden : true,
+   						align : "right"
+   					}, {
+   						label : "id",
+   						name : 'id',
+   						index : 'id',
+   						width : 40,
+   						hidden : true,
+   						align : "right"
+   					}],
+   					pager : "#pager_list",
+   					viewrecords : true,
+   					multiselect : true,
+   					caption : "管理文档列表",
+   					loadtext : '正在加载...',
+   					hidegrid : false,
+   					gridComplete : function(){
+   						if(typeof gridComplete == "function"){
+   							gridComplete();
+   						}else{return null;}
+  					}
+   				});
+            		
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+				
+	            $('.i-checks').iCheck({
+	                checkboxClass: 'icheckbox_square-green',
+	                radioClass: 'iradio_square-green',
+	            }); 
+	           
+			});
+			
+			function publishDateFmt(cellvalue, options, rowObject) {
+				return moment(cellvalue).format("YYYY-MM-DD HH:mm:ss");
+			}
+			
+			function titleFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += "<a class='info-title' href='javascript:view("+rowObject.id+");'>"+rowObject.title+"</a>";
+				return html;
+			}
+			
+			
+			function statusFmt(cellvalue, options, rowObject) {
+				var html = "";
+				if(rowObject.status == "1") {
+					html= "审核中";
+				} else if(rowObject.status == "A") {
+					html= "已发布";
+				} else if(rowObject.status == "B") {
+					html= "草稿";
+				} else if(rowObject.status == "C") {
+					html= "投稿";
+				} else if(rowObject.status == "D") {
+					html= "退稿";
+				} else if(rowObject.status == "E") {
+					html= "采集";
+				} else if(rowObject.status == "F") {
+					html= "待发布";
+				} else if(rowObject.status == "G") {
+					html= "已过期";
+				} else if(rowObject.status == "X") {
+					html= "作废";
+				} else if(rowObject.status == "Z") {
+					html= "归档";
+				}else{
+					html = rowObject.status;
+				}
+				return html;
+			}
+			
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list");
+	            var title = $("#title").val();
+	            var attrId = $("#attrId").val();
+	            var specialId = $("#specialId").val();
+				
+	          //增加提交参数
+	            var postData = { title : title, specialId: specialId};
+	          console.log("postData",postData);
+	            $("#table_list").jqGrid("setGridParam", { postData: postData, datatype:'json'});
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  	}
+		  	
+		  	function moveUp() {
+				var id = getGridId();
+				var thisTr = $("#table_list #" + id);
+				var prevTr = $("#table_list #" + id).prev("tr");
+				var prevId = prevTr.attr("id");
+				if(!isNaN(prevId)) {
+					var thisPId = $("#table_list").getCell(id,'index');
+					var prevPId = $("#table_list").getCell(prevId,'index');
+					thisTr.insertBefore(prevTr);
+					$("#table_list").setCell(id,'index', prevPId);
+					$("#table_list").setCell(prevId,'index', thisPId);
+				}
+			}
+			
+			function moveDown() {
+				var id = getGridId();
+				var thisTr = $("#table_list #" + id);
+				var nextTr = $("#table_list #" + id).next("tr");
+				var nextId = nextTr.attr("id");
+				if(!isNaN(nextId)) {
+					var thisPId = $("#table_list").getCell(id,'index');
+					var nextPId = $("#table_list").getCell(nextId,'index');
+					thisTr.insertAfter(nextTr);
+					$("#table_list").setCell(id,'index', nextPId);
+					$("#table_list").setCell(nextId,'index', thisPId);
+				}
+			}
+			
+			function getGridId() {
+				var id = $('#table_list').jqGrid('getGridParam','selrow');
+				if(id == null) {
+					layer.alert("请选择数据！", {icon: 2});
+					return false;
+				}
+				return id;
+			}
+			
+			function submit() {
+				var data = $("#table_list").jqGrid("getRowData");
+				var postData = [];
+				for(var i = 0; i < data.length; i++){
+					postData.push(data[i]['id']+"#"+data[i]['index']);
+				}
+				var str = postData.join(",");
+		    	//var postData = $("#postForm").serializeArray();
+				$.post("cms/special/batchSpecialUpdate", {str:str}, function(json) {
+					if (json.resultStatus == true) {//成功
+						reload();
+						layer.msg('保存成功.');
+					} else {//失败
+						layer.alert("保存失败." + json.resultMsg, {icon: 2});
+					}
+				}, 'json');
+			}
+			
+			function setTop(){
+				var id = getGridId();
+				if(id){
+					$.post("cms/special/topInfo", {id:id}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reload();
+							layer.msg('设置成功.');
+						} else {//失败
+							layer.alert("设置失败." + json.resultMsg, {icon: 2});
+						}
+					}, 'json');
+				}
+			}
+			
+			function reload(){
+				$("#table_list").trigger('reloadGrid');
+		  	}
+		</script>
+	
+<%}%>

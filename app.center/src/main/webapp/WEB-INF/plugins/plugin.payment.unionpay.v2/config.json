@@ -1,0 +1,88 @@
+{
+	"id": "plugin.payment.unionpay.v2",
+	"name": "银联支付",
+	"desc": "银联支付V2插件",
+	"logo": "logo.jpg",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Payment",
+	"platforms": ["PC"],
+	"pluginData": {
+		"merId": {
+			"desc": "",
+			"val": "531101604070404"
+		},
+		"version": {
+			"desc": "",
+			"val": "20140728"
+		},
+		"encoding": {
+			"desc": "",
+			"val": "UTF-8"
+		},
+		"signMethod": {
+			"desc": "",
+			"val": "01"
+		},
+		"TranType": {
+			"desc": "",
+			"val": "0001"
+		},
+		"refundTranType": {
+			"desc": "",
+			"val": "0401"
+		},
+		"BusiType": {
+			"desc": "",
+			"val": "0001"
+		},
+		"bizType": {
+			"desc": "",
+			"val": "000201"
+		},
+		"channelType": {
+			"desc": "",
+			"val": "07"
+		},
+		"accessType": {
+			"desc": "",
+			"val": "0"
+		},
+		"CurryNo": {
+			"desc": "",
+			"val": "CNY"
+		},
+		"currencyCode": {
+			"desc": "",
+			"val": "156"
+		},
+		"frontTransUrl": {
+			"desc": "",
+			"val": "https://payment.chinapay.com/CTITS/service/rest/page/nref/000000000017/0/0/0/0/0"
+		},
+		"backTransUrl": {
+			"desc": "",
+			"val": "https://payment.chinapay.com/CTITS/service/rest/forward/sta/000000000017/0/0/0/0/0"
+		},
+		"refundUrl": {
+			"desc": "",
+			"val": "https://payment.chinapay.com/CTITS/service/rest/forward/syn/000000000065/0/0/0/0/0"
+		},
+		"OrderQueryUrl":  {
+			"desc": "",
+			"val": "https://payment.chinapay.com/CTITS/service/rest/forward/syn/000000000060/0/0/0/0/0"
+		},
+		"signInvalidFields": {
+			"desc": "",
+			"val": "Signature,CertId"
+		},
+		"signatureField": {
+			"desc": "",
+			"val": "Signature"
+		},
+		"securityPropFile": {
+			"desc": "",
+			"val": "cert/security.properties"
+		}
+	}
+}

@@ -1,0 +1,18 @@
+<!-- 头像 --> 
+<div class="wrap-btn">
+	<%var authUserInfo = AuthUserInfo();%>
+	<%if(isNotEmpty(authUserInfo)){%>
+	<div class="user fr">
+		
+		<img  title="用户中心" <%if(isNotEmpty(authUserInfo)){%>src="${ShowFileUrl(UserImage(authUserInfo.userId))}" alt="${AuthUserName()}" <%}%>  onerror="this.src='${session.themeRoot}/_files/img/default.jpg'" />
+		<i class="iconfont">&#xe609;</i>
+	</div>	
+	<ul class="user-dropdown fr">
+		<li><a href="${ctxPath}/my"><i class="iconfont">&#xe60c;</i> 设置</a></li>
+		<li><a href="${ctxPath}/logout"><i class="iconfont">&#xe604;</i> 退出登录</a></li>
+	</ul>
+	<%}%>
+</div>
+<div class="nav nav-shrink">
+	<i class="iconfont">&#xe607;</i>
+</div>

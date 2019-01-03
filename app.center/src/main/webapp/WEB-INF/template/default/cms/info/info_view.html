@@ -1,0 +1,326 @@
+<link href="${ctxPath}/static/base/css/plugins/jsTree/style.min.css" rel="stylesheet">
+<link href="${ctxPath}/static/base/css/form.css" rel="stylesheet">
+<script type="text/javascript" src="${ctxPath}/static/base/js/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="${ctxPath}/static/base/js/FileSaver.js"></script>
+<script type="text/javascript" src="${ctxPath}/static/base/js/jquery.wordexport.js"></script>
+<style>
+.article-title{
+	text-align: center;
+}
+</style>
+
+<div class="form-group clearfix">
+    <div class="col-sm-12">
+    <!--  
+        <button onclick="returnList();" title='返回' class="btn btn-primary" type="button">返回</button>
+        <button onclick="mobileShow();" title='手机预览' class="btn btn-primary" type="button">手机预览</button>
+      -->  
+        <button onclick="printPage();" title='打印pdf' class="btn btn-primary" type="button">打印pdf</button>
+        <button onclick="toWord();" title='转出word文档' class="btn btn-primary" type="button">转出word文档</button>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content  animated fadeInRight article" id="articleBox">
+	<div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox"  id="printBox">
+                <div class="ibox-content">
+                	<div class="text-center article-title">
+                        <h1>
+                            ${bean.title}
+                        </h1>
+                        <span class="text-muted">
+	                        <label class="">作者: </label> <span class="author">${bean.author}</span>
+	                        <label class="">发布日期: </label> <span class="publishTime">${bean.publishDate,"yyyy-MM-dd"}</span>
+                        </span>
+                    </div>
+                    <div class="text">${bean.textWithoutPageBreak}</div>
+                    <%if(bean.withVideo == true){%>
+	                    <div class="video">
+	                    	<video src="${bean.video}" controls="controls">
+							您的浏览器不支持 
+							</video>
+	                    </div>
+                    <%}%>
+                    
+                    <!-- Comment start -->
+                    <div class="comment" id="commentPage">
+							
+						<%var commentPageList = CommentPage({fid:bean.id, siteId:siteId, pageSize:100});%>
+					    <div class="comment-head clearfix">
+					    	<h3>评论<span>(共${commentPageList.totalElements}条评论)</span></h3>
+						 	<a class="sideBtn" title="折叠/展开"><i class="fa fa-chevron-circle-down"></i></a> 
+					    </div>     
+					    <ul id="comment_div" class="clearfix">
+					    	<%for(comment in commentPageList){%>
+					    	<li>
+					    		<a href="javascript:;">
+					    			<span><img src="${ShowFileUrl(UserImage(comment.userId))}" onerror="this.src='${session.themeRoot}/_files/img/default.jpg'" alt="" /></span>
+					    			<h3>${comment.userName}</h3>
+					    			<em><%var time = DateUtil({date:comment.createTime});%>${time}</em>
+					    			<%  var page=commentPageList.number;
+					    				var pageSize = commentPageList.size;
+					    				var floor = commentLP.index + (page * pageSize);
+					    			 %>
+					    			<strong># ${floor}</strong>
+					    		</a>
+					    		<p>${comment.content}</p>
+					    		<div class="com_div_foot">
+						    		<div class="comment-state">
+						    			<label class="label-state text-warning">状态：</label>
+						    			<%if(comment.state == 0){%>
+							    			<span class="state text-default">未审核</span>
+							    		<%}%> <%else if(comment.state == 1){%>
+							    			<span class="state text-default">已审核</span>
+							    		<%}%> <%else if(comment.state == 2){%>
+							    			<span class="state text-default">已推荐</span>
+							    		<%}%> <%else if(comment.state == 3){%>
+							    			<span class="state text-default">已屏蔽</span>
+							    		<%}%> <%else if(comment.state == -1){%>
+							    			<span class="state text-default">已删除</span>
+							    		<%}%>
+							    		
+							    		<label class="label-opt text-warning">操作：</label>
+							    		<%if(comment.state == 0){%>
+							    			<a class="opt btn btn-danger btn-circle" title="审核" onclick="audit('${comment._id}', this);"><i class="fa fa-minus"></i></a>
+							    		<%}%> <%else if(comment.state == 1){%>
+							    			<a class="opt btn btn-danger btn-circle" title="反审核" onclick="antiAudit('${comment._id}', this);"><i class="fa fa-minus"></i></a>
+							    		<%}%>
+							    		
+						    		</div>
+					         	</div>
+					    		
+					    		<%for(child in CommentPage({sourceId:comment.commentId, ftype:'Comment', siteId:1, status:[0,1,2]})){%>
+					     		<div class="child-comment-list">
+					     			<p>
+					     				<a href="javascript:;">${child.userName}：</a>${child.content}
+					     			</p>
+					     			
+					     			<div class="ccl-foot">
+					     				<span><%var childtime = DateUtil({date:comment.createTime});%>${childtime}</span>
+					     			</div>
+					     			<div class="com_div_foot">
+							    		<div class="comment-state">
+							    			<label class="label-state text-warning">状态：</label>
+							    			<%if(child.state == 0){%>
+								    			<span class="state text-default">未审核</span>
+								    		<%}%> <%else if(child.state == 1){%>
+								    			<span class="state text-default">已审核</span>
+								    		<%}%> <%else if(child.state == 2){%>
+								    			<span class="state text-default">已推荐</span>
+								    		<%}%> <%else if(child.state == 3){%>
+								    			<span class="state text-default">已屏蔽</span>
+								    		<%}%> <%else if(child.state == -1){%>
+								    			<span class="state text-default">已删除</span>
+								    		<%}%>
+								    		
+								    		<label class="label-opt text-warning">操作：</label>
+								    		<%if(child.state == 0){%>
+								    			<a class="opt btn btn-danger btn-circle" title="审核" onclick="audit('${child._id}', this);"><i class="fa fa-minus"></i></a>
+								    		<%}%> <%else if(comment.state == 1){%>
+								    			<a class="opt btn btn-danger btn-circle" title="反审核" onclick="antiAudit('${child._id}', this);"><i class="fa fa-minus"></i></a>
+								    		<%}%>
+								    		
+							    		</div>
+						         	</div>
+					     		</div> 	
+					    		<%}%>
+					    		
+					    	</li>
+					    	<%}%>
+					    </ul>
+					    
+					    
+					    <!-- <div class="comment-head clearfix">
+					    	<h3>评论<span>(共{{commentPageList.records}}条评论)</span></h3>
+						 	<a class="sideBtn" title="折叠/展开"><i class="fa fa-chevron-circle-down"></i></a> 
+					    </div> 
+						<ul id="comment_div" class="clearfix">
+							<li v-for="comment in commentPageList.rows">
+					    		<a href="javascript:;">
+					    			<span><img src="" alt="" /></span>
+					    			<h3>{{comment.userName}}</h3>
+					    			<em>{{moment(comment.createTime)}}</em>
+					    		</a>
+					    		<p>{{comment.content}}</p>
+					    		<div class="com_div_foot">
+						    		<div class="comment-state">
+						    			<label class="label-state text-warning">状态：</label>
+						    			<span v-if="comment.state == 0" class="state text-default">未审核</span>
+						    			<span v-if="comment.state == 1" class="state text-default">已审核</span>
+						    			<span v-if="comment.state == 2" class="state text-default">已推荐</span>
+						    			<span v-if="comment.state == 3" class="state text-default">已屏蔽</span>
+						    			<span v-if="comment.state == -1" class="state text-default">已删除</span>
+							    		
+							    		<label class="label-opt text-warning">操作：</label>
+						    			<a v-if="comment.state == 0" class="opt btn btn-danger btn-circle" title="审核" onclick="audit('{{comment._id}}');"><i class="fa fa-minus"></i></a>
+						    			<a v-else class="opt btn btn-danger btn-circle" title="反审核" onclick="antiAudit('{{comment._id}}');"><i class="fa fa-minus"></i></a>
+							    		
+						    		</div>
+					         	</div>
+					    		
+					    	</li>
+						</ul> -->
+					    
+					    
+		       	    </div><!-- Comment end -->
+		       	   
+                </div>
+            </div>
+        </div>
+    </div>            
+</div>
+
+
+
+<script>
+
+function returnList(){
+	loadFrameContent('cms/info/infoList?queryNodeId=${queryNodeId}&showDescendants=${showDescendants}&queryStatus=${queryStatus}&rnd='+ Math.random());
+}
+//手机预览
+function mobileShow(){
+	if($(".m-mobilePreview").length > 0){
+		$(".m-mobilePreview").fadeIn(300);
+		return;
+	}
+	 var html = '<div class="m-mobilePreview">'+
+				    '<div class="layer">'+
+				    	'<i class="fa fa-times" style="position:fixed;top:20px;right:20px;cursor:pointer;font-size:40px;color:#333;"></i>'+
+			  			'<div class="mobile-box">'+ $(".ibox").html() +'</div>'+
+			  	    '</div>'+
+			   '</div>';
+		//	   http://localhost/app.center/info/1475
+		 var html2 = '<div class="m-mobilePreview">'+
+				    '<div class="layer">'+
+				    	'<i class="fa fa-times" style="position:fixed;top:20px;right:20px;cursor:pointer;font-size:40px;color:#333;"></i>'+
+			  			'<div class="mobile-box"><iframe class="ibox-content" width="300" height="540"  '+
+			  			' src="${ctxPath}/${bean.url}" style="width: 306px;height: 540px;border: 1px solid #333;padding: 0;overflow-y: hidden;"></iframe></div>'+
+			  	    '</div>'+
+			   '</div>';
+	
+	$("#frameContent").append(html2); 
+	$(".m-mobilePreview").bind("click", function(event){
+		event = event ? event : window.event; 
+		var obj = event.srcElement ? event.srcElement : event.target; 
+		console.log($(obj));
+		if($(obj).hasClass("layer") || $(obj).hasClass("fa-times")){
+			$(this).fadeOut(600);
+		}
+	})
+}
+
+function bindCommentSide(){
+	//评论折叠
+	$(".sideBtn .fa").bind("click", function(){
+		var _this = this;
+		if($(_this).hasClass("fa-chevron-circle-down")){
+			$("#comment_div").slideUp(300, function(){
+				$(_this).removeClass("fa-chevron-circle-down").addClass("fa-chevron-circle-up");
+			});
+		}else{
+			$("#comment_div").slideDown(300, function(){
+				$(_this).removeClass("fa-chevron-circle-up").addClass("fa-chevron-circle-down");
+			});
+		}
+	});
+}
+
+//审核
+function audit(id, el) {
+	layer.open({
+		type : 1, //page层
+		area : [ '660px', '470px' ],
+		title : '评论审核',
+		shade : 0.6, //遮罩透明度
+		moveType : 1, //拖拽风格，0是默认，1是传统拖动
+		shift : -1, //0-6的动画形式，-1不开启
+		content : $("#popWin").load('interact/interactComment/interactCommentAuditForm?id=' + id),
+		end:function(){
+			setTimeout(function(){
+				$(el).attr("title", $(el).attr("title") == "审核" ? "反审核" : "审核");
+				var $state = $(el).siblings(".state")
+				$state.text($state.text() == "未审核" ? "已审核" : "未审核");
+			}, 200);
+			
+		}
+	});
+}
+//反审核
+function antiAudit(id, el) {
+	layer.open({
+		type : 1, //page层
+		area : [ '660px', '470px' ],
+		title : '评论反审核',
+		shade : 0.6, //遮罩透明度
+		moveType : 1, //拖拽风格，0是默认，1是传统拖动
+		shift : -1, //0-6的动画形式，-1不开启
+		content : $("#popWin").load('interact/interactComment/interactCommentAntiAuditForm?id=' + id),
+		end:function(){
+			setTimeout(function(){
+				$(el).attr("title", $(el).attr("title") == "审核" ? "反审核" : "审核");
+				var $state = $(el).siblings(".state")
+				$state.text($state.text() == "未审核" ? "已审核" : "未审核");
+			}, 200);
+		}
+	});
+	
+}
+//加载评论
+function loadComment(){
+	var fid =${bean.id};
+	$.post("/info/comment_page_Json?fid=${bean.id}", {fid: fid}, function(result){
+		console.log(result);
+		if(result.resultStatus){
+			if(mv){
+				mv.commentPageList = result;
+			}else{
+				alert("评论加载失败");
+			}
+		}else{
+			alert("评论加载失败");
+		}		
+	}, 'json');
+}
+function toWord(){
+	$(".ibox-content").wordExport('${bean.title}');
+}
+
+function printPage(){
+	
+	var oldHtml = document.getElementById("articleBox").innerHTML; 
+	var printBox = document.getElementById("printBox").innerHTML; 
+	
+	document.title = '${bean.title}';
+	
+	window.document.body.innerHTML = printBox;
+	window.print(); 
+	
+	window.document.body.innerHTML = oldHtml;
+
+}
+
+
+$().ready(function(){
+	
+	/* window.mv = new Vue({
+		el: '#commentPage',
+		data: {commentPageList: ""},
+		created: function(){
+			loadComment();
+		},
+		methods:{
+			moment: function(date){
+				return moment(date).fromNow();
+			}
+		}
+	}) */
+	bindCommentSide();
+	
+	
+	
+	
+	
+})
+</script>
+

@@ -1,0 +1,32 @@
+{
+	"id": "plugin.express.zhongyouwuliu",
+	"name": "邮政平邮",
+	"desc": "邮政平邮快递插件",
+	"logo": "logo.png",
+	"version": "1.0.0",
+	"status": "Enable",
+	"pluginType": "Express",
+	"platforms": ["PC","WAP","MOBILE","WEIXIN"],
+	"pluginData": {
+		"Kuaidi100Code": {
+			"desc": "",
+			"val": "zhongyouwuliu"
+		},
+		"TaobaoCode": {
+			"desc": "",
+			"val": "POST"
+		},
+		"Width": {
+			"desc": "",
+			"val": "2300"
+		},
+		"Height": {
+			"desc": "",
+			"val": "1270"
+		},
+		"BackGroundImage": {
+			"desc": "",
+			"val": ""
+		}
+	}
+}

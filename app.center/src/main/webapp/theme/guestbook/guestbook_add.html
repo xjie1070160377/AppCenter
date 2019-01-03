@@ -1,0 +1,201 @@
+<%var style = {%>
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/base.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/globle.css" />
+<link rel="stylesheet" type="text/css" href="${session.guestbook}/_css/iCheck/custom.css" />
+<style>
+.right.m-mail-create{background:#fff;border:none;padding:28px;height:620px;box-sizing:border-box;width:888px;margin-bottom:0;border-radius:5px}
+.m-mail-create .u-tt{color:#e74c3c;padding:8px;font-weight:700;font-size:18px;padding:16px 0;line-height:30px;text-align:center}
+.m-mail-create .m-mail-items{padding:8px}
+.m-mail-create li.u-item{padding:16px 0;line-height:30px;font-size:14px;border-bottom:1px dashed #ddd}
+.m-mail-create li.u-item:last-child{border-bottom:none}
+.m-mail-create li.u-item label{font-weight:700;color:#555;font-family:"微软雅黑";text-shadow:none;width:144px;display:block;float:left;text-align:right;margin-right:30px}
+.m-mail-create li.u-item em{color:#e74c3c;font-size:18px;position:relative;top:4px;right:3px}
+.m-mail-create input[type=text],.m-mail-create input[type=email],.m-mail-create select,.m-mail-create textarea{outline:0;border:1px solid #aaa;width:74%;resize:none;border-radius:3px}
+.m-mail-create select{height:28px}
+.m-mail-create textarea{line-height:1.5;padding:8px;box-sizing:border-box}
+.m-mail-create li.u-item input{height:24px;outline:0;border:1px solid #999}
+.m-mail-create li.u-item input[type=radio]{position:relative;margin-right:5px}
+.m-mail-create .m-submit{padding:16px 0 8px 174px}
+.m-mail-create .u-tips{margin-left:174px;color:#e49929;font-size:12px;padding-top:16px}
+.m-mail-create .u-tips .iconfont{font-size:14px}
+#auther,#captcha{width:100px;display:block;float:left}
+#captcha{margin-top:3px;margin-right:6px}
+@media screen and (max-width:768px){
+	.right.m-mail-create{width:100%;padding:16px;}
+	.m-mail-create li.u-item label{text-align: left;color: #777;position:absolute;left:0;top:10px;}
+	.wrap-btn {background: none!important;}
+	.m-mail-create .u-tt{padding-top:0;}
+	.m-mail-create input[type=text], .m-mail-create input[type=email], .m-mail-create select, .m-mail-create textarea{width:100%;}
+	.m-mail-create input[type=text], .m-mail-create input[type=email],.m-mail-create textarea{border:none!important;outline:none!important;}
+	.m-mail-create textarea{height:120px!important;}
+	.m-mail-create .u-tips, .m-mail-create .m-submit{padding-left:0;margin-left:0;}
+	.m-mail-create li.u-item{padding-top:10px;padding-bottom:12px;padding-left:100px;position:relative;}
+	.m-mail-create li.u-item.text{padding-left:0;}
+	.m-mail-create li.u-item.text label{display:none;}
+	.m-mail-create .m-submit .btn{border-color:#861817;background:#861817;width:100%;box-sizing:border-box;padding:8px 0}
+	.m-mail-create .btn{border-color:#861817;background:#861817;}
+	.help-box{display:block;}
+}
+.app .wrap-btn,.app .nav-shrink{display:none;}
+.app .m-mail-create .u-tt{display:none;}
+
+</style>
+<%};%>
+
+<%include("shared/inc_head.html", {title:"开通信箱", style:style}){} %> 
+
+<body class="output p-guestbook-new <%if(isNotEmpty(session.token)){ %> app <%}%>">
+	
+	<%include("shared/inc_nav_side.html"){} %>
+	<%include("shared/inc_nav_user.html"){} %>
+	
+	<!-- 内容 -->
+	<div class="row-fluid clearfix">
+		<%include("shared/inc_left_cover.html"){} %>
+		
+		<div class="help-box f-dn" style="z-index:9;">
+			<div class="help-wrap" style="margin:0;width:100%;height:100%;border-radius:0; padding: 50px 20px;">
+				<div class="title">关于收件箱</div>
+				<div class="content" style="padding: 16px 0;">
+					<dl>
+						<dd>信箱功能提供了解答问题，处理反馈意见的场所。开通属于自己的信箱后，别人可以在你的信箱中留言。而你就是该信箱的管理者，负责该信箱的管理，可以审核和回复别人写给你信件。</dd>
+					</dl>
+				</div>
+				<div class="f-tac"><a class="btn btn-info i-close" style="margin-right:16px;">暂不开通</a><a class="btn btn-success i-open">开通信箱</a></div>
+			</div>
+		</div>
+		
+		<div class="contentBox">
+			<div class="right m-mail-create">
+            	<div class="u-tt">开通信箱</div>
+            	
+            	<form id="validForm" action="/widget/guestbook/${isEmpty(entity._id) ? 'save' : 'update'}" method="post">
+            		<ul class="m-mail-items">
+            			<li class="u-item">
+            				<label for=""><em>*</em>名称：</label>
+            				<input type="text" name="name" id="name" placeholder="请填写名称" required  minlength="2" maxlength="10" />
+            			</li>
+            			<li class="u-item">
+            				<label for=""><em>*</em>图标上传：</label>
+            				<a class="btn btn-success" id="imgselectfile-btn">图标上传</a>
+		                	<div class="dropzone" id="dropzone" style="display:none;"></div>
+		                	<div class="table table-striped files" id="previews">
+		                		<%if(isNotEmpty(entity.icon)){%>
+		                			<img src="${entity.icon}" style="width:80px;height:80px;" alt="" />
+		                			<input type="hidden" name="icon" id="icon" value="${entity.icon}"/>
+		                		<%}else{%>
+		                			<input type="hidden" name="icon" id="icon" />
+		                		<%}%>
+		                	</div>
+            			</li>
+            			
+            			<%if(isNotEmpty(states)){%>
+            			<li class="u-item f-cb" style="padding-left:120px;">
+            				<label><em>*</em>是否允许匿名：</label>
+           					<% for(state in states){ %>
+	                			<input type="radio" name="state" value="${state.key}" <%if(entity.state == state.key || (stateLP.index == 1 && isEmpty(entity.state))){%>checked="checked"<%}%> >${state.value}</option>
+	                		<%}%>
+            			</li>
+            			<%}%>
+            			<li class="u-item text">
+            				<label for="">简介：</label>
+            				<textarea name="summary" id="summary" cols="70" rows="8" style="height: 258px;" placeholder="请填写简介" required></textarea>
+            			</li>
+            			
+            			<div class="u-tips"><i class="iconfont">&#xe614;</i>友情提示:</span>请谨慎发言，禁止发布违规内容。</div>
+            			<li class="m-submit"><a class="btn btn-success">提交</a></li>
+            		</ul>
+            		
+            	</form>
+            </div>
+			
+			
+			<!-- Footer Start -->
+			<%include("shared/inc_footer.html"){} %>
+			<!-- Footer End -->
+		</div>
+	</div>
+	
+<script type="text/javascript" src="${session.guestbook}/_js/jquery-2.1.4.min.js"></script>	
+<script type="text/javascript" src="${session.guestbook}/_js/icheck.min.js"></script>
+<script src="${ctxPath}/static/base/js/plugins/dropzone/dropzone.js"></script>
+<script src="${session.guestbook}/_js/jquery.validate.min.js"></script>
+<script src="${session.guestbook}/_js/messages_zh.js"></script>
+<script src="${session.guestbook}/_js/app.js"></script>
+<script>
+	var token = "${token!}";
+	
+	$(function(){
+	
+		$(".help-box").on("click", ".i-close", function(){
+			history.go(-1);
+		});
+		$(".i-open").on("click", function(){
+			$(".help-box").hide();
+		});
+	})
+
+	$(function(){
+		$(".m-submit").click(function(){
+			submitForm();
+		});
+        function submitForm(){
+        	
+        	var postData = $("#validForm").serializeArray();
+    		$.post($("#validForm").attr("action"), postData, function (json) {
+                if (json.resultStatus) {
+                    location.href = "/widget/guestbook.htx";
+                } else {
+                	alert("开通信箱失败！");
+                }
+            }, "json");
+        }
+        
+
+        var uploadUrl = "/mcenter/sys/upload";
+        if(token && token != ""){
+        	uploadUrl = "/m-uploadPhoto.htx?token="+token;
+        }
+        var myDropzone = new Dropzone("#dropzone", { // 需要有个容器来加载控件
+    		url : uploadUrl, // Set the url
+    		thumbnailWidth : 80,
+    		thumbnailHeight : 80,
+    		parallelUploads : 20,
+    		maxFiles:2,
+    		addRemoveLinks:false,
+    		dictRemoveFile:'取消上传',
+    		dictMaxFilesExceeded:'超出允许上传数量,不允许上传',
+    		dictInvalidInputType:"只允许上传图片文件",
+    		acceptedFiles:"image/*",
+    		autoQueue : true, // 自动上传
+    		previewTemplate:'<span class="preview"><img style="width:80px;height:80px;" data-dz-thumbnail /></span>',
+    		previewsContainer : "#previews", // 定义预览模版,
+    		clickable : "#imgselectfile-btn" // 定义点击按钮， 点击后弹出文件选择框
+    	});
+    	myDropzone.on("addedfile",function(){
+    		myDropzone.options.params = {width:120,height:120};
+    	});
+    	myDropzone.on("success", function(a, b){ 
+    		$("input[name='icon']").val(b.fileUrl);
+    		setTimeout(function(){
+    			$(".preview img").attr("src", b.fileUrl);
+    		}, 10);
+    	});
+    	myDropzone.on("error", function(a, b) {
+    		alert("图片上传失败");
+    	});
+    	myDropzone.on("maxfilesreached", function(file){
+    		//上传第2个时，先清除所有的，然后添加上传的第二个文件（file为已上传的文件数组）
+    		 myDropzone.removeAllFiles();
+    		 myDropzone.addFile(file[1]);
+    	});
+        
+	});
+	
+	
+	
+	
+
+</script>
+</body>
+</html>

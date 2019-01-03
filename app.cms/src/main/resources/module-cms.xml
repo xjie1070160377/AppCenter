@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd 
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd 
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/task  http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+	<!--  -->
+	<bean id="infoFulltextDao" class="cn.mooc.app.module.cms.fulltext.InfoFulltextDaoImpl"/>
+	<bean id="fsDirectory" class="cn.mooc.app.module.cms.fulltext.FSDirectoryFactoryBean">
+		<property name="location" value="${fsDirectory.location}" />
+	</bean>
+	
+	<bean id="infoFulltextService" class="cn.mooc.app.module.cms.fulltext.InfoFulltextServiceImpl"/>
+	<bean id="infoFulltextGenerator" class="cn.mooc.app.module.cms.fulltext.InfoFulltextGeneratorImpl"/>
+	
+	<bean id="analyzer" class="org.apache.lucene.analysis.cjk.CJKAnalyzer" destroy-method="close">
+		<constructor-arg><util:constant static-field="org.apache.lucene.util.Version.LUCENE_36"/></constructor-arg>
+	</bean>
+	
+	<bean id="indexWriterConfig" class="org.apache.lucene.index.IndexWriterConfig">
+		<constructor-arg><util:constant static-field="org.apache.lucene.util.Version.LUCENE_36"/></constructor-arg>
+		<constructor-arg ref="analyzer"/>
+	</bean>
+	<bean id="indexWriter" class="cn.mooc.app.module.cms.fulltext.IndexWriterFactoryBean">
+		<property name="directory" ref="fsDirectory"/>
+		<property name="indexWriterConfig" ref="indexWriterConfig"/>
+	</bean>
+	<bean id="searcherManager" class="cn.mooc.app.module.cms.fulltext.SearcherManagerFactoryBean">
+		<property name="indexWriter" ref="indexWriter" />
+	</bean>
+	<bean id="luceneIndexTemplate" class="cn.mooc.app.module.cms.fulltext.DefaultLuceneIndexTemplate">
+		<property name="indexWriter" ref="indexWriter"/>
+		<property name="searcherManager" ref="searcherManager"/>
+		<property name="autoCommit" value="${luceneIndexTemplate.autoCommit}"/>
+	</bean>
+	
+	
+</beans>

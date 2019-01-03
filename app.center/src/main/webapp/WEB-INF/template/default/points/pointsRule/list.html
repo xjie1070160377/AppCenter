@@ -1,0 +1,242 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>积分规则列表</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+                        <select class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled">
+                            <option value="LIKE_ruleCode">规则代码</option>
+                            <option value="LIKE_ruleName">规则名称</option>
+                        </select>
+                        
+                        </div>
+                        <div class="col-sm-2">
+                        <div class="input-group">
+                        <input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control"> 
+                        <span class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-primary" onclick="queryGrid();"> 搜索</button> 
+                        </span>
+                        </div>
+                        </div>
+                        <div class="col-sm-5">
+                        
+                        </div>
+                        <div class="col-sm-3 text-right">
+                            
+                            <a href="javascript:void(0);" onclick="add();" class="btn btn-primary btn-sm">新增</a>
+                            <a href="javascript:void(0);" onclick="dels();" class="btn btn-primary btn-sm">批量删除</a>
+                            
+                        </div>
+                    </div>
+
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$("#table_list").jqGrid({
+					url : "points/rule/page",
+					datatype : "json",
+	                mtype:"POST",
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 10,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "ID",
+						classes : 'mshow',
+						name : 'id',
+						index : 'id',
+						width : 60,
+						align : "center",
+						sorttype : "int"
+					}, {
+						label : "代码",
+						classes:"mshow",
+						name : 'ruleCode',
+						index : 'ruleCode',
+						width : 90,
+						align : "left"
+					}, {
+						label : "名称",
+						classes : 'mshow',
+						name : 'ruleName',
+						index : 'ruleName',
+						width : 90,
+						align : "left"
+					}, {
+						label : "描述",
+						classes : 'mshow',
+						name : 'caption',
+						index : 'caption',
+						width : 200,
+						align : "left"
+					}, {
+						label : "加减状态",
+						classes : 'mshow',
+						name : 'isas',
+						index : 'isas',
+						width : 50,
+						align : "left"
+					}, {
+						label : "积分",
+						classes : 'mshow',
+						name : 'points',
+						index : 'points',
+						width : 50,
+						align : "left"
+					}, {
+						label : "状态",
+						classes : 'mshow',
+						name : 'status',
+						index : 'status',
+						width : 90,
+						align : "left",
+						formatter : statusFmt
+					}, {
+						label : "是否文章规则",
+						classes : 'mshow',
+						name : 'isspecial',
+						index : 'isspecial',
+						width : 90,
+						align : "left",
+						formatter : specialFmt
+					}, {
+						label : "操作",
+						classes : 'mshow',
+						name : 'id',
+						sortable : false,
+						width : 120,
+						align : "center",
+						formatter : oprationFmt
+					} ],
+					pager : "#pager_list",
+					viewrecords : true,
+					multiselect : true,
+					sortname : 'id',
+					sortorder : "desc",
+					caption : "积分等级列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+			
+			function statusFmt(cellvalue){
+				if(cellvalue == 1){
+					return "有效";
+				}else{
+					return "无效";
+				}
+			}
+			
+			function specialFmt(cellvalue){
+				if(cellvalue == 1){
+					return "是";
+				}else{
+					return "否";
+				}
+			}
+			
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += "<button class='btn btn-primary btn-opt' type='button' onclick='edit("+ rowObject.id + ");'><i class='fa fa-edit'></i>&nbsp;编辑</button>";
+				html += " <button class='btn btn-primary btn-opt' type='button' onclick='del(" + rowObject.id + ");'><i class='fa fa-remove'></i>&nbsp;删除</button>";
+				return html;
+			}
+
+			function add() {
+				loadFrameContent('points/rule/create');
+			}
+
+			function edit(id) {
+				loadFrameContent('points/rule/create?id=' + id);
+			}
+
+			function del(id) {
+				layer.confirm('确定删除该规则吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("points/rule/delete", {
+						id : id
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('删除成功.');
+						} else {//失败
+							layer.alert("删除失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+			
+			function dels() {
+				var ids = jQuery("#table_list").jqGrid('getGridParam','selarrrow');
+				
+				if (ids.length == 0){
+	                layer.alert("没有选择要批量删除的数据.", {icon: 2});
+	                return;
+	            }
+				
+				layer.confirm('确定批量删除规则吗?', {
+					btn : [ '删除', '取消' ]
+				//按钮
+				}, function() {
+					$.post("points/level/delete", {
+						id : ids.join(',')
+					}, function(json) {
+						if (json.resultStatus == true) {//成功
+							reloadGrid();
+							layer.msg('批量删除成功.');
+						} else {//失败
+							layer.alert("批量删除失败.", {icon: 2});
+						}
+					}, 'json');
+				});
+			}
+
+			function reloadGrid() {
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list");
+		  		var columnFiled = $("#columnFiled").val();
+	            var keyWord = $("#keyWord").val();
+				
+	          //增加提交参数
+	            var postData = { columnFiled : columnFiled, keyWord : keyWord};
+	            $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  	}
+		</script>
+	
+<%}%>

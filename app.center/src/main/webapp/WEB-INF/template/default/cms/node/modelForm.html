@@ -1,0 +1,130 @@
+<% layout("/share/mlayout.html"){%>
+<link href="${ctxPath}/static/base/css/plugins/jsTree/style.min.css" rel="stylesheet">
+<script src="${ctxPath}/static/base/js/plugins/jsTree/jstree.min.js"></script>
+
+<div class="wrapper wrapper-content fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>模型管理 - 栏目模型 - <% if(oprt == 'create'){ %>新增<%} else {%>编辑<%}%></h5>
+				</div>
+				<div class="ibox-title">
+					<button class="btn btn-info " type="button" id="btn_back"><i class="fa fa-mail-reply-all"></i> 返回</button>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12">
+	                        <ul class="nav nav-tabs">
+	                        	<% for(type in types){ %>
+								    <li ${queryType == type ? 'class="active"' : ''} data-status="${type}"><a data-toggle="tab" href="#">${I18nMessage("model.type." + type)}</a></li>
+								<% } %>
+	                        </ul>
+                        </div>
+					</div>
+            		<form id="postForm" method="post" class="form-horizontal" action="cms/model/model${oprt == 'create' ? 'Save' : 'Update'}">
+            		<input type="hidden" name="queryType" value="${queryType}"/>
+            		<input type="hidden" name="type" value="${queryType}"/>
+            		<input type="hidden" name="oid" value="${entity.id}"/>
+	                <div class="form-group">
+	                	<label class="col-sm-2 control-label" for="title">类型</label>
+	                    <div class="col-sm-10">${I18nMessage("model.type." + queryType)}</div>
+	                </div>
+	                <div class="hr-line-dashed"></div>
+	                <div class="form-group">
+	                	<label class="col-sm-2 control-label" for="name"><em class="req">*</em>名称</label>
+	                    <div class="col-sm-4">
+	              			<input type="text" class="form-control" placeholder="名称" maxlength="50" id="name" name="name" value="${entity.name}">         
+	                    </div>
+	                    <label class="col-sm-2 control-label" for="number">代码</label>
+	                    <div class="col-sm-4">
+	              			<input type="text" class="form-control" placeholder="代码" maxlength="100" id="number" name="number" value="${entity.number}">       
+	                    </div>
+	                </div>
+	                <div class="hr-line-dashed"></div>
+	                <div class="form-group">
+	                	<label class="col-sm-2 control-label" for="customs_coverTemplate"><em class="req">*</em>封面页默认模板</label>
+	                    <div class="col-sm-4">
+	              			<input type="text" class="form-control" readonly="readonly" id="customs_coverTemplate" name="customs_coverTemplate" value="${entity.customs['coverTemplate']}"> 
+	              			<div id="parentSelectDiv" style="top:0;">
+	              			<#TemplateSelectorBtnTag id="coverTemplate" callback="coverSelectCallBack" defaultValue="${entity.customs['coverTemplate']}"/>
+	              			</div>
+	                    </div>
+	                	<label class="col-sm-2 control-label" for="customs_listTemplate"><em class="req">*</em>列表页默认模板</label>
+	                    <div class="col-sm-4">
+	              			<input type="text" class="form-control" readonly="readonly" id="customs_listTemplate" name="customs_listTemplate" value="${entity.customs['listTemplate']}"> 
+	              			<div id="parentSelectDiv" style="top:0;">
+	              			<#TemplateSelectorBtnTag id="listTemplate" callback="listSelectCallBack" defaultValue="${entity.customs['listTemplate']}"/>
+	              			</div>
+	                    </div>
+	                </div>
+	                <div class="hr-line-dashed"></div>
+	                <div class="form-group">
+	                    <div class="col-sm-12 text-right">
+	                    	<input type="hidden" name="oid" id="oid" value="${entity.id}" >
+	                        <button onclick="submitForm();" class="btn btn-primary" type="button">提交保存</button>
+	                    </div>
+	                </div>
+	            	</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+                            
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.nav-tabs li').click(function() {
+      		var idStr = this.id;
+      		var type = $(this).attr('data-status');
+			loadFrameContent('cms/model/modelList?queryType=' + type);
+      	});
+
+        $("#postForm").validate({
+            rules: {
+            	name: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 50
+                },
+                customs_coverTemplate: {
+                    required: true
+                },
+                customs_listTemplate: {
+                    required: true
+                }
+            }
+        });
+        $("#btn_back").click(function(){
+        	loadFrameContent('cms/model/modelList?queryType=${queryType}');
+        });
+	});  
+
+    function coverSelectCallBack(text){
+    	$('#customs_coverTemplate').val(text);
+	}
+
+    function listSelectCallBack(text){
+    	$('#customs_listTemplate').val(text);
+	}
+    
+    function submitForm(){
+    	if($("#postForm").valid()==false){
+    		return;
+    	}
+    	var postData = $("#postForm").serializeArray();
+		$.post($("#postForm").attr("action"), postData, function (json) {
+            if (json.resultStatus) {
+                //成功
+            	loadFrameContent('cms/model/modelList?queryType=${queryType}');
+            } else {
+            	//
+            	layer.alert("失败了："+ json.resultMsg, {icon: 2});
+            }
+        }, "json");
+    }
+
+</script>
+	
+<%}%>

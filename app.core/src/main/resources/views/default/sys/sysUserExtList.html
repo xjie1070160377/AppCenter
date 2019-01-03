@@ -1,0 +1,208 @@
+<% layout("/share/mlayout.html"){%>
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title">
+					<h5>用户资料列表</h5>
+				</div>
+				<div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+                        <select class="input-sm form-control input-s-sm inline" id="columnFiled" name="columnFiled">
+                            <option value="LIKE_userName">用户名</option>
+                            <option value="LIKE_nickName">用户昵称</option>
+                            <option value="LIKE_realName">真实姓名</option>
+                            <option value="LIKE_phone">用户电话</option>
+                        </select>
+                        
+                        </div>
+                        <div class="col-sm-2">
+                        <div class="input-group">
+                        <input type="text" id="keyWord" name="keyWord" placeholder="关键字" class="input-sm form-control" onkeydown="javascript:if(event.keyCode==13){queryGrid();}"> 
+                        <span class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-primary" title='搜索' onclick="queryGrid();"> 搜索</button> 
+                        </span>
+                        
+                        </div>
+                        
+                        </div>
+                        <div class="col-sm-5">
+                        
+                        </div>
+                        <div class="col-sm-3 text-right">
+                            <a href="javascript:void(0);" onclick="toUserGrid();" title='返回' class="btn btn-primary btn-sm">返回</a>                                       
+                        </div>
+                    </div>
+
+					<div class="jqGrid_wrapper">
+						<table id="table_list"></table>
+						<div id="pager_list"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+                            
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$("#table_list").jqGrid({
+					url : "sys/sysUserExtListJson",
+					datatype : "json",
+					mtype : "POST",
+					height : 450,
+					autowidth : true,
+					shrinkToFit : true,
+					rowNum : 10,
+					rowList : [ 10, 20, 30 ],
+					colModel : [ {
+						label : "用户ID",
+						classes : 'mshow',
+						name : 'userId',
+						index : 'userId',
+						width : 50,
+						align : "center",
+						sorttype : "int"
+					}, {
+						label : "用户名",
+						classes : 'mshow',
+						name : 'userName',
+						index : 'userName',
+						width : 90,
+						align : "center"
+					}, {
+						label : "用户昵称",
+						name : 'nickName',
+						index : 'nickName',
+						width : 80,
+						align : "center"
+					},{
+						label : "真实姓名",
+						classes : 'mshow',
+						name : 'realName',
+						width : 80,
+						align : "center"
+					}, {
+						label : "性别",
+						name : 'gender',
+						width : 30,
+						align : "center",
+						formatter : genderFmt
+					},  {
+						label : "头像",
+						name : 'avatarUrl',
+						width : 40,
+						align : "center",
+						formatter : imgFmt
+					}, {
+						label : "操作",
+						classes : 'mshow',
+						name : 'op',
+						sortable : false,
+						width : 150,
+						align : "center",
+						formatter : oprationFmt
+					}],
+					pager : "#pager_list",
+					viewrecords : true,
+					sortname : 'id',
+					sortorder : "desc",
+					caption : "用户资料列表",
+					loadtext : '正在加载...',
+					hidegrid : false
+				});
+
+				//浏览器窗口变化时，自动宽度
+	            $(window).bind('resize', function () {
+	                var width = $('.jqGrid_wrapper').width();
+	                $('#table_list').setGridWidth(width);
+	            });
+			
+			
+			});
+
+			function imgFmt(cellvalue, options, rowObject) {
+				if(cellvalue==null || cellvalue==""){
+					return "<img src='' onerror='this.src=\"${ctxPath}/static/base/images/profile_small.png\"' width=30 height=30>";
+				}
+				return "<img src='"+ cellvalue +"' onerror='this.src=\"${ctxPath}/static/base/images/profile_small.png\"' width=30 height=30>";
+				
+			}
+			
+			function genderFmt(cellvalue, options, rowObject) {
+				var html = "";
+				switch (cellvalue) {
+				case 0:
+					html = "<font color='blue'>保密</font>";
+					break;
+				case 1:
+					html = "<font color='green'>男</font>";
+					break;
+				case 2:
+					html = "<font color='red'>女</font>";
+					break;
+				default:
+					html = "<font color='orange'>未知("+cellvalue+")</font>";
+					break;
+				}
+
+				return html;
+			}
+			
+			function oprationFmt(cellvalue, options, rowObject) {
+				var html = "";
+				html += " <button class='btn btn-sm btn-primary' type='button' onclick='userExt("+ rowObject.userId + ");'><i class='fa fa-edit'></i>&nbsp;编辑资料</button>";
+				return html;
+			}
+
+
+			function reloadGrid() {
+
+				$("#table_list").trigger('reloadGrid');
+			}
+			
+		  	function queryGrid(){
+		  		var grid = $("#table_list");
+		  		var columnFiled = $("#columnFiled").val();
+	            var keyWord = $("#keyWord").val();
+				
+	          //增加提交参数
+	            var postData = { columnFiled : columnFiled, keyWord : keyWord};
+	            $("#table_list").jqGrid("setGridParam", { postData: postData});
+
+				//刷新grid
+		  		grid.trigger('reloadGrid');
+		  		
+		  		
+		  	}
+		  	
+			function userExt(id) {
+				layer.open({
+					type : 1, //page层
+					area : [ '660px', '450px' ],
+					title : '修改用户资料',
+					shade : 0.6, //遮罩透明度
+					moveType : 1, //拖拽风格，0是默认，1是传统拖动
+					shift : -1, //0-6的动画形式，-1不开启
+					content : $("#popWin").load('sys/sysUserExtEdit?userId=' + id),
+				    btn: ['确定', '取消'],
+				    yes: function(index, layero){
+				    	submitForm(index);
+					}
+				});
+
+			}
+		  	
+			function toUserGrid(){
+		  		
+		  		loadFrameContent("/sys/sysUserList");
+		  	}
+		</script>
+	
+<%}%>
